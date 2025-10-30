@@ -44,10 +44,25 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin 
         setError('Invalid email or password.');
       }
     } else if (loginRole === 'staff' || loginRole === 'driver') {
-        if (email.toLowerCase() === 'j@example.com' && password === 'password123') {
+        // Accept demo credentials
+        const validCredentials = [
+          { email: 'staff@demo.com', password: 'demo123', role: 'staff' as const },
+          { email: 'driver@demo.com', password: 'demo123', role: 'driver' as const },
+          // Legacy credentials for backward compatibility
+          { email: 'j@example.com', password: 'password123', role: 'staff' as const },
+          { email: 'j@example.com', password: 'password123', role: 'driver' as const },
+        ];
+        
+        const isValid = validCredentials.some(
+          cred => cred.email.toLowerCase() === email.toLowerCase() && 
+                  cred.password === password &&
+                  cred.role === loginRole
+        );
+        
+        if (isValid) {
             onLogin(loginRole, email);
         } else {
-            setError('Invalid email or password.');
+            setError('Invalid email or password. Use the demo credentials shown above.');
         }
     }
   };
@@ -57,6 +72,33 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin 
     driver: 'Driver Login',
     applicant: 'Track Application',
   };
+
+  // Demo credentials component
+  const DemoCredentials = () => (
+    <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+      <h3 className="font-semibold text-sm mb-2 text-blue-900 dark:text-blue-100">
+        🎬 Demo Credentials
+      </h3>
+      <div className="space-y-1.5 text-xs text-blue-800 dark:text-blue-200">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+          <span className="font-medium min-w-[60px]">Staff:</span>
+          <code className="bg-blue-100 dark:bg-blue-800/50 px-2 py-0.5 rounded">staff@demo.com</code>
+          <span className="mx-1 hidden sm:inline">/</span>
+          <code className="bg-blue-100 dark:bg-blue-800/50 px-2 py-0.5 rounded">demo123</code>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+          <span className="font-medium min-w-[60px]">Driver:</span>
+          <code className="bg-blue-100 dark:bg-blue-800/50 px-2 py-0.5 rounded">driver@demo.com</code>
+          <span className="mx-1 hidden sm:inline">/</span>
+          <code className="bg-blue-100 dark:bg-blue-800/50 px-2 py-0.5 rounded">demo123</code>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+          <span className="font-medium min-w-[60px]">Applicant:</span>
+          <span className="text-blue-700 dark:text-blue-300">Sign up with any email</span>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
@@ -68,6 +110,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin 
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {view === 'selection' && <DemoCredentials />}
           {view === 'selection' ? (
             <div className="flex flex-col gap-4">
               <Button onClick={() => handleRoleSelect('staff')} className="w-full" variant="secondary" size="lg">
