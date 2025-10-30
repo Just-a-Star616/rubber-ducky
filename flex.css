@@ -1,0 +1,10 @@
+.parent {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.children {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+}

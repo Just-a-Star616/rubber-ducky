@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Rubber Ducky</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        /* Default Papaya Light Theme */
+        --color-background: 255 255 255; /* white */
+        --color-foreground: 0 0 0;       /* black */
+        --color-card: 255 255 255;       /* white */
+        --color-card-foreground: 0 0 0;
+        --color-sidebar: 71 199 252;      /* #47C7FC */
+        --color-sidebar-foreground: 0 0 0;
+        --color-border: 226 232 240;     /* slate-200 */
+        --color-input: 226 232 240;
+        
+        --color-primary-50: 255 243 224;
+        --color-primary-100: 255 224 178;
+        --color-primary-200: 255 204 128;
+        --color-primary-300: 255 183 77;
+        --color-primary-400: 255 167 38;
+        --color-primary-500: 255 152 0;
+        --color-primary-600: 255 128 0;
+        --color-primary-700: 245 124 0;
+        --color-primary-800: 239 108 0;
+        --color-primary-900: 230 81 0;
+        --color-primary-950: 216 67 21;
+        
+        --radius: 0.5rem;
+      }
+      .dark:root {
+        /* Default Papaya Dark Theme */
+        --color-background: 0 0 0;      /* black */
+        --color-foreground: 255 255 255; /* white */
+        --color-card: 15 23 42;          /* slate-900 */
+        --color-card-foreground: 255 255 255;
+        --color-sidebar: 12 74 110;       /* sky-900 */
+        --color-sidebar-foreground: 255 255 255;
+        --color-border: 30 41 59;        /* slate-800 */
+        --color-input: 30 41 59;
+      }
+      .code-editor-wrapper {
+        position: relative;
+        background-color: hsl(var(--background));
+        border-radius: 0.375rem; /* rounded-md */
+        border: 1px solid hsl(var(--border));
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.875rem; /* text-sm */
+        line-height: 1.5;
+      }
+      .code-editor-textarea, .code-editor-pre {
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        min-height: 80px;
+        width: 100%;
+        box-sizing: border-box;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+      .code-editor-textarea {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: transparent;
+        background: transparent;
+        caret-color: hsl(var(--foreground));
+        border: none;
+        outline: none;
+        resize: vertical;
+      }
+      .code-editor-pre {
+        pointer-events: none;
+        z-index: 1;
+      }
+      /* Syntax Highlighting Tokens */
+      .token.string { color: #a31515; }
+      .dark .token.string { color: #ce9178; }
+      .token.keyword { color: #0000ff; font-weight: bold; }
+      .dark .token.keyword { color: #569cd6; }
+      .token.number { color: #098658; }
+      .dark .token.number { color: #b5cea8; }
+      .token.boolean { color: #0000ff; font-weight: bold; }
+      .dark .token.boolean { color: #569cd6; }
+      .token.variable { color: #001080; }
+      .dark .token.variable { color: #9cdcfe; }
+      .token.operator { color: #a71d5d; }
+      .dark .token.operator { color: #d4d4d4; }
+      .token.punctuation { color: #393a34; }
+      .dark .token.punctuation { color: #d4d4d4; }
+      .token.comment { color: #008000; font-style: italic; }
+      .dark .token.comment { color: #6a9955; }
+      .token.property { color: #e50000; }
+      .dark .token.property { color: #9cdcfe; }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: ['class'],
+        theme: {
+          container: {
+            center: true,
+            padding: "2rem",
+            screens: {
+              "2xl": "1400px",
+            },
+          },
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              border: "hsl(var(--border))",
+              input: "hsl(var(--input))",
+              ring: "hsl(var(--ring))",
+              background: 'hsl(var(--background))',
+              foreground: 'hsl(var(--foreground))',
+              primary: {
+                DEFAULT: "hsl(var(--primary))",
+                foreground: "hsl(var(--primary-foreground))",
+              },
+              secondary: {
+                DEFAULT: "hsl(var(--secondary))",
+                foreground: "hsl(var(--secondary-foreground))",
+              },
+              destructive: {
+                DEFAULT: "hsl(var(--destructive))",
+                foreground: "hsl(var(--destructive-foreground))",
+              },
+              muted: {
+                DEFAULT: "hsl(var(--muted))",
+                foreground: "hsl(var(--muted-foreground))",
+              },
+              accent: {
+                DEFAULT: "hsl(var(--accent))",
+                foreground: "hsl(var(--accent-foreground))",
+              },
+              popover: {
+                DEFAULT: "hsl(var(--popover))",
+                foreground: "hsl(var(--popover-foreground))",
+              },
+              card: {
+                DEFAULT: "hsl(var(--card))",
+                foreground: "hsl(var(--card-foreground))",
+              },
+              sidebar: {
+                DEFAULT: 'rgb(var(--color-sidebar) / <alpha-value>)',
+                foreground: 'rgb(var(--color-sidebar-foreground) / <alpha-value>)',
+              },
+            },
+            borderRadius: {
+              lg: "var(--radius)",
+              md: "calc(var(--radius) - 2px)",
+              sm: "calc(var(--radius) - 4px)",
+            },
+            keyframes: {
+              "accordion-down": {
+                from: { height: 0 },
+                to: { height: "var(--radix-accordion-content-height)" },
+              },
+              "accordion-up": {
+                from: { height: "var(--radix-accordion-content-height)" },
+                to: { height: 0 },
+              },
+            },
+            animation: {
+              "accordion-down": "accordion-down 0.2s ease-out",
+              "accordion-up": "accordion-up 0.2s ease-out",
+            },
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "recharts": "https://aistudiocdn.com/recharts@^3.2.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-background text-foreground font-sans">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
