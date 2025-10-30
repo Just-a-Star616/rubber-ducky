@@ -12,6 +12,19 @@ import ApplicantPortal from './views/driver/ApplicantPortal';
 import { mockDriverApplications, mockDrivers } from './lib/mockData';
 import CreatePassword from './views/driver/CreatePassword';
 
+// Demo Banner Component
+const DemoBanner: React.FC = () => (
+  <div className="bg-gradient-to-r from-yellow-400 to-orange-400 dark:from-yellow-500 dark:to-orange-500 text-black px-4 py-3 text-center shadow-md">
+    <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 text-sm font-semibold">
+      <span className="flex items-center gap-2">
+        <span className="text-lg">🚧</span>
+        <span>DEMO VERSION</span>
+      </span>
+      <span className="hidden sm:inline">•</span>
+      <span>Using Mock Data - Not Connected to Real Systems</span>
+    </div>
+  </div>
+);
 
 type AppState = 'login' | 'signUp' | 'createPassword' | 'applicantPortal' | 'staffDashboard' | 'driverPortal';
 
@@ -231,6 +244,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen transition-colors duration-300">
+      <DemoBanner />
       {renderContent()}
     </div>
   );
