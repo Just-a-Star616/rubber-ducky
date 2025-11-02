@@ -21,7 +21,7 @@ export interface BrandingConfig {
 // Default branding - customize these values
 export const defaultBranding: BrandingConfig = {
   companyName: 'DarthStar Dispatch',
-  companyLogoUrl: '/logo.svg',
+  companyLogoUrl: '/HeroVillainYoda.png',
   companyLogoAlt: 'DarthStar Dispatch Logo',
   primaryColor: '#3b82f6',
   primaryColorDark: '#1e40af',
