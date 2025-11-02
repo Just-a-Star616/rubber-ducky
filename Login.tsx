@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { UserGroupIcon, ShieldExclamationIcon, UserPlusIcon, ClipboardDocumentCheckIcon } from '../components/icons/Icon';
 import { Input } from '../components/ui/input';
+import { getBrandingConfig } from '../lib/branding';
 
 interface LoginProps {
   onLogin: (role: 'staff' | 'driver', email: string) => void;

@@ -10,11 +10,11 @@ export const mockLicensingCouncils: string[] = [
 ];
 
 export const mockCompanyDetails: CompanyDetails = {
-    name: "Project Rubber Ducky Ltd.",
-    logoUrl: "data:image/svg+xml,%3csvg viewBox='150 80 350 220' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='M481.44,148.22C384.08,82.4,192.28,131,164.24,293.26c83.56-116.32,234.3-131,234.3-131S476.48,153.18,481.44,148.22Z'/%3e%3c/svg%3e",
-    address: "123 Innovation Drive\nTech City, TC 54321",
-    registrationNumber: "12345678",
-    vatNumber: "GB123456789",
+    name: "DarthStar Dispatch",
+    logoUrl: "/logo.svg",
+    address: "Unit 5, Business Park\nManchester, M4 1AN",
+    registrationNumber: "DS-2024-001",
+    vatNumber: "GB999888777",
 };
 
 const manchesterOfficeHours: OfficeHours[] = [
