@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { UserGroupIcon, ShieldExclamationIcon, UserPlusIcon, ClipboardDocumentCheckIcon } from '../components/icons/Icon';
 import { Input } from '../components/ui/input';
+import { getBrandingConfig } from '../lib/branding';
 
 interface LoginProps {
   onLogin: (role: 'staff' | 'driver', email: string) => void;
@@ -19,6 +20,16 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [branding, setBranding] = useState(getBrandingConfig());
+
+  // Listen for branding changes from other components
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setBranding(getBrandingConfig());
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const handleRoleSelect = (role: LoginRole) => {
     setLoginRole(role);
@@ -104,7 +115,16 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin 
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Project Rubber Ducky</CardTitle>
+          {branding.companyLogoUrl && (
+            <div className="flex justify-center mb-4">
+              <img 
+                src={branding.companyLogoUrl} 
+                alt={branding.companyLogoAlt} 
+                className="h-16 w-auto object-contain"
+              />
+            </div>
+          )}
+          <CardTitle className="text-3xl font-bold">{branding.companyName}</CardTitle>
           <CardDescription>
             {view === 'selection' ? 'Reimagined Invoicing Platform' : roleTitles[loginRole!]}
           </CardDescription>

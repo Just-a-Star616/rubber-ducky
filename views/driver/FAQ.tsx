@@ -60,7 +60,7 @@ const FAQ: React.FC = () => {
     const categories: FaqCategory[] = ['General', 'Payments', 'Using the App', 'Training Materials'];
 
     return (
-         <div className="space-y-8">
+         <div className="p-4 sm:p-6 lg:p-8 space-y-8">
             <div>
                 <h2 className="text-2xl font-bold text-foreground">F.A.Q & Training</h2>
                 <p className="mt-1 text-sm text-muted-foreground">

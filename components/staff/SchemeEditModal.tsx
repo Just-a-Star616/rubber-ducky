@@ -1,13 +1,14 @@
 
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { CommissionScheme, CommissionSchemeType, Tier } from '../../types';
+import { CommissionScheme, CommissionSchemeType, Tier, CommissionFieldRule, CommissionOutputRule } from '../../types';
 import { Button } from '../ui/button';
 import { TrashIcon, PlusCircleIcon, XIcon } from '../icons/Icon';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/card';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
+import CommissionRuleBuilder, { Stage1FieldSelector, Stage2FormulaEditor, Stage3OutputRules } from './CommissionRuleBuilder';
 
 interface SchemeEditModalProps {
   scheme: CommissionScheme;
@@ -51,6 +52,10 @@ const PercentageField = (props: React.InputHTMLAttributes<HTMLInputElement> & { 
 
 const SchemeEditModal: React.FC<SchemeEditModalProps> = ({ scheme, isOpen, onClose, onSave, onDelete }) => {
   const [formData, setFormData] = useState<CommissionScheme>(scheme);
+  const [activeTab, setActiveTab] = useState<'basic' | 'stage1' | 'stage2' | 'stage3'>('basic');
+  const [stage1FieldRules, setStage1FieldRules] = useState<CommissionFieldRule[]>(scheme.stage1FieldRules || []);
+  const [stage2CommissionFormula, setStage2CommissionFormula] = useState<string>(scheme.stage2CommissionFormula || '');
+  const [stage3OutputRules, setStage3OutputRules] = useState<CommissionOutputRule[]>(scheme.stage3OutputRules || []);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -99,6 +104,9 @@ const SchemeEditModal: React.FC<SchemeEditModalProps> = ({ scheme, isOpen, onClo
   const handleSave = () => {
     const cleanedScheme = {
         ...formData,
+        stage1FieldRules: stage1FieldRules.length > 0 ? stage1FieldRules : undefined,
+        stage2CommissionFormula: stage2CommissionFormula ? stage2CommissionFormula : undefined,
+        stage3OutputRules: stage3OutputRules.length > 0 ? stage3OutputRules : undefined,
         tiers: formData.tiers?.filter(t => t.rate > 0 || t.upTo > 0)
     };
     onSave(cleanedScheme);
@@ -117,63 +125,112 @@ const SchemeEditModal: React.FC<SchemeEditModalProps> = ({ scheme, isOpen, onClo
           </Button>
         </CardHeader>
         
-        <CardContent className="flex-grow overflow-y-auto space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">Scheme Name</label>
-              <Input id="name" name="name" value={formData.name} onChange={handleInputChange} className="mt-1"/>
-            </div>
-            <div>
-              <label htmlFor="type" className="block text-sm font-medium text-muted-foreground">Scheme Type</label>
-              <Select value={formData.type} onValueChange={(v) => setFormData(p => ({...p, type: v as any}))}>
-                <SelectTrigger className="mt-1"><SelectValue/></SelectTrigger>
-                <SelectContent>{schemeTypeOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-           <div>
-              <label htmlFor="details" className="block text-sm font-medium text-muted-foreground">Description</label>
-               <Textarea id="details" name="details" value={formData.details} onChange={handleInputChange} rows={2} className="mt-1"/>
-            </div>
-
-          <hr className="border-border" />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {(formData.type === '%' || formData.type === '% + Fixed' || formData.type === '% Upto Fixed £ Value') &&
-              <PercentageField id="commissionRate" name="commissionRate" label="Commission Rate" value={formData.commissionRate || ''} onChange={handleNumericInputChange} />
-            }
-            {formData.type === '%' &&
-              <CurrencyField id="minimumCharge" name="minimumCharge" label="Minimum Charge" value={formData.minimumCharge || ''} onChange={handleNumericInputChange} />
-            }
-            {(formData.type === '% + Fixed' || formData.type === 'Fixed' || formData.type === 'Tiered % Then Fixed') &&
-              <CurrencyField id="dataCharge" name="dataCharge" label="Data / Fixed Charge" value={formData.dataCharge || ''} onChange={handleNumericInputChange} />
-            }
-             {formData.type === '% Upto Fixed £ Value' &&
-              <CurrencyField id="capAmount" name="capAmount" label="Cap Amount" value={formData.capAmount || ''} onChange={handleNumericInputChange} />
-            }
-            <CurrencyField id="vehicleRent" name="vehicleRent" label="Vehicle Rent" value={formData.vehicleRent || ''} onChange={handleNumericInputChange} />
-            <CurrencyField id="insuranceDeposit" name="insuranceDeposit" label="Insurance Deposit" value={formData.insuranceDeposit || ''} onChange={handleNumericInputChange} />
-          </div>
-
-          {isTiered && (
+        {/* Tab Navigation */}
+        <div className="border-b border-border px-6 pt-4 flex gap-1">
+          {['basic', 'stage1', 'stage2', 'stage3'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as 'basic' | 'stage1' | 'stage2' | 'stage3')}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === tab
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {tab === 'basic' && 'Basic Info'}
+              {tab === 'stage1' && 'Stage 1: Fields'}
+              {tab === 'stage2' && 'Stage 2: Formula'}
+              {tab === 'stage3' && 'Stage 3: Outputs'}
+            </button>
+          ))}
+        </div>
+        
+        <CardContent className="flex-grow overflow-y-auto space-y-6 pt-6">
+          {/* Basic Info Tab */}
+          {activeTab === 'basic' && (
             <>
-            <hr className="border-border" />
-            <div>
-              <h3 className="text-md font-medium text-foreground">Tier Configuration</h3>
-              <div className="mt-4 space-y-4">
-                {(formData.tiers || []).map((tier, index) => (
-                  <div key={index} className="flex items-end space-x-3">
-                    <span className="font-mono text-sm text-muted-foreground pt-8">Tier {index + 1}:</span>
-                    <PercentageField label="Rate" id={`tier-rate-${index}`} value={tier.rate || ''} onChange={(e) => updateTier(index, 'rate', e.target.value)} />
-                    <CurrencyField label="Up To" id={`tier-upto-${index}`} value={tier.upTo >= 999999 ? '' : (tier.upTo || '')} onChange={(e) => updateTier(index, 'upTo', e.target.value)} placeholder="Use 999999 for ∞"/>
-                    <Button variant="ghost" size="icon" onClick={() => removeTier(index)} className="mb-1"><TrashIcon className="h-5 w-5 text-destructive" /></Button>
-                  </div>
-                ))}
-                <Button variant="outline" onClick={addTier} className="mt-4"><PlusCircleIcon className="w-4 h-4 mr-2"/> Add Tier</Button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">Scheme Name</label>
+                  <Input id="name" name="name" value={formData.name} onChange={handleInputChange} className="mt-1"/>
+                </div>
+                <div>
+                  <label htmlFor="type" className="block text-sm font-medium text-muted-foreground">Scheme Type</label>
+                  <Select value={formData.type} onValueChange={(v) => setFormData(p => ({...p, type: v as any}))}>
+                    <SelectTrigger className="mt-1"><SelectValue/></SelectTrigger>
+                    <SelectContent>{schemeTypeOptions.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
               </div>
-            </div>
+              
+               <div>
+                  <label htmlFor="details" className="block text-sm font-medium text-muted-foreground">Description</label>
+                   <Textarea id="details" name="details" value={formData.details} onChange={handleInputChange} rows={2} className="mt-1"/>
+                </div>
+
+              <hr className="border-border" />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {(formData.type === '%' || formData.type === '% + Fixed' || formData.type === '% Upto Fixed £ Value') &&
+                  <PercentageField id="commissionRate" name="commissionRate" label="Commission Rate" value={formData.commissionRate || ''} onChange={handleNumericInputChange} />
+                }
+                {formData.type === '%' &&
+                  <CurrencyField id="minimumCharge" name="minimumCharge" label="Minimum Charge" value={formData.minimumCharge || ''} onChange={handleNumericInputChange} />
+                }
+                {(formData.type === '% + Fixed' || formData.type === 'Fixed' || formData.type === 'Tiered % Then Fixed') &&
+                  <CurrencyField id="dataCharge" name="dataCharge" label="Data / Fixed Charge" value={formData.dataCharge || ''} onChange={handleNumericInputChange} />
+                }
+                 {formData.type === '% Upto Fixed £ Value' &&
+                  <CurrencyField id="capAmount" name="capAmount" label="Cap Amount" value={formData.capAmount || ''} onChange={handleNumericInputChange} />
+                }
+                <CurrencyField id="vehicleRent" name="vehicleRent" label="Vehicle Rent" value={formData.vehicleRent || ''} onChange={handleNumericInputChange} />
+                <CurrencyField id="insuranceDeposit" name="insuranceDeposit" label="Insurance Deposit" value={formData.insuranceDeposit || ''} onChange={handleNumericInputChange} />
+              </div>
+
+              {isTiered && (
+                <>
+                <hr className="border-border" />
+                <div>
+                  <h3 className="text-md font-medium text-foreground">Tier Configuration</h3>
+                  <div className="mt-4 space-y-4">
+                    {(formData.tiers || []).map((tier, index) => (
+                      <div key={index} className="flex items-end space-x-3">
+                        <span className="font-mono text-sm text-muted-foreground pt-8">Tier {index + 1}:</span>
+                        <PercentageField label="Rate" id={`tier-rate-${index}`} value={tier.rate || ''} onChange={(e) => updateTier(index, 'rate', e.target.value)} />
+                        <CurrencyField label="Up To" id={`tier-upto-${index}`} value={tier.upTo >= 999999 ? '' : (tier.upTo || '')} onChange={(e) => updateTier(index, 'upTo', e.target.value)} placeholder="Use 999999 for ∞"/>
+                        <Button variant="ghost" size="icon" onClick={() => removeTier(index)} className="mb-1"><TrashIcon className="h-5 w-5 text-destructive" /></Button>
+                      </div>
+                    ))}
+                    <Button variant="outline" onClick={addTier} className="mt-4"><PlusCircleIcon className="w-4 h-4 mr-2"/> Add Tier</Button>
+                  </div>
+                </div>
+                </>
+              )}
             </>
+          )}
+
+          {/* Stage 1: Field Selection Tab */}
+          {activeTab === 'stage1' && (
+            <Stage1FieldSelector
+              rules={stage1FieldRules}
+              onChange={setStage1FieldRules}
+            />
+          )}
+
+          {/* Stage 2: Formula Tab */}
+          {activeTab === 'stage2' && (
+            <Stage2FormulaEditor
+              formula={stage2CommissionFormula}
+              onChange={setStage2CommissionFormula}
+            />
+          )}
+
+          {/* Stage 3: Output Rules Tab */}
+          {activeTab === 'stage3' && (
+            <Stage3OutputRules
+              rules={stage3OutputRules}
+              onChange={setStage3OutputRules}
+            />
           )}
         </CardContent>
 

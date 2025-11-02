@@ -6,6 +6,22 @@ export const mockDriverAttributes: string[] = ['Airport Specialist', 'Executive 
 
 export const mockDrivers: Driver[] = [
     {
+        id: 'D-DEMO', vehicleRef: 'V-DEMO', avatarUrl: 'https://randomuser.me/api/portraits/men/1.jpg',
+        firstName: 'Demo', lastName: 'Driver', devicePhone: '07700000000', mobileNumber: '07700000000',
+        email: 'driver@demo.com', address: '100 Demo St, Demo City', niNumber: 'DM000000D',
+        schemeCode: '1.00', gender: 'Male', badgeType: 'Private Hire', badgeIssuingCouncil: 'Manchester City Council',
+        badgeNumber: 'PH-DEMO', badgeExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        drivingLicenseNumber: 'DEMO000000XX', drivingLicenseExpiry: new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString(),
+        schoolBadgeNumber: null, schoolBadgeExpiry: null,
+        dateOfBirth: '1990-01-01', emergencyContactName: 'Demo Contact', emergencyContactNumber: '07700000001',
+        status: 'Active', lastStatementBalance: 500, commissionTotal: 5000, currentBalance: 1500.00,
+        canWithdrawCredit: true, earnedCreditSinceInvoice: 250.00, attributes: ['Airport Specialist', 'Executive Saloon'], siteId: 'SITE01',
+        availability: { isOnline: true, shift: 'Day', lastSeen: new Date().toISOString() },
+        performance: { completionRate: 100, averageRating: 5.0, totalJobs: 250, monthlyEarnings: 8000 },
+        preferences: { maxJobDistance: 30, preferredAreas: ['M1', 'M2', 'M3'], acceptsLongDistance: true, acceptsAirportJobs: true },
+        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+    },
+    {
         id: 'D-JEXAMPLE', vehicleRef: 'V001', avatarUrl: 'https://randomuser.me/api/portraits/lego/1.jpg',
         firstName: 'J', lastName: 'Example', devicePhone: '07000000001', mobileNumber: '07000000000',
         email: 'j@example.com', address: '1 Test St, Testville', niNumber: 'XX123456X',

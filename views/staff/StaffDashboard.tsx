@@ -91,12 +91,6 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ isDarkMode, toggleDarkM
   const handleViewProfile = () => {
     setCurrentPage('profile');
   };
-
-  const markNoticesAsRead = () => {
-    setStaffNotices(prevNotices => 
-      prevNotices.map(notice => ({ ...notice, isRead: true }))
-    );
-  };
   
   const markAllNotificationsAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
@@ -131,6 +125,9 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ isDarkMode, toggleDarkM
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  // When navigating away from profile, the page automatically closes
+  // by not rendering the profile view anymore (handled by renderCurrentPage)
 
   const currentPageMetadata = useMemo(() => {
     return PAGE_METADATA[currentPage] || { title: 'Dashboard', description: '' };
@@ -185,7 +182,7 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ isDarkMode, toggleDarkM
       case 'settings/accounting':
         return <AccountingSettingsPage />;
       case 'profile':
-        return <ProfilePage onMount={markNoticesAsRead} onClose={() => setCurrentPage('home')} themeName={themeName} setThemeName={setThemeName} />;
+        return <ProfilePage />;
       default:
         return <HomePage />;
     }

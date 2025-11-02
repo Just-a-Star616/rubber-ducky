@@ -127,6 +127,21 @@ export type CommissionSchemeType =
   'Tiered % Then Fixed' |
   'Tiered % per £ banding';
 
+export interface CommissionFieldRule {
+  fieldName: string;
+  include: boolean; // true = include in sum, false = exclude
+  description?: string;
+  condition?: string; // Optional conditional logic, e.g., "pickup_address.includes('Heathrow') || pickup_address.includes('Gatwick')"
+  airportHandling?: 'all' | 'airport_only' | 'exclude_airport'; // How to handle airport-flagged fields
+}
+
+export interface CommissionOutputRule {
+  outputName: string; // e.g., "Driver Income (Cash)", "Company Income (Card)", etc.
+  formula: string; // e.g., "sum - commission" or "commission * 0.8"
+  description?: string;
+  paymentMethods?: ('Cash' | 'Card' | 'Invoice')[]; // Filter by payment method (undefined = all methods)
+}
+
 export interface CommissionScheme {
   id: string;
   name: string;
@@ -139,6 +154,10 @@ export interface CommissionScheme {
   tiers?: Tier[];
   vehicleRent?: number;
   insuranceDeposit?: number;
+  // New 3-stage system
+  stage1FieldRules?: CommissionFieldRule[]; // Select fields for sum calculation
+  stage2CommissionFormula?: string; // How to apply commission to sum (e.g., "sum * commissionRate / 100")
+  stage3OutputRules?: CommissionOutputRule[]; // How to distribute the calculated values
 }
 
 export interface Rejection {

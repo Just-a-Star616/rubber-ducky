@@ -7,6 +7,7 @@ import {
 } from '../icons/Icon';
 import { StaffPage } from '../../views/staff/StaffDashboard';
 import { Logo } from '../icons/Logo';
+import { getBrandingConfig } from '../../lib/branding';
 
 // New navigation structure
 type NavLink = {
@@ -108,10 +109,20 @@ const findParentId = (page: StaffPage): string => {
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, setIsOpen }) => {
     const [activePrimaryNavId, setActivePrimaryNavId] = useState<string>(findParentId(currentPage));
+    const [branding, setBranding] = useState(getBrandingConfig());
 
     useEffect(() => {
         setActivePrimaryNavId(findParentId(currentPage));
     }, [currentPage]);
+
+    // Listen for branding changes
+    useEffect(() => {
+        const handleStorageChange = () => {
+            setBranding(getBrandingConfig());
+        };
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
 
     const activePrimaryNavItem = useMemo(() => 
         allPrimaryNavItems.find(item => item.id === activePrimaryNavId),
@@ -164,7 +175,16 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
             {/* Primary Navigation Rail */}
             <div className="flex flex-col w-20 bg-sidebar-foreground/[.05] dark:bg-black/20 p-2 flex-shrink-0">
                 <div className="flex-shrink-0 mb-4 pt-2 px-2">
-                    <Logo className="h-8 w-auto text-foreground" />
+                    {branding.companyLogoUrl ? (
+                        <img 
+                            src={branding.companyLogoUrl} 
+                            alt={branding.companyLogoAlt}
+                            className="h-8 w-auto object-contain"
+                            title={branding.companyName}
+                        />
+                    ) : (
+                        <Logo className="h-8 w-auto text-foreground" />
+                    )}
                 </div>
                 <nav className="flex-1 flex flex-col justify-between">
                     <div className="space-y-2">

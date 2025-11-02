@@ -104,7 +104,7 @@ const InvoicingPage: React.FC = () => {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-8">
             <div className="flex flex-col lg:flex-row gap-6">
                 <UploadSection title="1. Upload Bookings" description="Upload a booking CSV file to begin processing." />
                 <UploadSection title="2. Upload Rejections" description="Upload a CSV of rejected jobs for inclusion in the report." />

@@ -11,7 +11,7 @@ interface InvoicesHistoryProps {
 
 const InvoicesHistory: React.FC<InvoicesHistoryProps> = ({ onViewInvoice }) => {
   return (
-    <div className="space-y-4">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-4">
       <h2 className="text-xl font-bold text-foreground">Invoice History</h2>
       {mockInvoices.map((invoice) => (
         <Card key={invoice.id}>

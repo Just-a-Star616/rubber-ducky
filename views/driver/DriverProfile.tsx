@@ -266,7 +266,7 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ driver, setDriver, themeN
     };
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <div className="flex flex-col items-center">
         <img className="h-24 w-24 rounded-full" src={driver.avatarUrl} alt={`${driver.firstName} ${driver.lastName}`} />
         <h2 className="mt-4 text-2xl font-bold text-foreground">{driver.firstName} {driver.lastName}</h2>

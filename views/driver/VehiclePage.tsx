@@ -161,7 +161,7 @@ const VehiclePage: React.FC<VehiclePageProps> = ({ driver, setDriver, vehicles, 
     };
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
             <div className="flex justify-between items-start">
                 <div>
                     <h2 className="text-2xl font-bold text-foreground">My Vehicle</h2>

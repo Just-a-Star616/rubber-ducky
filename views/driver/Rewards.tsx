@@ -121,7 +121,7 @@ const Rewards: React.FC<{ driver: Driver }> = ({ driver }) => {
 
 
     return (
-        <div className="space-y-8">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-8">
             <div>
                 <h2 className="text-2xl font-bold text-foreground">Rewards & Offers</h2>
                 <p className="mt-1 text-sm text-muted-foreground">

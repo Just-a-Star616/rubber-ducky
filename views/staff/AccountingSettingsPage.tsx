@@ -80,7 +80,7 @@ const AccountingSettingsPage: React.FC = () => {
     };
 
   return (
-    <form className="space-y-6" onSubmit={handleSave}>
+    <form className="p-4 sm:p-6 lg:p-8 space-y-6" onSubmit={handleSave}>
       <Card>
         <CardHeader>
           <CardTitle>Accounting Defaults</CardTitle>

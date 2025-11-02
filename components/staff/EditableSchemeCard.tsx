@@ -29,25 +29,25 @@ const EditableSchemeCard: React.FC<EditableSchemeCardProps> = ({ scheme, schemeN
     (scheme.tiers && scheme.tiers.length > 0);
 
   return (
-    <Card className={cn("flex flex-col bg-muted/50", className)}>
-      <CardContent className="p-4 flex flex-col flex-grow">
+    <Card className={cn("flex flex-col bg-white dark:bg-slate-950 border border-border shadow-sm hover:shadow-md transition-shadow", className)}>
+      <CardContent className="p-5 flex flex-col flex-grow">
         <div className="flex-grow">
-          <div className="flex justify-between items-start">
-            <span className="inline-block px-2 py-1 text-xs font-semibold text-primary-foreground bg-primary/80 rounded-full">
+          <div className="flex justify-between items-start gap-3">
+            <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-orange-500 rounded-full whitespace-nowrap">
               {`Scheme #${scheme.id}`}
             </span>
-            <Button variant="ghost" size="sm" onClick={onEdit} className="-mr-2 -mt-2">
+            <Button variant="ghost" size="sm" onClick={onEdit} className="text-primary hover:bg-primary/10 -mr-2">
                 <PencilIcon className="w-4 h-4 mr-1"/> Edit
             </Button>
           </div>
-          <h3 className="mt-3 text-lg font-bold text-foreground">{scheme.name}</h3>
-          <p className="mt-1 text-xs font-mono text-muted-foreground">{scheme.type}</p>
-          <p className="mt-2 text-sm text-muted-foreground min-h-[40px]">{scheme.details}</p>
+          <h3 className="mt-4 text-lg font-bold text-foreground">{scheme.name}</h3>
+          <p className="mt-1 text-xs text-orange-600 font-semibold uppercase tracking-wide">{scheme.type}</p>
+          <p className="mt-2 text-sm text-muted-foreground min-h-[40px] line-clamp-2">{scheme.details}</p>
         </div>
         
         {hasCalculationDetails && (
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-sm font-semibold text-foreground mb-3">Calculation</p>
+          <div className="mt-5 pt-5 border-t border-border">
+            <p className="text-xs font-semibold text-foreground uppercase tracking-wide mb-3">Calculation</p>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 {scheme.commissionRate !== undefined && <CalculationDetail label="Commission Rate" value={`${scheme.commissionRate}%`} />}
@@ -60,13 +60,13 @@ const EditableSchemeCard: React.FC<EditableSchemeCardProps> = ({ scheme, schemeN
               
               {scheme.tiers && scheme.tiers.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-3">Tier Banding</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-3 mb-2">Tier Banding</p>
                   <div className="mt-2 space-y-1">
                     {scheme.tiers.map((tier, index) => (
                       <div key={index} className="flex items-center space-x-3 text-sm">
-                        <span className="font-mono bg-primary/10 text-primary text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full">T{index + 1}</span>
-                        <span className="font-semibold text-foreground w-16">{tier.rate}%</span>
-                        <span className="text-muted-foreground">up to {tier.upTo >= 99999 ? '∞' : `£${tier.upTo}`}</span>
+                        <span className="font-mono bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">T{index + 1}</span>
+                        <span className="font-semibold text-foreground">{tier.rate}%</span>
+                        <span className="text-muted-foreground text-xs">up to {tier.upTo >= 99999 ? '∞' : `£${tier.upTo}`}</span>
                       </div>
                     ))}
                   </div>

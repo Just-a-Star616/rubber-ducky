@@ -7,6 +7,7 @@ import { PencilIcon } from '../../components/icons/Icon';
 import SiteEditModal from '../../components/staff/SiteEditModal';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
+import { saveBrandingConfig, updateBrandingSingleton } from '../../lib/branding';
 
 const CompanyDetailsSection: React.FC = () => {
     const [details, setDetails] = useState<CompanyDetails>(mockCompanyDetails);
@@ -32,6 +33,12 @@ const CompanyDetailsSection: React.FC = () => {
     const handleSave = () => {
         if (logoPreview) {
             setDetails(prev => ({...prev, logoUrl: logoPreview}));
+            // Save to localStorage for use across the app
+            saveBrandingConfig({ 
+                companyLogoUrl: logoPreview,
+                companyName: details.name 
+            });
+            updateBrandingSingleton();
         }
         setIsEditing(false);
         // API call would go here
@@ -185,7 +192,7 @@ const SiteDetailsSection: React.FC = () => {
 
 const CompanyAdminPage: React.FC = () => {
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <Card>
         <div className="divide-y divide-border">
             <CompanyDetailsSection />

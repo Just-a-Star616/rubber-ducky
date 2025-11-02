@@ -8,7 +8,7 @@ const AdminPage: React.FC = () => {
     const [aiInsightsEnabled, setAiInsightsEnabled] = useState(true);
 
     return (
-        <div className="space-y-6">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-6">
             <Card>
                 <form>
                     <CardHeader>

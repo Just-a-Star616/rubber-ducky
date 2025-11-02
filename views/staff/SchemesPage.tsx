@@ -52,26 +52,26 @@ const SchemesPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <Card>
         <CardHeader>
             <div className="flex justify-between items-center">
-                <div>
+                <div className="flex-1">
                     <CardTitle>Commission Schemes</CardTitle>
                     <CardDescription>Define and manage all driver commission structures and fixed charges.</CardDescription>
                 </div>
-                <Button onClick={() => handleOpenEditModal(null)}>Add New Scheme</Button>
+                <Button onClick={() => handleOpenEditModal(null)} className="ml-4 whitespace-nowrap">Add New Scheme</Button>
             </div>
         </CardHeader>
         <CardContent>
-             <div className="flex flex-wrap gap-6">
+             <div className="flex flex-wrap gap-4">
               {schemes.map((scheme) => (
                 <EditableSchemeCard
                   key={scheme.id}
                   scheme={scheme}
                   schemeNumber={parseInt(scheme.id)}
                   onEdit={() => handleOpenEditModal(scheme)}
-                  className="flex-1 min-w-[320px]"
+                  className="flex-1 min-w-[300px] max-w-[400px]"
                 />
               ))}
             </div>

@@ -1,18 +1,15 @@
 
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '../../components/ui/button';
 import { mockStaffList, mockShortcutLinks, mockMessageTemplates } from '../../lib/mockData';
 import { StaffMember, OfficeHours, ShortcutLink, StaffNotice } from '../../types';
-import { PencilIcon, ClipboardDocumentCheckIcon, LinkIcon, ClockIcon, XIcon } from '../../components/icons/Icon';
+import { PencilIcon, ClipboardDocumentCheckIcon, LinkIcon, ClockIcon } from '../../components/icons/Icon';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { themes } from '../../lib/themes';
 
-interface ProfilePageProps {
-    onMount: () => void;
-    onClose: () => void;
-    themeName: string;
-    setThemeName: (name: string) => void;
+interface ThemeSelectorProps {
+    onThemeChange: (themeName: string) => void;
 }
 
 const mockStaffMember = mockStaffList[0];
@@ -187,14 +184,13 @@ const NoticesSection = ({ notices }: { notices: StaffNotice[] }) => (
     </Card>
 );
 
-const ThemeSelector: React.FC<{ themeName: string; setThemeName: (name: string) => void; }> = ({ themeName, setThemeName }) => (
+const ThemeSelector: React.FC<ThemeSelectorProps> = ({ onThemeChange }) => (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {themes.map(theme => {
-            const isActive = themeName === theme.name;
-            const themeColors = theme.light; // Always show light preview for consistency
+            const themeColors = theme.light;
             return (
-                <div key={theme.name} onClick={() => setThemeName(theme.name)} className="cursor-pointer">
-                    <div className={`w-full rounded-lg border-2 p-1 transition-colors ${isActive ? 'border-primary-500' : 'border-transparent hover:border-primary-500/50'}`}>
+                <div key={theme.name} onClick={() => onThemeChange(theme.name)} className="cursor-pointer">
+                    <div className={`w-full rounded-lg border-2 p-1 transition-colors border-transparent hover:border-primary-500/50`}>
                        <div className="aspect-video w-full flex rounded-md overflow-hidden shadow-inner" style={{ backgroundColor: themeColors.card }}>
                             <div className="w-1/3" style={{ backgroundColor: themeColors.sidebar }}></div>
                             <div className="w-2/3 p-2 flex flex-col justify-end" style={{ backgroundColor: themeColors.background }}>
@@ -205,7 +201,7 @@ const ThemeSelector: React.FC<{ themeName: string; setThemeName: (name: string) 
                             </div>
                         </div>
                     </div>
-                    <p className={`mt-2 text-center text-sm font-medium ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-foreground/80'}`}>
+                    <p className={`mt-2 text-center text-sm font-medium text-foreground/80`}>
                         {theme.name}
                     </p>
                 </div>
@@ -215,8 +211,7 @@ const ThemeSelector: React.FC<{ themeName: string; setThemeName: (name: string) 
 );
 
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ onMount, onClose, themeName, setThemeName }) => {
-    
+const ProfilePage: React.FC = () => {
     const [readNoticeIds, setReadNoticeIds] = useState(new Set<string>());
 
     const staffNotices = useMemo(() => {
@@ -226,37 +221,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onMount, onClose, themeName, 
                 id: template.id,
                 title: template.name,
                 content: template.content,
-                author: 'System', // This could be enhanced to store an author in the template
+                author: 'System',
                 date: template.scheduledTime || new Date(Date.now() - index * 24 * 60 * 60 * 1000).toISOString(),
                 isRead: readNoticeIds.has(template.id),
             }))
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }, [readNoticeIds]);
-    
-    useEffect(() => {
-        onMount(); // This tells the dashboard to clear the main notification count
-        
-        // After a short delay, mark all visible notices as read
-        const timer = setTimeout(() => {
-            setReadNoticeIds(prev => {
-                const newSet = new Set(prev);
-                staffNotices.forEach(n => newSet.add(n.id));
-                return newSet;
-            });
-        }, 1000);
-
-        return () => clearTimeout(timer);
-
-    }, [onMount]); // Rerun only when the component mounts
 
     return (
-        <div className="relative flex flex-col gap-8">
-            <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6">
-                <button onClick={onClose} className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 focus:ring-primary-500">
-                    <span className="sr-only">Close</span>
-                    <XIcon className="w-6 h-6" />
-                </button>
-            </div>
+        <div className="flex flex-col gap-8">
             <ProfileHeader staffMember={mockStaffMember} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="flex flex-col gap-8">
@@ -271,7 +244,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onMount, onClose, themeName, 
                             <CardDescription>Choose a color theme for the application.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <ThemeSelector themeName={themeName} setThemeName={setThemeName} />
+                            <ThemeSelector onThemeChange={(themeName) => {
+                                localStorage.setItem('themeName', themeName);
+                                window.location.reload();
+                            }} />
                         </CardContent>
                     </Card>
                 </div>

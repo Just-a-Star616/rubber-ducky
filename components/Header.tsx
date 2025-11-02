@@ -2,6 +2,7 @@ import React from 'react';
 import { MenuIcon, LogoutIcon, SunIcon, MoonIcon, SparklesIcon, BellIcon } from './icons/Icon';
 import ApiStatusIndicator, { ApiStatus } from './ApiStatusIndicator';
 import { StaffMember } from '../types';
+import { getBrandingConfig } from '../lib/branding';
 
 interface HeaderProps {
   onToggleSidebar: () => void;

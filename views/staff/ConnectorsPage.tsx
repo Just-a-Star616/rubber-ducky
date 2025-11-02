@@ -63,7 +63,7 @@ const ConnectorsPage: React.FC = () => {
     const handleDeleteWebhook = (id: string) => { setWebhooks(prev => prev.filter(w => w.id !== id)); setIsWebhookModalOpen(false); };
 
   return (
-    <div className="space-y-8">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
             <div className="flex items-center space-x-3">

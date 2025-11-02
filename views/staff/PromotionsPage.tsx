@@ -128,7 +128,7 @@ const PromotionsPage: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-6">
              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm -mt-4 sm:-mt-6 lg:-mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 border-b border-border">
                 <div className="flex justify-end gap-2">
                     <Button onClick={handleAddRewardScheme}>Add Reward Scheme</Button>
