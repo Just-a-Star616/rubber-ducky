@@ -8,6 +8,7 @@ import Rewards from './Rewards';
 import FAQ from './FAQ';
 import VehiclePage from './VehiclePage';
 import { mockDrivers, mockVehicles } from '../../lib/mockData';
+import { getBrandingConfig } from '../../lib/branding';
 import { Driver, Vehicle, Invoice } from '../../types';
 import InvoicePreviewModal from '../../components/driver/InvoicePreviewModal';
 import WithdrawCreditModal from '../../components/driver/WithdrawCreditModal';

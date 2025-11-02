@@ -3,6 +3,7 @@ import { HistoricInvoice, FinancialTransaction, Driver, Account, CompanyDetails 
 import { Button } from '../ui/button';
 import { XIcon, DocumentDownloadIcon, PaperAirplaneIcon } from '../icons/Icon';
 import { mockDrivers, mockAccounts, mockFinancialTransactions, mockCompanyDetails } from '../../lib/mockData';
+import { getBrandingConfig } from '../../lib/branding';
 
 interface InvoicePreviewModalProps {
     invoice: HistoricInvoice | null;
@@ -11,6 +12,7 @@ interface InvoicePreviewModalProps {
 }
 
 const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({ isOpen, onClose, invoice }) => {
+    const branding = getBrandingConfig();
     
     const recipient = useMemo(() => {
         if (!invoice) return null;
@@ -29,7 +31,6 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({ isOpen, onClo
     if (!isOpen || !invoice || !recipient) return null;
 
     const isDriverInvoice = invoice.type === 'Driver';
-    const companyDetails = mockCompanyDetails;
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4" onClick={onClose}>
@@ -46,14 +47,14 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({ isOpen, onClo
                     {/* Header */}
                     <div className="flex justify-between items-start">
                         <div>
-                            <img src={companyDetails.logoUrl} alt="Company Logo" className="h-16 w-auto object-contain mb-4"/>
+                            <img src={branding.companyLogoUrl} alt={branding.companyLogoAlt} className="h-16 w-auto object-contain mb-4"/>
                             <h1 className="text-2xl font-bold">{isDriverInvoice ? 'Statement of Earnings' : 'Invoice'}</h1>
                             <p className="text-muted-foreground">Invoice #{invoice.id}</p>
                         </div>
                         <div className="text-right">
-                            <p className="font-semibold">{companyDetails.name}</p>
-                            <p className="text-sm text-muted-foreground whitespace-pre-line">{companyDetails.address}</p>
-                            <p className="text-sm text-muted-foreground">VAT: {companyDetails.vatNumber}</p>
+                            <p className="font-semibold">{branding.companyName}</p>
+                            <p className="text-sm text-muted-foreground whitespace-pre-line">{mockCompanyDetails.address}</p>
+                            <p className="text-sm text-muted-foreground">VAT: {mockCompanyDetails.vatNumber}</p>
                         </div>
                     </div>
                     
