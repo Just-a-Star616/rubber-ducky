@@ -7,9 +7,10 @@ import { PencilIcon } from '../../components/icons/Icon';
 import SiteEditModal from '../../components/staff/SiteEditModal';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
-import { saveBrandingConfig, updateBrandingSingleton } from '../../lib/branding';
+import { saveBrandingConfig, updateBrandingSingleton, getBrandingConfig } from '../../lib/branding';
 
 const CompanyDetailsSection: React.FC = () => {
+    const branding = getBrandingConfig();
     const [details, setDetails] = useState<CompanyDetails>(mockCompanyDetails);
     const [isEditing, setIsEditing] = useState(false);
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -66,7 +67,7 @@ const CompanyDetailsSection: React.FC = () => {
                         <div className="sm:col-span-1">
                             <label className="block text-sm font-medium text-muted-foreground">Company Logo</label>
                             <div className="mt-1 flex items-center space-x-4">
-                                <img src={logoPreview || details.logoUrl} alt="Company Logo" className="h-16 w-16 object-contain rounded-md bg-muted p-1" />
+                                <img src={logoPreview || branding.companyLogoUrl} alt="Company Logo" className="h-16 w-16 object-contain rounded-md bg-muted p-1" />
                                 <Button variant="secondary" type="button" onClick={() => document.getElementById('logo-upload')?.click()}>Change</Button>
                                 <input type="file" id="logo-upload" className="hidden" accept="image/*" onChange={handleFileChange} />
                             </div>
@@ -97,10 +98,10 @@ const CompanyDetailsSection: React.FC = () => {
                     <dl className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4 border border-border rounded-lg">
                          <div className="sm:col-span-1">
                             <dt className="text-sm font-medium text-muted-foreground">Company Logo</dt>
-                            <dd><img src={details.logoUrl} alt="Company Logo" className="mt-1 h-20 w-auto object-contain rounded-md bg-white p-2" /></dd>
+                            <dd><img src={branding.companyLogoUrl} alt={branding.companyLogoAlt} className="mt-1 h-20 w-auto object-contain rounded-md bg-white p-2" /></dd>
                         </div>
                         <div className="sm:col-span-1"></div>
-                        <div className="sm:col-span-1"><dt className="text-sm font-medium text-muted-foreground">Company Name</dt><dd className="text-sm text-foreground">{details.name}</dd></div>
+                        <div className="sm:col-span-1"><dt className="text-sm font-medium text-muted-foreground">Company Name</dt><dd className="text-sm text-foreground">{branding.companyName}</dd></div>
                         <div className="sm:col-span-1"><dt className="text-sm font-medium text-muted-foreground">Registration No.</dt><dd className="text-sm text-foreground">{details.registrationNumber}</dd></div>
                         <div className="sm:col-span-1"><dt className="text-sm font-medium text-muted-foreground">Registered Address</dt><dd className="text-sm text-foreground whitespace-pre-line">{details.address}</dd></div>
                         <div className="sm:col-span-1"><dt className="text-sm font-medium text-muted-foreground">VAT No.</dt><dd className="text-sm text-foreground">{details.vatNumber}</dd></div>
