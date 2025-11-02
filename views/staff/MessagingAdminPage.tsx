@@ -3,29 +3,66 @@
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 // FIX: Import the aliased AppMessageEvent type via the mock data import to resolve type conflicts.
 import { mockMessageEvents, mockMessageTemplates, mockBaseApis, mockEndpointDefinitions, mockStaffList } from '../../lib/mockData';
 import { MessageTemplate, StaffMember, MessageEvent as AppMessageEvent } from '../../types';
 import MessageTemplateEditModal from '../../components/staff/MessageTemplateEditModal';
 import NotificationAssignmentModal from '../../components/staff/NotificationAssignmentModal';
-import { PencilIcon, PlusCircleIcon, CodeBracketIcon, ClockIcon, ServerStackIcon } from '../../components/icons/Icon';
+import { PencilIcon, PlusCircleIcon, CodeBracketIcon, ClockIcon, ServerStackIcon, XIcon, TrashIcon } from '../../components/icons/Icon';
+
+interface AssignmentGroup {
+    id: string;
+    name: string;
+    description: string;
+    assignedIds: Set<string>;
+}
 
 const MessagingAdminPage: React.FC = () => {
     const [templates, setTemplates] = useState<MessageTemplate[]>(mockMessageTemplates);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTemplate, setEditingTemplate] = useState<MessageTemplate | null>(null);
 
-    const [documentUpdateAssigneeIds, setDocumentUpdateAssigneeIds] = useState<Set<string>>(new Set(['SM01', 'SM03']));
+    const [assignmentGroups, setAssignmentGroups] = useState<AssignmentGroup[]>([
+        {
+            id: 'AG01',
+            name: 'Driver Document Updates',
+            description: 'Receive alerts for expiring or updated driver documents.',
+            assignedIds: new Set(['SM01', 'SM03']),
+        }
+    ]);
     const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
+    const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
+    const [isCreatingNewGroup, setIsCreatingNewGroup] = useState(false);
+    const [newGroupName, setNewGroupName] = useState('');
+    const [newGroupDescription, setNewGroupDescription] = useState('');
 
     const handleSaveAssignments = (newIds: Set<string>) => {
-        setDocumentUpdateAssigneeIds(newIds);
+        if (editingGroupId) {
+            setAssignmentGroups(prev => prev.map(g => g.id === editingGroupId ? {...g, assignedIds: newIds} : g));
+        }
+        setEditingGroupId(null);
     };
 
-    const assignedStaff = useMemo(() => 
-        mockStaffList.filter(s => documentUpdateAssigneeIds.has(s.id)),
-        [documentUpdateAssigneeIds]
-    );
+    const handleCreateNewGroup = () => {
+        if (!newGroupName.trim()) return;
+        const newGroup: AssignmentGroup = {
+            id: `AG${Date.now()}`,
+            name: newGroupName,
+            description: newGroupDescription,
+            assignedIds: new Set(),
+        };
+        setAssignmentGroups(prev => [...prev, newGroup]);
+        setNewGroupName('');
+        setNewGroupDescription('');
+        setIsCreatingNewGroup(false);
+    };
+
+    const handleDeleteGroup = (groupId: string) => {
+        if (window.confirm('Are you sure you want to delete this assignment group?')) {
+            setAssignmentGroups(prev => prev.filter(g => g.id !== groupId));
+        }
+    };
 
     const groupedTemplates = useMemo(() => {
         return mockMessageEvents.map(event => ({
@@ -73,33 +110,83 @@ const MessagingAdminPage: React.FC = () => {
                 </div>
             </div>
             
-             <Card>
-                <CardHeader>
-                    <CardTitle>Notification Assignments</CardTitle>
-                    <CardDescription>Assign staff members to receive system notifications for specific events.</CardDescription>
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-start">
+                    <div>
+                        <CardTitle>Notification Assignments</CardTitle>
+                        <CardDescription>Assign staff members to receive system notifications for specific events.</CardDescription>
+                    </div>
+                    <Button onClick={() => setIsCreatingNewGroup(true)} variant="outline" size="sm"><PlusCircleIcon className="w-4 h-4 mr-2"/> New Assignment Group</Button>
                 </CardHeader>
-                <CardContent>
-                    <div className="p-4 border rounded-lg bg-background">
-                        <div className="flex justify-between items-center">
-                            <div>
-                                <h4 className="font-semibold">Driver Document Updates</h4>
-                                <p className="text-sm text-muted-foreground">Receive alerts for expiring or updated driver documents.</p>
+                <CardContent className="space-y-4">
+                    {isCreatingNewGroup && (
+                        <div className="p-4 border border-dashed rounded-lg bg-muted/20 space-y-3">
+                            <h4 className="font-semibold">Create New Assignment Group</h4>
+                            <Input 
+                                placeholder="Group name (e.g., Driver Incidents)" 
+                                value={newGroupName} 
+                                onChange={(e) => setNewGroupName(e.target.value)}
+                            />
+                            <Input 
+                                placeholder="Description (e.g., Receive alerts for driver incidents)" 
+                                value={newGroupDescription} 
+                                onChange={(e) => setNewGroupDescription(e.target.value)}
+                            />
+                            <div className="flex justify-end gap-2">
+                                <Button variant="ghost" onClick={() => { setIsCreatingNewGroup(false); setNewGroupName(''); setNewGroupDescription(''); }}>Cancel</Button>
+                                <Button onClick={handleCreateNewGroup} disabled={!newGroupName.trim()}>Create Group</Button>
                             </div>
-                            <Button variant="secondary" onClick={() => setIsAssignmentModalOpen(true)}>Manage Assignees</Button>
                         </div>
-                        <div className="mt-4 flex flex-wrap gap-2 items-center">
-                            <p className="text-sm font-medium">Assigned to:</p>
-                            {assignedStaff.length > 0 ? (
-                                assignedStaff.map(staff => (
-                                    <div key={staff.id} className="flex items-center space-x-2 bg-muted rounded-full px-2 py-1">
-                                        <img src={staff.avatarUrl} alt={staff.name} className="h-5 w-5 rounded-full" />
-                                        <span className="text-xs font-medium">{staff.name}</span>
+                    )}
+                    
+                    <div className="space-y-3">
+                        {assignmentGroups.map(group => {
+                            const assignedStaff = mockStaffList.filter(s => group.assignedIds.has(s.id));
+                            return (
+                                <div key={group.id} className="p-4 border rounded-lg bg-background hover:bg-muted/20 transition">
+                                    <div className="flex justify-between items-start mb-3">
+                                        <div className="flex-grow">
+                                            <h4 className="font-semibold">{group.name}</h4>
+                                            <p className="text-sm text-muted-foreground">{group.description}</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button 
+                                                variant="secondary" 
+                                                size="sm"
+                                                onClick={() => {
+                                                    setEditingGroupId(group.id);
+                                                    setIsAssignmentModalOpen(true);
+                                                }}
+                                            >
+                                                Manage Assignees
+                                            </Button>
+                                            {assignmentGroups.length > 1 && (
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="sm"
+                                                    onClick={() => handleDeleteGroup(group.id)}
+                                                >
+                                                    <TrashIcon className="w-4 h-4" />
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
-                                ))
-                            ) : (
-                                <p className="text-sm text-muted-foreground italic">No staff assigned.</p>
-                            )}
-                        </div>
+                                    <div className="flex flex-wrap gap-2 items-center">
+                                        <p className="text-sm font-medium">Assigned to:</p>
+                                        {assignedStaff.length > 0 ? (
+                                            assignedStaff.map(staff => (
+                                                <div key={staff.id} className="flex items-center space-x-2 bg-muted rounded-full px-2 py-1">
+                                                    <img src={staff.avatarUrl} alt={staff.name} className="h-5 w-5 rounded-full" />
+                                                    <span className="text-xs font-medium">{staff.name}</span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="text-sm text-muted-foreground italic">No staff assigned.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </CardContent>
             </Card>
@@ -167,14 +254,14 @@ const MessagingAdminPage: React.FC = () => {
                 />
             )}
 
-            {isAssignmentModalOpen && (
+            {isAssignmentModalOpen && editingGroupId && (
                 <NotificationAssignmentModal
                     isOpen={isAssignmentModalOpen}
-                    onClose={() => setIsAssignmentModalOpen(false)}
+                    onClose={() => { setIsAssignmentModalOpen(false); setEditingGroupId(null); }}
                     onSave={handleSaveAssignments}
                     staffList={mockStaffList}
-                    assignedIds={documentUpdateAssigneeIds}
-                    notificationType="Driver Document Updates"
+                    assignedIds={assignmentGroups.find(g => g.id === editingGroupId)?.assignedIds || new Set()}
+                    notificationType={assignmentGroups.find(g => g.id === editingGroupId)?.name || ''}
                 />
             )}
         </div>
