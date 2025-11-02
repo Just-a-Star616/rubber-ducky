@@ -777,3 +777,55 @@ export interface DriverApplication {
   // Pending changes
   pendingChanges?: ApplicationPendingChanges;
 }
+
+// Dashboard Widget System
+export type DashboardWidgetType = 
+  | 'stat-card' 
+  | 'bookings-trend' 
+  | 'driver-status' 
+  | 'top-drivers' 
+  | 'top-accounts' 
+  | 'ai-insights' 
+  | 'activity-feed'
+  | 'driver-metrics'
+  | 'automation-breakdown'
+  | 'call-staff-metrics'
+  | 'payment-breakdown'
+  | 'commission-breakdown'
+  | 'fleet-utilization'
+  | 'account-dispatch-summary';
+
+export type StaffRole = 'accounts' | 'dispatch' | 'management' | 'driver-manager' | 'call-staff' | 'admin';
+
+export interface DashboardWidget {
+  id: string;
+  type: DashboardWidgetType;
+  title: string;
+  description?: string;
+  gridColumn?: number; // 1-12 for grid sizing
+  gridRow?: number;
+  width?: 'small' | 'medium' | 'large' | 'full';
+  height?: 'small' | 'medium' | 'large';
+  isVisible: boolean;
+  isLocked?: boolean;
+  config?: Record<string, any>; // Widget-specific configuration
+}
+
+export interface DashboardLayout {
+  id: string;
+  userId?: string;
+  role: StaffRole;
+  name: string;
+  description?: string;
+  widgets: DashboardWidget[];
+  isDefault?: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DashboardPreset {
+  role: StaffRole;
+  name: string;
+  description: string;
+  widgets: DashboardWidget[];
+}
