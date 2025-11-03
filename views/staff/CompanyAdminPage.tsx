@@ -5,6 +5,7 @@ import { mockCompanyDetails, mockSiteDetails } from '../../lib/mockData';
 import { CompanyDetails, SiteDetails, InvoiceTemplate } from '../../types';
 import { PencilIcon } from '../../components/icons/Icon';
 import SiteEditModal from '../../components/staff/SiteEditModal';
+import ActivityLogViewer from '../../components/staff/ActivityLogViewer';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import { saveBrandingConfig, updateBrandingSingleton, getBrandingConfig } from '../../lib/branding';
@@ -246,6 +247,8 @@ const CompanyAdminPage: React.FC = () => {
             <SiteDetailsSection />
         </div>
       </Card>
+      
+      <ActivityLogViewer limit={100} showFilters={true} showStats={true} />
     </div>
   );
 };

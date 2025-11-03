@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { CommissionScheme, CommissionSchemeType, Tier, CommissionFieldRule, CommissionOutputRule } from '../../types';
+import { logAction } from '../../lib/logging';
 import { Button } from '../ui/button';
 import { TrashIcon, PlusCircleIcon, XIcon } from '../icons/Icon';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/card';
@@ -56,6 +57,8 @@ const SchemeEditModal: React.FC<SchemeEditModalProps> = ({ scheme, isOpen, onClo
   const [stage1FieldRules, setStage1FieldRules] = useState<CommissionFieldRule[]>(scheme.stage1FieldRules || []);
   const [stage2CommissionFormula, setStage2CommissionFormula] = useState<string>(scheme.stage2CommissionFormula || '');
   const [stage3OutputRules, setStage3OutputRules] = useState<CommissionOutputRule[]>(scheme.stage3OutputRules || []);
+  
+  const isNew = scheme.id.startsWith('new-');
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -109,11 +112,36 @@ const SchemeEditModal: React.FC<SchemeEditModalProps> = ({ scheme, isOpen, onClo
         stage3OutputRules: stage3OutputRules.length > 0 ? stage3OutputRules : undefined,
         tiers: formData.tiers?.filter(t => t.rate > 0 || t.upTo > 0)
     };
+    
+    // Log the action
+    if (isNew) {
+      logAction('CREATE', 'COMMISSION', 'CommissionScheme', cleanedScheme.id, `Created new commission scheme: ${cleanedScheme.name}`, {
+        entityName: cleanedScheme.name,
+        description: `Type: ${cleanedScheme.type}, With stages: ${stage1FieldRules.length > 0 ? 'Stage1 ' : ''}${stage2CommissionFormula ? 'Stage2 ' : ''}${stage3OutputRules.length > 0 ? 'Stage3' : ''}`.trim(),
+        level: 'success',
+        metadata: {
+          type: cleanedScheme.type,
+          hasStage1: stage1FieldRules.length > 0,
+          hasStage2: !!stage2CommissionFormula,
+          hasStage3: stage3OutputRules.length > 0,
+        }
+      });
+    } else {
+      logAction('UPDATE', 'COMMISSION', 'CommissionScheme', cleanedScheme.id, `Updated commission scheme: ${cleanedScheme.name}`, {
+        entityName: cleanedScheme.name,
+        description: `Modified scheme configuration`,
+        level: 'success',
+        metadata: {
+          schemeId: scheme.id,
+          type: cleanedScheme.type,
+        }
+      });
+    }
+    
     onSave(cleanedScheme);
   };
   
   const isTiered = formData.type.includes('Tiered');
-  const isNew = scheme.id.startsWith('new-');
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4 transition-opacity" onClick={onClose}>

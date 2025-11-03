@@ -1,4 +1,58 @@
+// ==================== LOGGING TYPES ====================
 
+export type LogLevel = 'info' | 'warning' | 'error' | 'success';
+export type LogEventType = 'CREATE' | 'UPDATE' | 'DELETE' | 'VIEW' | 'EXPORT' | 'IMPORT' | 'API_CALL' | 'SYSTEM_EVENT' | 'ERROR';
+export type LogCategory = 'STAFF' | 'DRIVER' | 'COMMISSION' | 'INVOICE' | 'PERMISSION' | 'SITE' | 'BOOKING' | 'PAYMENT' | 'SYSTEM' | 'AUTH' | 'DASHBOARD' | 'NOTIFICATION' | 'AUTOMATION' | 'CONNECTOR' | 'TEMPLATE';
+
+export interface LogEntry {
+  id: string; // UUID
+  timestamp: string; // ISO string
+  userId: string; // Staff member ID or 'SYSTEM'
+  userName: string; // Staff name or 'System'
+  eventType: LogEventType; // CREATE, UPDATE, DELETE, etc.
+  category: LogCategory; // STAFF, DRIVER, COMMISSION, etc.
+  level: LogLevel; // info, warning, error, success
+  
+  // Subject of the action
+  entityType: string; // 'StaffMember', 'Driver', 'CommissionScheme', etc.
+  entityId: string; // ID of the affected entity
+  entityName?: string; // Human-readable name (e.g., staff member name)
+  
+  // Action details
+  action: string; // Human-readable: "Created new staff member", "Updated commission scheme"
+  description?: string; // Detailed description
+  
+  // Changes tracking (for UPDATE events)
+  changes?: {
+    fieldName: string;
+    oldValue: any;
+    newValue: any;
+  }[];
+  
+  // For API/system events
+  endpoint?: string; // API endpoint called
+  method?: string; // GET, POST, PUT, DELETE
+  status?: number; // HTTP status
+  errorMessage?: string; // Error details if failed
+  duration?: number; // ms for performance tracking
+  
+  // Metadata
+  ipAddress?: string;
+  userAgent?: string;
+  siteId?: string; // For site-specific logging
+  metadata?: Record<string, any>;
+}
+
+export interface LogFilter {
+  startDate?: string;
+  endDate?: string;
+  userId?: string;
+  eventType?: LogEventType;
+  category?: LogCategory;
+  entityType?: string;
+  level?: LogLevel;
+  entityId?: string;
+}
 
 export interface DocumentUpdateRequest {
     fileName: string;

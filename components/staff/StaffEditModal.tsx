@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { StaffMember, StaffStatus, PermissionTemplate, SiteDetails } from '../../types';
+import { logAction } from '../../lib/logging';
 import { Button } from '../ui/button';
 import { XIcon } from '../icons/Icon';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
@@ -64,7 +65,44 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
     }
     // Convert selected site IDs to array, undefined if empty (= main company)
     const siteIds = selectedSiteIds.size > 0 ? Array.from(selectedSiteIds) : undefined;
-    onSave({ ...formData, siteIds } as StaffMember);
+    const savedStaff = { ...formData, siteIds } as StaffMember;
+    
+    // Log the action
+    if (isNew) {
+      logAction('CREATE', 'STAFF', 'StaffMember', formData.id || 'NEW', `Created new staff member: ${formData.name}`, {
+        entityName: formData.name,
+        description: `Email: ${formData.email}, Title: ${formData.title}, Template: ${formData.templateId}, Sites: ${siteIds?.length || 0}`,
+        level: 'success',
+        metadata: {
+          email: formData.email,
+          title: formData.title,
+          templateId: formData.templateId,
+          siteIds,
+        }
+      });
+    } else {
+      // Track changes for UPDATE events
+      const changes: Array<{ fieldName: string; oldValue: any; newValue: any }> = [];
+      
+      if (staff?.name !== formData.name) changes.push({ fieldName: 'name', oldValue: staff?.name, newValue: formData.name });
+      if (staff?.title !== formData.title) changes.push({ fieldName: 'title', oldValue: staff?.title, newValue: formData.title });
+      if (staff?.status !== formData.status) changes.push({ fieldName: 'status', oldValue: staff?.status, newValue: formData.status });
+      if (staff?.templateId !== formData.templateId) changes.push({ fieldName: 'templateId', oldValue: staff?.templateId, newValue: formData.templateId });
+      if (JSON.stringify(staff?.siteIds) !== JSON.stringify(siteIds)) changes.push({ fieldName: 'siteIds', oldValue: staff?.siteIds, newValue: siteIds });
+      
+      logAction('UPDATE', 'STAFF', 'StaffMember', staff?.id || 'UNKNOWN', `Updated staff member: ${formData.name}`, {
+        entityName: formData.name,
+        description: changes.length > 0 ? `Modified ${changes.length} field(s)` : 'No changes',
+        changes: changes.length > 0 ? changes : undefined,
+        level: 'success',
+        metadata: {
+          staffId: staff?.id,
+          changedFields: changes.map(c => c.fieldName),
+        }
+      });
+    }
+    
+    onSave(savedStaff);
   };
 
   const statuses: StaffStatus[] = ['Active', 'Pending Permissions', 'Deactivated'];
