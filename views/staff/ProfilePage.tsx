@@ -79,9 +79,18 @@ const OfficeHoursSection = ({ initialHours, onHoursSave }: { initialHours: Offic
                                         </div>
                                     </div>
                                     <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                        <Input type="time" value={h.start} onChange={e => handleHourChange(h.day, 'start', e.target.value)} disabled={h.isOff} />
-                                        <Input type="time" value={h.end} onChange={e => handleHourChange(h.day, 'end', e.target.value)} disabled={h.isOff} />
-                                        <Input type="text" placeholder="Location (optional)" value={h.location || ''} onChange={e => handleHourChange(h.day, 'location', e.target.value)} disabled={h.isOff} className="sm:col-span-3" />
+                                        <div>
+                                            <label className="text-xs text-muted-foreground block mb-1">Start</label>
+                                            <Input type="time" value={h.start} onChange={e => handleHourChange(h.day, 'start', e.target.value)} disabled={h.isOff} />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs text-muted-foreground block mb-1">End</label>
+                                            <Input type="time" value={h.end} onChange={e => handleHourChange(h.day, 'end', e.target.value)} disabled={h.isOff} />
+                                        </div>
+                                        <div className="sm:col-span-3">
+                                            <label className="text-xs text-muted-foreground block mb-1">Location</label>
+                                            <Input type="text" placeholder="Location (optional)" value={h.location || ''} onChange={e => handleHourChange(h.day, 'location', e.target.value)} disabled={h.isOff} />
+                                        </div>
                                     </div>
                                 </>
                             ) : (
