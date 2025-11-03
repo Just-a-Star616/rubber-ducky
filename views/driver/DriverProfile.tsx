@@ -186,8 +186,8 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ driver, setDriver, themeN
     useEffect(() => {
         return () => {
             Object.values(files).forEach(fileObj => {
-                if (fileObj) {
-                    URL.revokeObjectURL(fileObj.url);
+                if (fileObj && typeof fileObj === 'object' && 'url' in fileObj) {
+                    URL.revokeObjectURL((fileObj as { file: File, url: string }).url);
                 }
             });
         };
