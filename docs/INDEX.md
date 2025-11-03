@@ -96,6 +96,7 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 
 ### 🛠️ Troubleshooting & Reference
 - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
+- **[QA_TESTING_CHECKLIST.md](./QA_TESTING_CHECKLIST.md)** - Feature testing checklist (NEW)
 - **[BUILD_ERRORS_RESOLVED.md](./BUILD_ERRORS_RESOLVED.md)** - Build error solutions
 - **[SYNTAX_ERRORS_EXPLAINED.md](./SYNTAX_ERRORS_EXPLAINED.md)** - Syntax error reference
 - **[LOGGING_TRIGGERS_READINESS.md](./LOGGING_TRIGGERS_READINESS.md)** - Logging system readiness
