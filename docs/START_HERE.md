@@ -10,13 +10,25 @@ Welcome! You now have a complete, production-ready driver signup application wit
 - Quick deployment
 - Ready to test
 
-### Option B: I want to understand everything 📚
+### Option B: I want to manage dispatch operations 🚚
+→ **Read this first**: `docs/DISPATCH_PAGE_GUIDE.md` (NEW!)
+- Modern booking interface
+- Real-time job tracking
+- Driver assignment & routing
+
+### Option C: I want to set up webhooks and automations 🔌
+→ **Read this first**: `docs/WEBHOOKS_AND_AUTOMATIONS_GUIDE.md` (NEW!)
+- Configure webhook endpoints
+- Create automation rules
+- Set up message templates
+
+### Option D: I want to understand everything 📚
 → **Read this first**: `docs/INDEX.md`
 - Complete documentation map
 - Navigation guide
 - All available resources
 
-### Option C: I want to see what was built 📦
+### Option E: I want to see what was built 📦
 → **Read this first**: `docs/DELIVERABLES.md`
 - Complete feature list
 - All files included
@@ -67,7 +79,16 @@ docs/
 ├── 📖 DRIVER_SIGNUP_DEPLOYMENT.md
 │   └─ Complete detailed guide
 │
-├── 🔧 BACKEND_SETUP.md (Optional)
+├── � DISPATCH_PAGE_GUIDE.md (NEW!)
+│   └─ Modern booking & dispatch interface
+│
+├── 📊 LOGGING_AND_AUDIT_GUIDE.md (NEW!)
+│   └─ Activity logs & compliance tracking
+│
+├── 🔌 WEBHOOKS_AND_AUTOMATIONS_GUIDE.md (NEW!)
+│   └─ Event webhooks & automation rules
+│
+├── �🔧 BACKEND_SETUP.md (Optional)
 │   └─ Backend server implementation
 │
 ├── 👥 STAFF_DASHBOARD_SETUP.md (Optional, Stretch)
@@ -222,6 +243,9 @@ If you have questions about:
 
 - **Getting started** → `QUICK_START.md`
 - **Deployment** → `DRIVER_SIGNUP_DEPLOYMENT.md`
+- **Dispatch operations** → `DISPATCH_PAGE_GUIDE.md` (NEW!)
+- **Activity logs** → `LOGGING_AND_AUDIT_GUIDE.md` (NEW!)
+- **Webhooks & automations** → `WEBHOOKS_AND_AUTOMATIONS_GUIDE.md` (NEW!)
 - **Architecture** → `ARCHITECTURE_DIAGRAMS.md`
 - **Backend** → `BACKEND_SETUP.md`
 - **Staff features** → `STAFF_DASHBOARD_SETUP.md`
@@ -276,6 +300,9 @@ You'll be live in 30 minutes. 🎉
 Getting Started (you are here) → docs/START_HERE.md
 Quick Start (5-30 min) → docs/QUICK_START.md
 Complete Guide (detailed) → docs/DRIVER_SIGNUP_DEPLOYMENT.md
+Dispatch Operations (NEW!) → docs/DISPATCH_PAGE_GUIDE.md
+Activity Logs (NEW!) → docs/LOGGING_AND_AUDIT_GUIDE.md
+Webhooks & Automations (NEW!) → docs/WEBHOOKS_AND_AUTOMATIONS_GUIDE.md
 Backend Setup (optional) → docs/BACKEND_SETUP.md
 Staff Dashboard (stretch) → docs/STAFF_DASHBOARD_SETUP.md
 Navigation Map → docs/INDEX.md

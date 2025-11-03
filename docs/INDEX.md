@@ -31,9 +31,30 @@ This package includes everything needed to deploy a branded driver signup applic
    - Example scenarios and formulas
    - Developer integration guide
 
+3. **[DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md)** - Modern Dispatch Interface (NEW)
+   - iCABBi-style dispatch management
+   - Booking form & job queue
+   - Real-time status tracking
+   - Driver assignment
+   - Logging integration
+
+4. **[LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md)** - Audit Trail System (NEW)
+   - Comprehensive logging system
+   - Activity log viewing & filtering
+   - Export capabilities
+   - Permission-based access control
+   - Audit trail maintenance
+
+5. **[WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md)** - Event Triggers (NEW)
+   - Webhook event definitions
+   - Automation trigger system
+   - Message events & templates
+   - Configuration guides
+   - Execution engine setup
+
 ### Detailed Implementation Guides
 
-3. **[DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md)** - Complete Deployment
+6. **[DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md)** - Complete Deployment
    - Google Workspace setup (detailed)
    - Authentication & OAuth
    - Google Sheets configuration
@@ -42,7 +63,7 @@ This package includes everything needed to deploy a branded driver signup applic
    - Deployment strategies
    - Full troubleshooting guide
 
-4. **[BACKEND_SETUP.md](./BACKEND_SETUP.md)** - Backend Integration
+7. **[BACKEND_SETUP.md](./BACKEND_SETUP.md)** - Backend Integration
    - Node.js/Express server setup
    - Google API integration code
    - Email notification system
@@ -50,7 +71,7 @@ This package includes everything needed to deploy a branded driver signup applic
    - Deployment (Vercel, Heroku, AWS Lambda)
    - Security best practices
 
-5. **[STAFF_DASHBOARD_SETUP.md](./STAFF_DASHBOARD_SETUP.md)** - Staff Management (STRETCH GOAL)
+8. **[STAFF_DASHBOARD_SETUP.md](./STAFF_DASHBOARD_SETUP.md)** - Staff Management (STRETCH GOAL)
    - Application review interface
    - Approval/rejection workflows
    - Task assignment system
@@ -64,6 +85,9 @@ This package includes everything needed to deploy a branded driver signup applic
 
 - **Deploy in 5 minutes** → [QUICK_START.md](./QUICK_START.md)
 - **Set up commission rules** → [COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md)
+- **Use the dispatch interface** → [DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md) ⭐ NEW
+- **View audit logs & activity** → [LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md) ⭐ NEW
+- **Set up webhooks & automations** → [WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md) ⭐ NEW
 - **Understand the full process** → [DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md)
 - **Set up a backend server** → [BACKEND_SETUP.md](./BACKEND_SETUP.md)
 - **Build staff management** → [STAFF_DASHBOARD_SETUP.md](./STAFF_DASHBOARD_SETUP.md)
@@ -86,20 +110,41 @@ Step 2: COMMISSION_RULES_SYSTEM.md (NEW!)
 ├─ Create formulas (Stage 2)
 └─ Define outputs by payment method (Stage 3)
 
-Step 3: DRIVER_SIGNUP_DEPLOYMENT.md
+Step 3: DISPATCH_PAGE_GUIDE.md (NEW!)
+├─ Understand dispatch interface
+├─ Create and manage bookings
+├─ Assign drivers to jobs
+├─ Track real-time status
+└─ View activity logs
+
+Step 4: LOGGING_AND_AUDIT_GUIDE.md (NEW!)
+├─ View activity logs
+├─ Filter and search logs
+├─ Export audit trails
+├─ Set up permission-based access
+└─ Maintain compliance records
+
+Step 5: WEBHOOKS_AND_AUTOMATIONS_GUIDE.md (NEW!)
+├─ Configure webhook triggers
+├─ Set up automation rules
+├─ Define message templates
+├─ Execute webhook deliveries
+└─ Monitor automation runs
+
+Step 6: DRIVER_SIGNUP_DEPLOYMENT.md
 ├─ Complete Google Workspace setup
 ├─ Create service accounts
 ├─ Set up Google Sheets & Drive
 ├─ Configure notifications
 └─ Deploy to production
 
-Step 4 (Optional): BACKEND_SETUP.md
+Step 7 (Optional): BACKEND_SETUP.md
 ├─ Create backend server
 ├─ Set up Google APIs
 ├─ Implement email notifications
 └─ Deploy backend
 
-Step 5 (Stretch): STAFF_DASHBOARD_SETUP.md
+Step 8 (Stretch): STAFF_DASHBOARD_SETUP.md
 ├─ Build staff interface
 ├─ Implement review workflows
 ├─ Add task management
