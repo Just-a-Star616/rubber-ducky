@@ -120,11 +120,9 @@ const DocumentSection = ({ isEditing, docType, docName, driver, formData, handle
     }
 
     return (
-        <div className="sm:col-span-2 border-t border-border pt-4 mt-4">
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="text-base font-medium text-foreground">{docName}</h4>
-            </div>
-            <div className="space-y-3">
+        <Card className="mt-4">
+            <CardHeader><CardTitle>{docName}</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
                     <div>
                         <p className="text-xs text-muted-foreground">Number</p>
@@ -159,7 +157,7 @@ const DocumentSection = ({ isEditing, docType, docName, driver, formData, handle
 
                 {/* Document Display Card */}
                 {currentDocumentUrl ? (
-                    <div className="mt-4 p-4 rounded-lg border border-border bg-card/50 hover:bg-card/75 transition-colors">
+                    <div className="p-4 rounded-lg border border-border bg-card/50 hover:bg-card/75 transition-colors">
                         <div className="flex items-center justify-between mb-3">
                             <p className="text-sm font-semibold text-foreground">Current Document</p>
                             <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium">
@@ -199,14 +197,14 @@ const DocumentSection = ({ isEditing, docType, docName, driver, formData, handle
                         </div>
                     </div>
                 ) : (
-                    <div className="mt-4 p-4 rounded-lg border border-dashed border-border bg-card/25">
+                    <div className="p-4 rounded-lg border border-dashed border-border bg-card/25">
                         <p className="text-sm text-muted-foreground">No document uploaded yet</p>
                     </div>
                 )}
 
                 {/* Pending Document Upload */}
                 {pendingUpdate?.fileName && (
-                    <div className="mt-3 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20">
+                    <div className="p-4 rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20">
                         <div className="flex items-center justify-between mb-2">
                             <p className="text-sm font-semibold text-yellow-900 dark:text-yellow-200">Pending Verification</p>
                             <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 text-xs rounded font-medium">
@@ -233,8 +231,8 @@ const DocumentSection = ({ isEditing, docType, docName, driver, formData, handle
                         )}
                     </div>
                 )}
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 }
 
@@ -473,16 +471,24 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ driver, setDriver, themeN
             </CardContent>
         </Card>
 
-        <Card className="mt-6">
-            <CardHeader><CardTitle>Licensing & Documents</CardTitle></CardHeader>
-            <CardContent>
-                 <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                    <DocumentSection isEditing={isEditing} docType="badge" docName="Private Hire / Hackney Badge" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
-                    <DocumentSection isEditing={isEditing} docType="drivingLicense" docName="Driving License" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
-                    <DocumentSection isEditing={isEditing} docType="schoolBadge" docName="School Badge" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
-                </div>
-            </CardContent>
-        </Card>
+        {isEditing ? (
+            <Card className="mt-6">
+                <CardHeader><CardTitle>Licensing & Documents</CardTitle></CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        <DocumentSection isEditing={isEditing} docType="badge" docName="Private Hire / Hackney Badge" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
+                        <DocumentSection isEditing={isEditing} docType="drivingLicense" docName="Driving License" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
+                        <DocumentSection isEditing={isEditing} docType="schoolBadge" docName="School Badge" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
+                    </div>
+                </CardContent>
+            </Card>
+        ) : (
+            <>
+                <DocumentSection isEditing={isEditing} docType="badge" docName="Private Hire / Hackney Badge" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
+                <DocumentSection isEditing={isEditing} docType="drivingLicense" docName="Driving License" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
+                <DocumentSection isEditing={isEditing} docType="schoolBadge" docName="School Badge" driver={driver} formData={formData} handleInputChange={handleInputChange} handleSelectChange={handleSelectChange} handleFileChange={handleFileChange} />
+            </>
+        )}
       </form>
       
       <Card className="mt-6">
