@@ -32,20 +32,13 @@ A comprehensive driver management platform with integrated driver signup, staff 
 
 **Complete documentation available in the `docs/` folder:**
 
-- **[� Documentation Index](./docs/INDEX.md)** - Complete navigation guide
-- **[�📖 Quick Start (5-minute setup)](./docs/QUICK_START.md)** ⭐ Start here!
-- **[🎯 START HERE](./docs/START_HERE.md)** - Project overview
-- **[📋 Driver Signup Deployment Guide](./docs/DRIVER_SIGNUP_DEPLOYMENT.md)** - Complete setup
-- **[🔧 Backend Integration Guide](./docs/BACKEND_SETUP.md)** - Google Workspace integration
-- **[� Staff Dashboard Setup](./docs/STAFF_DASHBOARD_SETUP.md)** - Management interface
-- **[⚙️ Commission Rules System](./docs/COMMISSION_RULES_SYSTEM.md)** - Advanced commission engine
-- **[📦 Dispatch Guide](./docs/DISPATCH_PAGE_GUIDE.md)** - Dispatch interface
-- **[� Customer Promotions](./docs/CUSTOMER_PROMOTIONS_GUIDE.md)** - Promotions & scheduling
-- **[� Logging & Audit](./docs/LOGGING_AND_AUDIT_GUIDE.md)** - Activity tracking
-
-### Featured Guides
+- **[📖 Documentation Index](./docs/INDEX.md)** ⭐ Start here - Complete navigation guide
+- **[ Driver Signup Deployment Guide](./docs/DRIVER_SIGNUP_DEPLOYMENT.md)** - Complete setup & Google Workspace integration
+- **[🔧 Backend Integration Guide](./docs/BACKEND_SETUP.md)** - Backend server setup
+- **[👥 Staff Dashboard Setup](./docs/STAFF_DASHBOARD_SETUP.md)** - Management interface
 - **[🎨 Company Logo & Branding](./docs/BRANDING_LOGO_IMPLEMENTATION.md)** - Upload and customize your logo
-- **[🏗️ System Architecture](./docs/ARCHITECTURE_DIAGRAMS.md)** - Technical architecture
+- **[📊 Logging & Audit](./docs/LOGGING_AND_AUDIT_GUIDE.md)** - Activity tracking
+- **[� Troubleshooting](./docs/TROUBLESHOOTING.md)** - Common issues & solutions
 - **[📋 Product Requirements](./docs/PRODUCT_REQUIREMENTS.md)** - Feature specifications
 
 ## 🚀 Quick Start
@@ -61,11 +54,12 @@ A comprehensive driver management platform with integrated driver signup, staff 
 # 1. Install dependencies
 npm install
 
+```bash
 # 2. Set environment variables in .env.local
-# Copy from docs/QUICK_START.md
+# Follow docs/DRIVER_SIGNUP_DEPLOYMENT.md
 
 # 3. Configure Google APIs
-# Follow docs/DRIVER_SIGNUP_DEPLOYMENT.md
+# See docs/BACKEND_SETUP.md for detailed setup
 
 # 4. Run locally
 npm run dev
@@ -91,7 +85,7 @@ docker build -t driver-signup .
 docker run -p 3000:3000 --env-file .env.local driver-signup
 ```
 
-See [Quick Start Guide](./docs/QUICK_START.md) for detailed deployment instructions.
+See [Driver Signup Deployment Guide](./docs/DRIVER_SIGNUP_DEPLOYMENT.md) for detailed deployment instructions.
 
 ## 📁 Project Structure
 
@@ -114,10 +108,10 @@ project-rubber-ducky-executioner/
 │   ├── googleIntegration.ts (Google API integration)
 │   └── ...
 ├── docs/
-│   ├── QUICK_START.md
 │   ├── DRIVER_SIGNUP_DEPLOYMENT.md
 │   ├── BACKEND_SETUP.md
 │   ├── STAFF_DASHBOARD_SETUP.md
+│   ├── BRANDING_LOGO_IMPLEMENTATION.md
 │   └── INDEX.md
 └── .env.local (Git ignored - configure here)
 ```
@@ -141,7 +135,7 @@ VITE_PRIMARY_COLOR=#3b82f6
 VITE_SUPPORT_EMAIL=support@yourcompany.com
 ```
 
-See [Quick Start](./docs/QUICK_START.md) for detailed setup.
+See [Driver Signup Deployment Guide](./docs/DRIVER_SIGNUP_DEPLOYMENT.md) for detailed setup.
 
 ## 🔐 Security
 
@@ -204,8 +198,8 @@ npm run preview
 ## 🆘 Troubleshooting
 
 For common issues and solutions, see:
-- [Quick Start - Troubleshooting](./docs/QUICK_START.md#-troubleshooting)
-- [Deployment Guide - Troubleshooting](./docs/DRIVER_SIGNUP_DEPLOYMENT.md#troubleshooting)
+- [Driver Signup Deployment - Troubleshooting](./docs/DRIVER_SIGNUP_DEPLOYMENT.md#troubleshooting)
+- [General Troubleshooting Guide](./docs/TROUBLESHOOTING.md)
 
 ## 📚 Resources
 
@@ -216,12 +210,12 @@ For common issues and solutions, see:
 
 ## 🎯 Next Steps
 
-1. **Deploy** (5-10 min) - Follow [Quick Start](./docs/QUICK_START.md)
+1. **Deploy** (5-10 min) - Follow [Driver Signup Deployment Guide](./docs/DRIVER_SIGNUP_DEPLOYMENT.md)
 2. **Customize** (10-15 min) - Update branding and company info
 3. **Test** (10 min) - Submit test applications
 4. **Share** (ongoing) - Send signup link to applicants
 5. **Monitor** (ongoing) - Check Google Sheets & Drive
-6. **STRETCH** (2-4 hours) - Build staff dashboard
+6. **STRETCH** (2-4 hours) - Build staff dashboard via [Staff Dashboard Setup](./docs/STAFF_DASHBOARD_SETUP.md)
 
 ## 📄 License
 
