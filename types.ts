@@ -730,6 +730,17 @@ export interface TaskReminder {
   authorId: string; // StaffMember ID
 }
 
+// Assignment Groups for targeting notifications
+export interface AssignmentGroup {
+    id: string;
+    name: string;
+    description?: string;
+    memberIds: string[]; // Staff member IDs in this group
+    createdAt: string; // ISO date
+    updatedAt: string; // ISO date
+    createdBy: string; // Staff member ID
+}
+
 export type MessageTarget = 'Customer' | 'Driver' | 'Account' | 'Staff';
 
 export interface MessageEvent {
@@ -750,6 +761,7 @@ export interface MessageTemplate {
     scheduledTime?: string; // ISO string for one-off scheduled messages
     deliveryMethod?: 'Default' | 'API';
     apiEndpointId?: string;
+    assignmentGroupIds?: string[]; // Target specific assignment groups when target is 'Staff'
 }
 
 export type AttributeEligibility = 'Driver' | 'Vehicle' | 'Account' | 'Customer' | 'Booking';

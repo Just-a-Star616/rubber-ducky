@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 // FIX: Import the aliased AppMessageEvent type via the mock data import to resolve type conflicts.
-import { MessageTemplate, MessageTarget, BaseApiConfig, EndpointDefinition, MessageEvent as AppMessageEvent } from '../../types';
+import { MessageTemplate, MessageTarget, BaseApiConfig, EndpointDefinition, MessageEvent as AppMessageEvent, AssignmentGroup } from '../../types';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -19,18 +19,21 @@ interface MessageTemplateEditModalProps {
   onDelete: (templateId: string) => void;
   baseApis: BaseApiConfig[];
   endpoints: EndpointDefinition[];
+  assignmentGroups?: AssignmentGroup[];
 }
 
 const messageTargets: MessageTarget[] = ['Customer', 'Driver', 'Account', 'Staff'];
 
-const MessageTemplateEditModal: React.FC<MessageTemplateEditModalProps> = ({ template, isOpen, onClose, onSave, onDelete, baseApis, endpoints }) => {
+const MessageTemplateEditModal: React.FC<MessageTemplateEditModalProps> = ({ template, isOpen, onClose, onSave, onDelete, baseApis, endpoints, assignmentGroups = [] }) => {
   const [formData, setFormData] = useState<Partial<MessageTemplate>>({});
+  const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
   const isNew = !template;
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); }, [onClose]);
   
   useEffect(() => {
     setFormData(isNew ? { eventId: mockMessageEvents[0].id, target: 'Customer', name: '', content: '', deliveryMethod: 'Default' } : { ...template });
+    setSelectedGroups(new Set(template?.assignmentGroupIds || []));
     if (isOpen) document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [template, isOpen, isNew, handleKeyDown]);
@@ -68,7 +71,11 @@ const MessageTemplateEditModal: React.FC<MessageTemplateEditModalProps> = ({ tem
       alert('Template Name and Content are required.');
       return;
     }
-    onSave(formData as MessageTemplate);
+    const templateToSave: MessageTemplate = {
+      ...formData as MessageTemplate,
+      assignmentGroupIds: formData.target === 'Staff' ? Array.from(selectedGroups) : undefined,
+    };
+    onSave(templateToSave);
   };
   
   const handleInsertPlaceholder = (placeholder: string) => {
@@ -124,6 +131,45 @@ const MessageTemplateEditModal: React.FC<MessageTemplateEditModalProps> = ({ tem
                         </Select>
                     </div>
                 </div>
+
+                {/* Assignment Groups - only show when target is Staff */}
+                {formData.target === 'Staff' && assignmentGroups.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-3">Send To Assignment Groups</label>
+                    <div className="space-y-2 p-3 border border-border rounded-lg bg-muted/30">
+                      {assignmentGroups.length === 0 ? (
+                        <p className="text-xs text-muted-foreground italic">No assignment groups created yet</p>
+                      ) : (
+                        <>
+                          {assignmentGroups.map(group => (
+                            <label key={group.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted cursor-pointer">
+                              <Checkbox
+                                checked={selectedGroups.has(group.id)}
+                                onCheckedChange={() => {
+                                  const newGroups = new Set(selectedGroups);
+                                  if (newGroups.has(group.id)) {
+                                    newGroups.delete(group.id);
+                                  } else {
+                                    newGroups.add(group.id);
+                                  }
+                                  setSelectedGroups(newGroups);
+                                }}
+                              />
+                              <div className="flex-grow">
+                                <p className="text-sm font-medium">{group.name}</p>
+                                {group.description && <p className="text-xs text-muted-foreground">{group.description}</p>}
+                                <p className="text-xs text-muted-foreground">{group.memberIds.length} member{group.memberIds.length !== 1 ? 's' : ''}</p>
+                              </div>
+                            </label>
+                          ))}
+                          <p className="text-xs text-muted-foreground italic pt-2 border-t border-border">
+                            Leave empty to send to all staff members
+                          </p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="md:col-span-2">
