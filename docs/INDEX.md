@@ -35,7 +35,7 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 1. [QUICK_START.md](./QUICK_START.md) - Development setup (5 min)
 2. [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) - Architecture overview
 3. [BACKEND_SETUP.md](./BACKEND_SETUP.md) - Backend integration
-4. [ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md) - System architecture
+4. [ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md) - iCabbi TMS integration
 5. [PRODUCT_REQUIREMENTS.md](./PRODUCT_REQUIREMENTS.md) - Feature specifications
 
 ---
@@ -90,6 +90,7 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 - **[BACKEND_SETUP.md](./BACKEND_SETUP.md)** - Backend server configuration
 - **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Production deployment guide
 - **[SIGN_OFF_DOCUMENT.md](./SIGN_OFF_DOCUMENT.md)** - Team sign-off for deployment (NEW)
+- **[ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md)** - iCabbi TMS integration (NEW)
 
 ### ✅ Implementation Guides
 - **[DELIVERABLES.md](./DELIVERABLES.md)** - Project deliverables checklist
@@ -110,15 +111,24 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 ## 📈 Recent Updates
 
 ### November 3, 2025 (Latest)
-- ✅ **Unified Rule Builder System** - NEW!
+- ✅ **iCabbi TMS Integration Framework** - NEW!
+  - Production-ready adapter layer (icabbiAdapter.ts)
+  - React context for dependency injection (dataSourceContext.tsx)
+  - 4x custom hooks for data access (useDrivers, useBookings, useCustomers, useVehicles)
+  - Switch between mock (dev) and real (prod) with no code changes
+  - Comprehensive configuration guide
+  - See: [ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md)
+
+### November 3, 2025 (Prior)
+- ✅ **Unified Rule Builder System**
   - Single component for all rule types (webhooks, automations, attributes, etc.)
   - AutomationEditModal and WebhookEditModal migrated
   - Consistent UI/UX across the project
   - Full TypeScript support
   - See: [RULE_BUILDER_GUIDE.md](./RULE_BUILDER_GUIDE.md)
 
-### November 3, 2025
-- ✅ **Time-Based Scheduling for Promotions** - NEW!
+### November 3, 2025 (Earlier)
+- ✅ **Time-Based Scheduling for Promotions**
   - Day-of-week scheduling
   - Specific time periods (including overnight)
   - Timezone support (7 timezones)
