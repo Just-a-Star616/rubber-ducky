@@ -6,6 +6,8 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { TrashIcon, XIcon } from '../icons/Icon';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import BaseRuleBuilder, { RuleConfig } from '../BaseRuleBuilder';
+import { RULE_CONTEXTS } from '../../lib/ruleBuilder';
 
 interface PromotionEditModalProps {
   promotion: Promotion | null;
@@ -83,17 +85,28 @@ const PromotionEditModal: React.FC<PromotionEditModalProps> = ({ promotion, isOp
                 <label htmlFor="termsUrl" className="block text-sm font-medium text-muted-foreground">Full Terms & Conditions URL</label>
                 <Input id="termsUrl" name="termsUrl" type="url" value={formData.termsUrl || ''} onChange={handleInputChange} placeholder="https://example.com/terms" className="mt-1" />
             </div>
-            <div>
-                <label htmlFor="eligibilityRules" className="block text-sm font-medium text-muted-foreground">Eligibility Rules</label>
-                <Textarea 
-                    id="eligibilityRules"
-                    name="eligibilityRules"
-                    value={formData.eligibilityRules?.join('\n') || ''}
-                    onChange={handleRulesChange}
-                    rows={3}
-                    className="mt-1"
-                />
-                <p className="mt-1 text-xs text-muted-foreground">One rule per line. Example: 'prefix != CR' or 'schemeCode == S07'. Leave blank for all drivers.</p>
+
+            {/* Eligibility Rules using unified builder */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <BaseRuleBuilder
+                initialConfig={{
+                  name: `Promotion: ${formData.title || 'New'}`,
+                  description: formData.description || '',
+                  trigger: 'promotion_eligibility',
+                  expression: formData.eligibilityRules?.join('\n') || '',
+                  enabled: true,
+                }}
+                context={RULE_CONTEXTS.promotion_eligibility}
+                onSave={(config: RuleConfig) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    eligibilityRules: config.expression
+                      .split('\n')
+                      .filter(rule => rule.trim() !== '')
+                      .map(rule => rule.trim()),
+                  }));
+                }}
+              />
             </div>
         </CardContent>
 

@@ -3,6 +3,8 @@ import { CustomerPromotion, CustomerPromotionType, PromotionStatus } from '../..
 import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import PromotionScheduleBuilder from './PromotionScheduleBuilder';
+import BaseRuleBuilder, { RuleConfig } from '../BaseRuleBuilder';
+import { RULE_CONTEXTS } from '../../lib/ruleBuilder';
 import { validateSchedule } from '../../lib/promotionScheduling';
 
 interface CustomerPromotionEditModalProps {
@@ -249,20 +251,24 @@ const CustomerPromotionEditModal: React.FC<CustomerPromotionEditModalProps> = ({
               </div>
             </div>
 
-            {/* Target Audience */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Target Audience</label>
-              <select
-                name="targetAudience"
-                value={formData.targetAudience || 'all'}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-border rounded-lg"
-              >
-                <option value="all">All Customers</option>
-                <option value="new-drivers">New Drivers</option>
-                <option value="inactive-drivers">Inactive Drivers</option>
-                <option value="high-value-drivers">High-Value Drivers</option>
-              </select>
+            {/* Target Audience - Using unified rule builder */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <BaseRuleBuilder
+                initialConfig={{
+                  name: `Promo: ${formData.name || 'New'}`,
+                  description: `Target audience: ${formData.targetAudience || 'all'}`,
+                  trigger: 'promotion_targeting',
+                  expression: formData.targetAudience || 'all',
+                  enabled: true,
+                }}
+                context={RULE_CONTEXTS.promotion_targeting}
+                onSave={(config: RuleConfig) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    targetAudience: (config.expression as any) || 'all',
+                  }));
+                }}
+              />
             </div>
 
             {/* Promotion Schedule */}
