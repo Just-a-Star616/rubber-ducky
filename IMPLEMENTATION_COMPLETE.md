@@ -259,7 +259,7 @@ interface BrandingConfig {
 ```json
 {
   "companyLogoUrl": "data:image/png;base64,iVBORw0KG...",
-  "companyName": "Project Rubber Ducky Ltd.",
+  "companyName": "DarthStar Dispatch",
   "primaryColor": "#3b82f6",
   ...
 }

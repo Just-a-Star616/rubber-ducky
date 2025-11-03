@@ -215,9 +215,9 @@ const BrandedDriverSignUp: FC<...> = ({ ... }) => {
 ```javascript
 // localStorage['companyBranding']
 {
-  companyName: "Project Rubber Ducky Ltd.",
+  companyName: "DarthStar Dispatch",
   companyLogoUrl: "data:image/png;base64,iVBORw0KGgo...",
-  companyLogoAlt: "Project Rubber Ducky Ltd. Logo",
+  companyLogoAlt: "DarthStar Dispatch Logo",
   primaryColor: "#3b82f6",
   primaryColorDark: "#1e40af",
   accentColor: "#10b981",
