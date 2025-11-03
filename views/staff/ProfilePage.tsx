@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 import { mockStaffList, mockShortcutLinks, mockMessageTemplates } from '../../lib/mockData';
 import { StaffMember, OfficeHours, ShortcutLink, StaffNotice } from '../../types';
 import { PencilIcon, ClipboardDocumentCheckIcon, LinkIcon, ClockIcon } from '../../components/icons/Icon';
@@ -78,9 +79,9 @@ const OfficeHoursSection = ({ initialHours, onHoursSave }: { initialHours: Offic
                                         </div>
                                     </div>
                                     <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                        <input type="time" value={h.start} onChange={e => handleHourChange(h.day, 'start', e.target.value)} disabled={h.isOff} className="w-full text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-sm disabled:opacity-50" />
-                                        <input type="time" value={h.end} onChange={e => handleHourChange(h.day, 'end', e.target.value)} disabled={h.isOff} className="w-full text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-sm disabled:opacity-50" />
-                                        <input type="text" placeholder="Location (optional)" value={h.location || ''} onChange={e => handleHourChange(h.day, 'location', e.target.value)} disabled={h.isOff} className="w-full text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 shadow-sm disabled:opacity-50 sm:col-span-3" />
+                                        <Input type="time" value={h.start} onChange={e => handleHourChange(h.day, 'start', e.target.value)} disabled={h.isOff} />
+                                        <Input type="time" value={h.end} onChange={e => handleHourChange(h.day, 'end', e.target.value)} disabled={h.isOff} />
+                                        <Input type="text" placeholder="Location (optional)" value={h.location || ''} onChange={e => handleHourChange(h.day, 'location', e.target.value)} disabled={h.isOff} className="sm:col-span-3" />
                                     </div>
                                 </>
                             ) : (
