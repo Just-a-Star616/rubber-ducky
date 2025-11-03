@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Unified Rule Builder System provides a consistent, intuitive interface for building rules across all areas of the project. Instead of 5+ different rule-building approaches, we now have:
+The Unified Rule Builder System provides a consistent, intuitive interface for building rules across all areas of the project. Instead of fragmented approaches, we now have:
 
 - **Single unified component**: `BaseRuleBuilder.tsx`
 - **Shared logic**: `lib/ruleBuilder.ts` (types, expression builder, validators)
@@ -13,19 +13,19 @@ The Unified Rule Builder System provides a consistent, intuitive interface for b
 
 **Before**: Fragmented rule-building across the system
 
-| System | Interface | Condition Type | Status |
-|--------|-----------|-----------------|--------|
-| Webhooks | JavaScript expression + JSON templates | Custom JS | Inconsistent |
-| Automations | Conditions with variable tags | JS expression | Inconsistent |
-| Attributes | Checkboxes + JS conditions | Multiple UIs | Inconsistent |
-| Messages | Placeholders + conditions | Different format | Inconsistent |
-| Commission | Formula expressions | Custom syntax | Inconsistent |
-| Promotions | Schedule + conditions | Time-based | Inconsistent |
+| System | Interface | Status |
+|--------|-----------|--------|
+| Webhooks | JavaScript expression builder | ✅ Unified |
+| Automations | Conditions UI | ✅ Unified |
+| Messages | Template conditions | ✅ Unified |
+| Attributes | Eligibility rules | ✅ Unified |
+| Promotions - Eligibility | String list (OLD) | ✅ Unified |
+| Promotions - Targeting | Dropdown select (OLD) | ✅ Unified |
 
-**After**: Single unified builder
+**After**: Single unified builder across all 6 systems
 
 ```
-All Systems → BaseRuleBuilder → Unified UI/UX → Consistent Variables
+All Systems → BaseRuleBuilder → Unified UI/UX → Consistent Variables → Expression Output
 ```
 
 ## Core Concepts
@@ -120,12 +120,27 @@ The main UI component for building rules.
 
 ### Available Contexts
 
+The system includes 6 pre-configured rule contexts:
+
 ```typescript
-RULE_CONTEXTS.webhook_booking        // For webhooks triggered by booking events
-RULE_CONTEXTS.automation_trigger     // For automations
-RULE_CONTEXTS.message_template       // For message templates
-RULE_CONTEXTS.attribute_eligibility  // For auto-applying attributes
+RULE_CONTEXTS.webhook_booking        // Booking event webhooks
+RULE_CONTEXTS.automation_trigger     // Event-driven automations
+RULE_CONTEXTS.message_template       // Message template conditions
+RULE_CONTEXTS.attribute_eligibility  // Auto-apply attributes to bookings
+RULE_CONTEXTS.promotion_eligibility  // Determine promotion access
+RULE_CONTEXTS.promotion_targeting    // Audience segmentation
 ```
+
+**Context Details**:
+
+| Context | Component | Purpose | Variables |
+|---------|-----------|---------|-----------|
+| `webhook_booking` | WebhookEditModal | When to fire webhooks | booking.*, customer.*, driver.* |
+| `automation_trigger` | AutomationEditModal | When to trigger automations | trigger.*, driver.*, customer.* |
+| `message_template` | MessageTemplateEditModal | Message conditions | customer.*, booking.* |
+| `attribute_eligibility` | AttributeEditModal | When to apply attributes | booking.*, vehicle.*, etc. |
+| `promotion_eligibility` | PromotionEditModal | Who gets promotion | driver.prefix, driver.schemeCode, driver.earnings, etc. |
+| `promotion_targeting` | CustomerPromotionEditModal | Target audience segment | audience, driver.status, driver.rating, driver.accountAge |
 
 ## Usage Examples
 
@@ -186,7 +201,72 @@ export const AutomationEditModal = ({ automation, onClose }) => {
 };
 ```
 
-### Example 3: Custom Context
+### Example 3: Promotion Eligibility Rule
+
+```tsx
+export const PromotionEditModal = ({ promotion, onClose }) => {
+  const handleSave = (config: RuleConfig) => {
+    const updated = {
+      ...promotion,
+      ...config,
+      eligibilityRules: config.expression
+        .split('\n')
+        .filter(rule => rule.trim() !== ''),
+    };
+    savePromotion(updated);
+    onClose();
+  };
+
+  return (
+    <BaseRuleBuilder
+      title="Edit Promotion"
+      description="Define who is eligible for this promotion"
+      context={RULE_CONTEXTS.promotion_eligibility}
+      onSave={handleSave}
+      onCancel={onClose}
+      initialConfig={promotion}
+    />
+  );
+};
+```
+
+**Example expressions**:
+- `driver.prefix != CR && driver.schemeCode == S07`
+- `driver.jobsCompleted > 100 && driver.totalEarnings < 50000`
+- `driver.joiningMonth == January || driver.joiningMonth == July`
+
+### Example 4: Promotion Targeting Rule
+
+```tsx
+export const CustomerPromotionEditModal = ({ promotion, onClose }) => {
+  const handleSave = (config: RuleConfig) => {
+    const updated = {
+      ...promotion,
+      targetAudience: config.expression,
+    };
+    savePromotion(updated);
+    onClose();
+  };
+
+  return (
+    <BaseRuleBuilder
+      title="Target Audience"
+      description="Select which customer segment to target"
+      context={RULE_CONTEXTS.promotion_targeting}
+      onSave={handleSave}
+      onCancel={onClose}
+      initialConfig={promotion}
+    />
+  );
+};
+```
+
+**Example expressions**:
+- `audience == high-value-drivers`
+- `driver.rating >= 4.5 && driver.accountAge > 90`
+- `driver.status == Inactive && driver.accountAge < 180`
+
+### Example 5: Custom Context
 
 For systems not yet covered, create a new context:
 
