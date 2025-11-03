@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Driver, PendingChanges, DocumentUpdateRequest } from '../../types';
+import { Driver, PendingChanges, DocumentUpdateRequest, BankAccount } from '../../types';
 import { Button } from '../../components/ui/button';
 import { PencilIcon, ClockIcon, UploadIcon, DocumentDownloadIcon } from '../../components/icons/Icon';
 import { mockLicensingCouncils } from '../../lib/mockData';
@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../..
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import BankAccountManager from '../../components/staff/BankAccountManager';
+import BankAccountVerificationModal from '../../components/staff/BankAccountVerificationModal';
 
 interface DriverProfileProps {
   driver: Driver;
@@ -182,6 +184,8 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ driver, setDriver, themeN
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<Partial<Driver>>({});
     const [files, setFiles] = useState<{ [key: string]: { file: File, url: string } | null }>({});
+    const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+    const [verifyingAccount, setVerifyingAccount] = useState<BankAccount | null>(null);
     
     useEffect(() => {
         return () => {
@@ -265,6 +269,71 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ driver, setDriver, themeN
         setIsEditing(false);
     };
 
+    const handleBankAccountAdd = (account: BankAccount) => {
+        const updatedDriver = {
+            ...driver,
+            bankAccounts: [...driver.bankAccounts, account],
+        };
+        setDriver(updatedDriver);
+        setVerifyingAccount(account);
+        setIsVerificationModalOpen(true);
+    };
+
+    const handleBankAccountEdit = (account: BankAccount) => {
+        const updatedDriver = {
+            ...driver,
+            bankAccounts: driver.bankAccounts.map(ba => ba.id === account.id ? account : ba),
+        };
+        setDriver(updatedDriver);
+        setVerifyingAccount(account);
+        setIsVerificationModalOpen(true);
+    };
+
+    const handleBankAccountDelete = (accountId: string) => {
+        const updatedDriver = {
+            ...driver,
+            bankAccounts: driver.bankAccounts.filter(ba => ba.id !== accountId),
+        };
+        setDriver(updatedDriver);
+    };
+
+    const handleBankAccountSetDefault = (accountId: string) => {
+        const updatedDriver = {
+            ...driver,
+            bankAccounts: driver.bankAccounts.map(ba => ({
+                ...ba,
+                isDefault: ba.id === accountId,
+            })),
+        };
+        setDriver(updatedDriver);
+    };
+
+    const handleBankAccountVerificationRequired = (account: BankAccount) => {
+        setVerifyingAccount(account);
+        setIsVerificationModalOpen(true);
+    };
+
+    const handleVerificationConfirm = (code: string) => {
+        if (verifyingAccount) {
+            const updatedDriver = {
+                ...driver,
+                bankAccounts: driver.bankAccounts.map(ba =>
+                    ba.id === verifyingAccount.id
+                        ? {
+                            ...ba,
+                            verified: true,
+                            verificationConfirmedAt: new Date().toISOString(),
+                        }
+                        : ba
+                ),
+            };
+            setDriver(updatedDriver);
+            setIsVerificationModalOpen(false);
+            setVerifyingAccount(null);
+            alert('Bank account verified successfully!');
+        }
+    };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <div className="flex flex-col items-center">
@@ -330,7 +399,31 @@ const DriverProfile: React.FC<DriverProfileProps> = ({ driver, setDriver, themeN
         </Card>
       </form>
       
-      <Card>
+      <Card className="mt-6">
+            <CardHeader><CardTitle>Bank Accounts for Withdrawals</CardTitle><CardDescription>Add and manage bank accounts for credit withdrawals.</CardDescription></CardHeader>
+            <CardContent>
+                <BankAccountManager
+                    bankAccounts={driver.bankAccounts}
+                    onAdd={handleBankAccountAdd}
+                    onEdit={handleBankAccountEdit}
+                    onDelete={handleBankAccountDelete}
+                    onSetDefault={handleBankAccountSetDefault}
+                    onVerificationRequired={handleBankAccountVerificationRequired}
+                />
+            </CardContent>
+        </Card>
+
+        <BankAccountVerificationModal
+            isOpen={isVerificationModalOpen}
+            onClose={() => {
+                setIsVerificationModalOpen(false);
+                setVerifyingAccount(null);
+            }}
+            account={verifyingAccount}
+            onConfirm={handleVerificationConfirm}
+        />
+      
+      <Card className="mt-6">
         <CardHeader><CardTitle>Appearance</CardTitle><CardDescription>Choose a color theme for the portal.</CardDescription></CardHeader>
         <CardContent>
             <ThemeSelector themeName={themeName} setThemeName={setThemeName} />
