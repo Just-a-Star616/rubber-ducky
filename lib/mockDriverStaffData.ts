@@ -12,13 +12,13 @@ export const mockDrivers: Driver[] = [
         schemeCode: '1.00', gender: 'Male', badgeType: 'Private Hire', badgeIssuingCouncil: 'Manchester City Council',
         badgeNumber: 'PH-DEMO', badgeExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
         drivingLicenseNumber: 'DEMO000000XX', drivingLicenseExpiry: new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString(),
-        schoolBadgeNumber: null, schoolBadgeExpiry: null,
+        schoolBadgeNumber: 'SB-DEMO', schoolBadgeExpiry: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
         dateOfBirth: '1990-01-01', emergencyContactName: 'Demo Contact', emergencyContactNumber: '07700000001',
-        status: 'Active', lastStatementBalance: 500, commissionTotal: 5000, currentBalance: 1500.00,
-        canWithdrawCredit: true, earnedCreditSinceInvoice: 250.00, attributes: ['Airport Specialist', 'Executive Saloon'], siteId: 'SITE01',
-        availability: { isOnline: true, shift: 'Day', lastSeen: new Date().toISOString() },
+        status: 'Active', lastStatementBalance: 500, commissionTotal: 5000, currentBalance: 2500.00,
+        canWithdrawCredit: true, earnedCreditSinceInvoice: 500.00, attributes: ['Airport Specialist', 'Executive Saloon', 'Pet Friendly', 'Contactless Payment'], siteId: 'SITE01',
+        availability: { isOnline: true, shift: 'Day', lastSeen: new Date().toISOString(), currentLocation: { lat: 53.48, lng: -2.24 } },
         performance: { completionRate: 100, averageRating: 5.0, totalJobs: 250, monthlyEarnings: 8000 },
-        preferences: { maxJobDistance: 30, preferredAreas: ['M1', 'M2', 'M3'], acceptsLongDistance: true, acceptsAirportJobs: true },
+        preferences: { maxJobDistance: 30, preferredAreas: ['M1', 'M2', 'M3', 'M4'], acceptsLongDistance: true, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] },
         bankAccounts: [
             {
@@ -27,11 +27,26 @@ export const mockDrivers: Driver[] = [
                 bankName: 'Starling Bank',
                 accountNumber: '12345678',
                 sortCode: '04-00-04',
+                iban: 'GB82STRL00112345678',
                 isDefault: true,
                 verified: true,
                 verificationMethod: 'Email',
                 verificationConfirmedAt: new Date().toISOString(),
                 createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            },
+            {
+                id: 'bank_d_demo_2',
+                accountHolderName: 'Demo Driver',
+                bankName: 'Barclays',
+                accountNumber: '87654321',
+                sortCode: '20-00-00',
+                iban: 'GB94BARCS00112345678',
+                isDefault: false,
+                verified: true,
+                verificationMethod: 'SMS',
+                verificationConfirmedAt: new Date().toISOString(),
+                createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
                 updatedAt: new Date().toISOString(),
             }
         ]
@@ -281,6 +296,13 @@ export const mockDriverTransactions: Transaction[] = [
 export const mockVehicleAttributes: string[] = ['Wheelchair Accessible', 'Pet Friendly', 'Executive Saloon', 'MPV (6-seater)', 'Airport Specialist', 'Contactless Payment', 'Child Seat Available'];
 
 export const mockVehicles: Vehicle[] = [
+    {
+        id: 'V-DEMO', status: 'Active', registration: 'DM25 DEMO', make: 'Toyota', model: 'Prius', color: 'Silver',
+        firstRegistrationDate: '2023-01-20', plateType: 'Private Hire', plateIssuingCouncil: 'Manchester City Council',
+        plateNumber: 'PDEMO', plateExpiry: '2026-01-30T23:59:59Z', insuranceCertificateNumber: 'DEMO123',
+        insuranceExpiry: '2025-12-31T23:59:59Z', motComplianceExpiry: '2026-01-19T23:59:59Z', roadTaxExpiry: '2026-01-30T23:59:59Z',
+        attributes: ['Executive Saloon', 'Pet Friendly', 'Contactless Payment'], ownershipType: 'Company', linkedDriverIds: ['D-DEMO'], siteId: 'SITE01'
+    },
     {
         id: 'V001', status: 'Active', registration: 'AB12 CDE', make: 'Mercedes-Benz', model: 'E-Class', color: 'Black',
         firstRegistrationDate: '2022-01-15', plateType: 'Private Hire', plateIssuingCouncil: 'Manchester City Council',
