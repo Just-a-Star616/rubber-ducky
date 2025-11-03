@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { mockCompanyDetails, mockSiteDetails } from '../../lib/mockData';
+import { mockStaffList, mockPermissionTemplates } from '../../lib/mockData';
 import { CompanyDetails, SiteDetails, InvoiceTemplate } from '../../types';
 import { PencilIcon } from '../../components/icons/Icon';
 import SiteEditModal from '../../components/staff/SiteEditModal';
-import ActivityLogViewer from '../../components/staff/ActivityLogViewer';
+import ProtectedActivityLogViewer from '../../components/staff/ProtectedActivityLogViewer';
 import { Input } from '../../components/ui/input';
 import { Textarea } from '../../components/ui/textarea';
 import { saveBrandingConfig, updateBrandingSingleton, getBrandingConfig } from '../../lib/branding';
@@ -239,6 +240,29 @@ const SiteDetailsSection: React.FC = () => {
 };
 
 const CompanyAdminPage: React.FC = () => {
+  // Get current user (in production, this would come from auth context)
+  const currentStaff = mockStaffList[0]; // SM01 - Alex Johnson (admin-like user)
+  
+  // Get user's permission template
+  const userTemplate = useMemo(() => {
+    if (currentStaff?.templateId) {
+      return mockPermissionTemplates.find(t => t.id === currentStaff.templateId);
+    }
+    return mockPermissionTemplates.find(t => t.id === 't-admin');
+  }, []);
+
+  // Extract audit log permissions
+  const auditPermissions = useMemo(() => ({
+    auditLogsView: userTemplate?.permissions['audit-logs-view'] as string | undefined,
+    auditLogsFilter: userTemplate?.permissions['audit-logs-filter'] as string | undefined,
+    auditLogsExport: userTemplate?.permissions['audit-logs-export'] as string | undefined,
+    auditLogsOwn: userTemplate?.permissions['audit-logs-own'] as string | undefined,
+    auditScopedStaff: userTemplate?.permissions['audit-scoped-staff'] as string | undefined,
+    auditScopedFinancial: userTemplate?.permissions['audit-scoped-financial'] as string | undefined,
+    auditScopedDispatch: userTemplate?.permissions['audit-scoped-dispatch'] as string | undefined,
+    auditScopedDrivers: userTemplate?.permissions['audit-scoped-drivers'] as string | undefined,
+  }), [userTemplate]);
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
       <Card>
@@ -248,7 +272,13 @@ const CompanyAdminPage: React.FC = () => {
         </div>
       </Card>
       
-      <ActivityLogViewer limit={100} showFilters={true} showStats={true} />
+      <ProtectedActivityLogViewer 
+        staff={currentStaff} 
+        permissions={auditPermissions}
+        limit={100} 
+        showFilters={true} 
+        showStats={true} 
+      />
     </div>
   );
 };
