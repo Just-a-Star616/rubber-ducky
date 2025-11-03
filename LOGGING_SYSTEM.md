@@ -182,7 +182,121 @@ const stats = getLogStatistics({
 - **Format**: JSON array of LogEntry objects
 - **Persistence**: Survives browser refresh, persists across sessions
 
-## Future Enhancements
+## 5. Permission-Based Access Control
+
+The logging system includes comprehensive permission-based access to allow different staff roles to view and filter logs relevant to their responsibilities.
+
+### Permission Structure
+
+Audit log permissions are organized under the `AUDIT_LOGS` section in the permission system:
+
+- **audit-logs-view**: Controls basic access to activity logs
+  - `edit`: Full access to all logs
+  - `view`: Limited access based on scoped permissions
+  - `hidden`: No access
+
+- **audit-logs-filter**: Controls ability to filter and search logs
+  - `edit`: Can filter all logs
+  - `view`: Can filter within allowed scope
+  - `hidden`: Filter feature disabled
+
+- **audit-logs-export**: Controls log export functionality
+  - `edit`: Can export logs (JSON/CSV)
+  - `hidden`: Export disabled (read-only)
+
+- **audit-scoped-staff**: View staff changes and permission modifications
+- **audit-scoped-financial**: View financial/commission/payment logs
+- **audit-scoped-dispatch**: View booking and dispatch activity
+- **audit-scoped-drivers**: View driver-related changes
+
+### Role-Based Access Matrix
+
+| Role | View Logs | Can Filter | Can Export | Can See |
+|------|-----------|-----------|-----------|---------|
+| Administrator | ✅ Full | ✅ All | ✅ All | All logs |
+| Finance | ✅ View | ✅ Financial | ✅ Yes | Financial logs only |
+| Accounts | ✅ View | ✅ Financial | ✅ Yes | Financial logs only |
+| Dispatcher | ✅ View | ✅ Dispatch | ❌ No | Dispatch & driver activity |
+| Read-Only | ✅ View | ✅ Limited | ❌ No | All logs (read-only) |
+| Login Only | ❌ None | ❌ No | ❌ No | No access |
+
+### Access Control Components
+
+#### ProtectedActivityLogViewer (`components/staff/ProtectedActivityLogViewer.tsx`)
+
+Wrapper component that:
+- Checks if user has permission to view logs
+- Shows "Access Denied" message if no permissions
+- Displays access level description
+- Passes filtered logs to ActivityLogViewer
+- Disables export button if user lacks export permission
+
+```typescript
+<ProtectedActivityLogViewer 
+  staff={currentUser}
+  permissions={{
+    auditLogsView: 'view',
+    auditLogsFilter: 'view',
+    auditLogsExport: 'hidden',
+    auditScopedStaff: 'hidden',
+    auditScopedFinancial: 'view',
+    auditScopedDispatch: 'hidden',
+    auditScopedDrivers: 'hidden'
+  }}
+  limit={100}
+  showFilters={true}
+  showStats={true}
+/>
+```
+
+#### Audit Permissions Utility (`lib/auditPermissions.ts`)
+
+Helper functions for permission checks:
+
+```typescript
+// Check basic access
+hasAuditLogAccess(staff, permissionLevel): boolean
+
+// Check specific capabilities
+canFilterLogs(staff, permissionLevel): boolean
+canExportLogs(staff, permissionLevel): boolean
+
+// Filter logs based on user's role and scoped permissions
+filterLogsForUser(logs, staff, permissions): LogEntry[]
+
+// Get human-readable access description
+getAuditAccessDescription(permissions): string
+```
+
+## 6. Dispute Resolution & Investigation Workflow
+
+The logging system supports dispute resolution and change tracking for investigations:
+
+### Use Case 1: Driver Commission Dispute
+1. **Finance staff** views financial logs filtered for the specific driver
+2. Searches commission scheme changes and payment adjustments
+3. Exports logs as CSV for dispute documentation
+4. Tracks exact changes with timestamps and responsible staff member
+
+### Use Case 2: Driver Payment Correction
+1. **Accounts staff** searches for payment transaction in logs
+2. Views who made changes and exactly what was modified
+3. Filters by date range to find when correction was applied
+4. Generates audit trail for customer communication
+
+### Use Case 3: Staff Member Investigation
+1. **Administrator** views all staff-related log entries
+2. Searches for suspicious activity or unauthorized changes
+3. Tracks which staff member made changes and when
+4. Exports full audit trail for compliance
+
+### Use Case 4: Booking Dispute Tracking
+1. **Dispatcher** views dispatch activity logs
+2. Filters by booking ID or driver to track all changes
+3. Views exact time and details of modifications
+4. Provides evidence of what happened during disputed booking
+
+## 7. Security Considerations
 
 1. **Backend Integration**: Move logs to server-side database for:
    - Unlimited retention
@@ -206,13 +320,34 @@ const stats = getLogStatistics({
    - Automatic archival by age
    - Category-specific retention periods
 
-## Security Considerations
+6. **Enhanced Scoped Access**:
+   - Site-specific log filtering (for multi-site operations)
+   - Department-specific access controls
+   - Team-based log views
 
-- **Sensitive Data**: Currently logs include user/entity IDs. Consider:
-  - Removing or hashing sensitive PII
-  - Implementing access controls on log viewer
-  - Encrypting stored logs
+## Security & Compliance
 
-- **Storage Limits**: Monitor localStorage usage to avoid quota exceeded errors
+### Permission Enforcement
+- ✅ View permissions enforced at component level (ProtectedActivityLogViewer)
+- ✅ Role-based log filtering prevents unauthorized data exposure
+- ✅ Export controls restrict sensitive data downloads
+- ✅ Access levels logged for security audit trails
 
-- **Admin Access**: ActivityLogViewer should be restricted to authenticated admin users
+### Data Protection
+- Logs include user/entity IDs for traceability
+- PII handled according to data retention policies
+- localStorage encryption recommended for production
+- Consider field-level PII masking for sensitive logs
+
+### Storage & Performance
+- localStorage used for quick access (10k max entries)
+- Automatic pruning prevents quota exceeded errors
+- Recommend server-side database for long-term retention
+
+### Compliance Features
+- Full audit trail for regulatory requirements
+- Exportable logs for compliance reports
+- Timestamped entries for legal proceedings
+- User identification for accountability
+
+```
