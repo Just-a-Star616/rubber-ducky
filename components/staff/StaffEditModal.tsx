@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { StaffMember, StaffStatus, PermissionTemplate, SiteDetails } from '../../types';
+import { StaffMember, StaffStatus, PermissionTemplate, SiteDetails, OfficeHours } from '../../types';
 import { logAction } from '../../lib/logging';
 import { Button } from '../ui/button';
 import { XIcon } from '../icons/Icon';
@@ -18,6 +18,44 @@ interface StaffEditModalProps {
   availableSites?: SiteDetails[];
 }
 
+const defaultOfficeHours: OfficeHours[] = [
+    { day: 'Monday', isOff: false, start: '09:00', end: '17:00' },
+    { day: 'Tuesday', isOff: false, start: '09:00', end: '17:00' },
+    { day: 'Wednesday', isOff: false, start: '09:00', end: '17:00' },
+    { day: 'Thursday', isOff: false, start: '09:00', end: '17:00' },
+    { day: 'Friday', isOff: false, start: '09:00', end: '17:00' },
+    { day: 'Saturday', isOff: true, start: '00:00', end: '00:00' },
+    { day: 'Sunday', isOff: true, start: '00:00', end: '00:00' },
+];
+
+const OfficeHoursEditor = ({ hours, onHoursChange }: { hours: OfficeHours[], onHoursChange: (hours: OfficeHours[]) => void }) => {
+    const handleHourChange = (day: string, field: keyof OfficeHours, value: string | boolean) => {
+        const newHours = hours.map(h => h.day === day ? { ...h, [field]: value } : h);
+        onHoursChange(newHours);
+    };
+
+    return (
+        <div className="space-y-3">
+            <h4 className="text-md font-medium text-card-foreground">Office Hours</h4>
+            {hours.map(h => (
+                <div key={h.day} className="p-3 rounded-lg bg-background">
+                    <div className="flex justify-between items-center">
+                        <span className="font-semibold text-sm text-card-foreground">{h.day}</span>
+                        <div className="flex items-center">
+                            <label htmlFor={`staff-isOff-${h.day}`} className="mr-2 text-sm text-card-foreground/70">Off</label>
+                            <input type="checkbox" id={`staff-isOff-${h.day}`} checked={h.isOff} onChange={(e) => handleHourChange(h.day, 'isOff', e.target.checked)} className="h-4 w-4 rounded border-border text-primary-600 focus:ring-primary-500" />
+                        </div>
+                    </div>
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                        <Input type="time" value={h.start} onChange={e => handleHourChange(h.day, 'start', e.target.value)} disabled={h.isOff} className="disabled:opacity-50" />
+                        <Input type="time" value={h.end} onChange={e => handleHourChange(h.day, 'end', e.target.value)} disabled={h.isOff} className="disabled:opacity-50" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
 const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose, onSave, permissionTemplates, availableSites = [] }) => {
   const [formData, setFormData] = useState<Partial<StaffMember>>({});
   const [selectedSiteIds, setSelectedSiteIds] = useState<Set<string>>(new Set());
@@ -27,7 +65,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
 
   useEffect(() => {
     if (isNew) {
-      setFormData({ name: '', email: '', title: '', templateId: permissionTemplates.find(t => t.name === 'Login Only')?.id, status: 'Active' });
+      setFormData({ name: '', email: '', title: '', templateId: permissionTemplates.find(t => t.name === 'Login Only')?.id, status: 'Active', officeHours: defaultOfficeHours });
       setSelectedSiteIds(new Set());
     } else {
       setFormData({ ...staff });
@@ -56,6 +94,10 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
       newSiteIds.add(siteId);
     }
     setSelectedSiteIds(newSiteIds);
+  };
+
+  const handleOfficeHoursChange = (newHours: OfficeHours[]) => {
+    setFormData(prev => ({ ...prev, officeHours: newHours }));
   };
 
   const handleSave = () => {
@@ -173,6 +215,9 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
                 </div>
               </div>
             )}
+            <div className="border-t pt-4">
+              <OfficeHoursEditor hours={formData.officeHours || []} onHoursChange={handleOfficeHoursChange} />
+            </div>
           </CardContent>
           <CardFooter className="flex justify-end items-center">
             <div className="space-x-3">
