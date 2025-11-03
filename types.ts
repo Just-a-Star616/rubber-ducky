@@ -525,6 +525,7 @@ export interface SiteDetails {
     areaManagerName: string;
     areaManagerEmail: string;
     officeHours: OfficeHours[];
+    siteLogo?: string; // Optional site-specific logo; falls back to company logo if not set
     defaultInvoiceTemplates?: {
         driverInvoice: string; // Template ID for driver invoices
         factoringInvoice: string; // Template ID for factoring invoices

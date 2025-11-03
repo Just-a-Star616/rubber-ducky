@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { HistoricInvoice, FinancialTransaction, Driver, Account, CompanyDetails } from '../../types';
 import { Button } from '../ui/button';
 import { XIcon, DocumentDownloadIcon, PaperAirplaneIcon } from '../icons/Icon';
-import { mockDrivers, mockAccounts, mockFinancialTransactions, mockCompanyDetails } from '../../lib/mockData';
+import { mockDrivers, mockAccounts, mockFinancialTransactions, mockCompanyDetails, mockSiteDetails } from '../../lib/mockData';
 import { getBrandingConfig } from '../../lib/branding';
 
 interface InvoicePreviewModalProps {
@@ -21,6 +21,16 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({ isOpen, onClo
         }
         return mockAccounts.find(a => a.id === invoice.recipientId) as Account | undefined;
     }, [invoice]);
+
+    const site = useMemo(() => {
+        if (!invoice || !('siteId' in invoice)) return null;
+        return mockSiteDetails.find(s => s.id === (invoice as any).siteId);
+    }, [invoice]);
+
+    const logoUrl = useMemo(() => {
+        // Use site-specific logo if available, otherwise fall back to company logo
+        return site?.siteLogo || branding.companyLogoUrl;
+    }, [site, branding.companyLogoUrl]);
     
     const lineItems = useMemo(() => {
         if (!invoice || !invoice.transactionIds) return [];
@@ -47,7 +57,7 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({ isOpen, onClo
                     {/* Header */}
                     <div className="flex justify-between items-start">
                         <div>
-                            <img src={branding.companyLogoUrl} alt={branding.companyLogoAlt} className="h-16 w-auto object-contain mb-4"/>
+                            <img src={logoUrl} alt={branding.companyLogoAlt} className="h-16 w-auto object-contain mb-4"/>
                             <h1 className="text-2xl font-bold">{isDriverInvoice ? 'Statement of Earnings' : 'Invoice'}</h1>
                             <p className="text-muted-foreground">Invoice #{invoice.id}</p>
                         </div>

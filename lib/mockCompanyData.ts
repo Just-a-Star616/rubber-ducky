@@ -47,6 +47,7 @@ export const mockSiteDetails: SiteDetails[] = [
         areaManagerName: "Alex Johnson",
         areaManagerEmail: "alex.j@example.com",
         officeHours: manchesterOfficeHours,
+        siteLogo: undefined, // Uses company logo by default
         defaultInvoiceTemplates: {
             driverInvoice: 'detailed-template',
             factoringInvoice: 'default-template',
@@ -63,6 +64,7 @@ export const mockSiteDetails: SiteDetails[] = [
         areaManagerName: "Jane Doe",
         areaManagerEmail: "jane.d@example.com",
         officeHours: liverpoolOfficeHours,
+        siteLogo: undefined, // Uses company logo by default
         defaultInvoiceTemplates: {
             driverInvoice: 'detailed-template',
             factoringInvoice: 'default-template',

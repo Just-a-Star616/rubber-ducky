@@ -71,12 +71,14 @@ const defaultHours: OfficeHours[] = [
 
 const SiteEditModal: React.FC<SiteEditModalProps> = ({ site, isOpen, onClose, onSave, onDelete, availableTemplates = [] }) => {
     const [formData, setFormData] = useState<Partial<SiteDetails>>({});
+    const [logoPreview, setLogoPreview] = useState<string | null>(null);
     const isNew = !site?.id;
 
     const handleKeyDown = useCallback((event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); }, [onClose]);
 
     useEffect(() => {
         setFormData(isNew ? { name: '', officeHours: defaultHours } : { ...site });
+        setLogoPreview(null);
         if (isOpen) document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [site, isOpen, isNew, handleKeyDown]);
@@ -88,6 +90,22 @@ const SiteEditModal: React.FC<SiteEditModalProps> = ({ site, isOpen, onClose, on
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setLogoPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleClearLogo = () => {
+        setLogoPreview(null);
+        setFormData(prev => ({ ...prev, siteLogo: undefined }));
+    };
+
     const handleHoursChange = (newHours: OfficeHours[]) => {
         setFormData(prev => ({ ...prev, officeHours: newHours }));
     }
@@ -96,6 +114,9 @@ const SiteEditModal: React.FC<SiteEditModalProps> = ({ site, isOpen, onClose, on
         if (!formData.name) {
             alert("Site name is required.");
             return;
+        }
+        if (logoPreview) {
+            setFormData(prev => ({ ...prev, siteLogo: logoPreview }));
         }
         onSave(formData as SiteDetails);
     }
@@ -120,8 +141,48 @@ const SiteEditModal: React.FC<SiteEditModalProps> = ({ site, isOpen, onClose, on
                                 <FormField label="Area Manager Name" id="areaManagerName" name="areaManagerName" value={formData.areaManagerName || ''} onChange={handleInputChange} />
                                 <FormField label="Area Manager Email" id="areaManagerEmail" name="areaManagerEmail" type="email" value={formData.areaManagerEmail || ''} onChange={handleInputChange} />
                             </div>
-                            <div>
-                                <OfficeHoursEditor hours={formData.officeHours || []} onHoursChange={handleHoursChange} />
+                            <div className="space-y-6">
+                                <div>
+                                    <OfficeHoursEditor hours={formData.officeHours || []} onHoursChange={handleHoursChange} />
+                                </div>
+                                <div className="border-t pt-6">
+                                    <h4 className="text-md font-medium text-card-foreground mb-3">Site Logo</h4>
+                                    <p className="text-sm text-muted-foreground mb-3">Optional: Upload a site-specific logo for invoices (defaults to company logo if not set)</p>
+                                    <div className="flex items-center space-x-4">
+                                        <img 
+                                            src={logoPreview || formData.siteLogo || '/HeroVillainYoda.png'} 
+                                            alt="Site Logo" 
+                                            className="h-16 w-16 object-contain rounded-md bg-muted p-1 border border-border" 
+                                        />
+                                        <div className="flex flex-col gap-2">
+                                            <Button 
+                                                variant="secondary" 
+                                                type="button" 
+                                                size="sm"
+                                                onClick={() => document.getElementById('site-logo-upload')?.click()}
+                                            >
+                                                Upload Logo
+                                            </Button>
+                                            {(logoPreview || formData.siteLogo) && (
+                                                <Button 
+                                                    variant="outline" 
+                                                    type="button" 
+                                                    size="sm"
+                                                    onClick={handleClearLogo}
+                                                >
+                                                    Clear Logo
+                                                </Button>
+                                            )}
+                                            <input 
+                                                type="file" 
+                                                id="site-logo-upload" 
+                                                className="hidden" 
+                                                accept="image/*" 
+                                                onChange={handleFileChange} 
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

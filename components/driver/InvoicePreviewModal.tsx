@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Invoice, CompanyDetails } from '../../types';
 import { Button } from '../ui/button';
 import { XIcon, DocumentDownloadIcon } from '../icons/Icon';
-import { mockCompanyDetails } from '../../lib/mockData';
+import { mockCompanyDetails, mockSiteDetails } from '../../lib/mockData';
 import { getBrandingConfig } from '../../lib/branding';
 
 interface InvoicePreviewModalProps {
@@ -13,6 +13,16 @@ interface InvoicePreviewModalProps {
 
 const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({ isOpen, onClose, invoice }) => {
     const branding = getBrandingConfig();
+
+    const site = useMemo(() => {
+        if (!invoice || !('siteId' in invoice)) return null;
+        return mockSiteDetails.find(s => s.id === (invoice as any).siteId);
+    }, [invoice]);
+
+    const logoUrl = useMemo(() => {
+        // Use site-specific logo if available, otherwise fall back to company logo
+        return site?.siteLogo || branding.companyLogoUrl;
+    }, [site, branding.companyLogoUrl]);
     
     if (!isOpen || !invoice) return null;
 
@@ -30,7 +40,7 @@ const InvoicePreviewModal: React.FC<InvoicePreviewModalProps> = ({ isOpen, onClo
                     {/* Header */}
                     <div className="flex justify-between items-start">
                         <div>
-                            <img src={branding.companyLogoUrl} alt={branding.companyLogoAlt} className="h-16 w-auto object-contain mb-4"/>
+                            <img src={logoUrl} alt={branding.companyLogoAlt} className="h-16 w-auto object-contain mb-4"/>
                             <h1 className="text-2xl font-bold">Statement of Earnings</h1>
                             <p className="text-muted-foreground">For week ending: {invoice.weekEnding}</p>
                         </div>
