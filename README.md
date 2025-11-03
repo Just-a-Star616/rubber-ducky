@@ -30,20 +30,23 @@ A comprehensive driver management platform with integrated driver signup, staff 
 
 ## 📚 Documentation
 
-**NEW**: Complete deployment guides and integration instructions available in `docs/`:
+**Complete documentation available in the `docs/` folder:**
 
-- **[📖 Quick Start (5-minute setup)](./docs/QUICK_START.md)** ⭐ Start here!
+- **[� Documentation Index](./docs/INDEX.md)** - Complete navigation guide
+- **[�📖 Quick Start (5-minute setup)](./docs/QUICK_START.md)** ⭐ Start here!
+- **[🎯 START HERE](./docs/START_HERE.md)** - Project overview
 - **[📋 Driver Signup Deployment Guide](./docs/DRIVER_SIGNUP_DEPLOYMENT.md)** - Complete setup
 - **[🔧 Backend Integration Guide](./docs/BACKEND_SETUP.md)** - Google Workspace integration
-- **[👥 Staff Dashboard Setup](./docs/STAFF_DASHBOARD_SETUP.md)** - Management interface
-- **[📑 Documentation Index](./docs/INDEX.md)** - All documentation files
+- **[� Staff Dashboard Setup](./docs/STAFF_DASHBOARD_SETUP.md)** - Management interface
+- **[⚙️ Commission Rules System](./docs/COMMISSION_RULES_SYSTEM.md)** - Advanced commission engine
+- **[📦 Dispatch Guide](./docs/DISPATCH_PAGE_GUIDE.md)** - Dispatch interface
+- **[� Customer Promotions](./docs/CUSTOMER_PROMOTIONS_GUIDE.md)** - Promotions & scheduling
+- **[� Logging & Audit](./docs/LOGGING_AND_AUDIT_GUIDE.md)** - Activity tracking
 
-### Company Logo & Branding
-
-- **[🎨 Logo Quick Start](./LOGO_QUICK_START.md)** - Upload your logo in 3 minutes
-- **[📍 Logo Placement Guide](./LOGO_PLACEMENT_GUIDE.md)** - Where your logo appears
-- **[🔧 Logo Implementation Details](./BRANDING_LOGO_IMPLEMENTATION.md)** - Technical specs
-- **[📋 Logo Changes Summary](./LOGO_CHANGES_SUMMARY.md)** - Implementation summary
+### Featured Guides
+- **[🎨 Company Logo & Branding](./docs/BRANDING_LOGO_IMPLEMENTATION.md)** - Upload and customize your logo
+- **[🏗️ System Architecture](./docs/ARCHITECTURE_DIAGRAMS.md)** - Technical architecture
+- **[📋 Product Requirements](./docs/PRODUCT_REQUIREMENTS.md)** - Feature specifications
 
 ## 🚀 Quick Start
 

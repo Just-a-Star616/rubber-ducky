@@ -159,20 +159,20 @@ UI Re-renders with new logo
 ## 📚 Documentation Created
 
 ### Quick Start (3 min)
-📄 `LOGO_QUICK_START.md` - Get up and running fast
+📄 `docs/LOGO_QUICK_START.md` - Get up and running fast
 
 ### Visual Guide (5 min)
-📄 `LOGO_PLACEMENT_GUIDE.md` - See where logos appear
+📄 `docs/LOGO_PLACEMENT_GUIDE.md` - See where logos appear
 
 ### Technical Details (15 min)
-📄 `BRANDING_LOGO_IMPLEMENTATION.md` - Deep dive
+📄 `docs/BRANDING_LOGO_IMPLEMENTATION.md` - Deep dive
 
 ### Complete Guide (20 min)
-📄 `COMPANY_LOGO_GUIDE.md` - Everything you need
+📄 `docs/COMPANY_LOGO_GUIDE.md` - Everything you need
 
 ### Implementation Summary
-📄 `COMPANY_LOGO_IMPLEMENTATION_SUMMARY.md` - Full overview
-📄 `LOGO_CHANGES_SUMMARY.md` - What changed
+📄 `docs/COMPANY_LOGO_IMPLEMENTATION_SUMMARY.md` - Full overview
+📄 `docs/LOGO_CHANGES_SUMMARY.md` - What changed
 
 ### Updated README
 📄 `README.md` - Links to logo features
@@ -344,7 +344,7 @@ interface BrandingConfig {
 | Doesn't persist | Clear localStorage |
 | Not syncing | Refresh page |
 
-See `LOGO_QUICK_START.md` for more troubleshooting.
+See `docs/LOGO_QUICK_START.md` for more troubleshooting.
 
 ---
 

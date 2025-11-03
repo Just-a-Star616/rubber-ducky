@@ -349,5 +349,3 @@ The logging system supports dispute resolution and change tracking for investiga
 - Exportable logs for compliance reports
 - Timestamped entries for legal proceedings
 - User identification for accountability
-
-```

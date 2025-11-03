@@ -1,437 +1,152 @@
-# Driver Signup Deployment - Complete Implementation Guide
+# Project Rubber Ducky - Complete Documentation Index
 
-## 📋 Overview
+## 📚 Documentation Overview
 
-This package includes everything needed to deploy a branded driver signup application with full Google Workspace integration for:
-- Custom company branding
-- Automatic document uploads to Google Drive
-- Application logging to Google Sheets
-- Staff notifications to Google Workspace groups
-- Applicant portal for status tracking
-- (Stretch) Staff management dashboard
+Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispatch and staff management application with commission rules, scheduling, logging, and customer promotions.
 
-## 📚 Documentation Files
-
-### Getting Started
-
-1. **[QUICK_START.md](./QUICK_START.md)** ⭐ START HERE
-   - 5-minute setup guide
-   - Environment configuration
-   - Local testing
-   - Quick deployment options
-   - Troubleshooting
-
-### Core Features Guides
-
-2. **[COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md)** - 3-Stage Commission Engine
-   - Complete guide to commission rule builder
-   - 3-stage workflow (fields → formula → outputs)
-   - Payment method filtering (Cash/Card/Invoice)
-   - Location-based rules & airport handling
-   - Example scenarios and formulas
-   - Developer integration guide
-
-3. **[DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md)** - Modern Dispatch Interface (NEW)
-   - iCABBi-style dispatch management
-   - Booking form & job queue
-   - Real-time status tracking
-   - Driver assignment
-   - Logging integration
-
-4. **[LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md)** - Audit Trail System (NEW)
-   - Comprehensive logging system
-   - Activity log viewing & filtering
-   - Export capabilities
-   - Permission-based access control
-   - Audit trail maintenance
-
-5. **[WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md)** - Event Triggers (NEW)
-   - Webhook event definitions
-   - Automation trigger system
-   - Message events & templates
-   - Configuration guides
-   - Execution engine setup
-
-### Detailed Implementation Guides
-
-6. **[DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md)** - Complete Deployment
-   - Google Workspace setup (detailed)
-   - Authentication & OAuth
-   - Google Sheets configuration
-   - Google Drive setup
-   - Email notifications
-   - Deployment strategies
-   - Full troubleshooting guide
-
-7. **[BACKEND_SETUP.md](./BACKEND_SETUP.md)** - Backend Integration
-   - Node.js/Express server setup
-   - Google API integration code
-   - Email notification system
-   - API endpoints
-   - Deployment (Vercel, Heroku, AWS Lambda)
-   - Security best practices
-
-8. **[STAFF_DASHBOARD_SETUP.md](./STAFF_DASHBOARD_SETUP.md)** - Staff Management (STRETCH GOAL)
-   - Application review interface
-   - Approval/rejection workflows
-   - Task assignment system
-   - Analytics dashboard
-   - Document viewer
-   - Complete component implementations
-
-## 🎯 Quick Navigation
-
-### I want to...
-
-- **Deploy in 5 minutes** → [QUICK_START.md](./QUICK_START.md)
-- **Set up commission rules** → [COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md)
-- **Use the dispatch interface** → [DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md) ⭐ NEW
-- **View audit logs & activity** → [LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md) ⭐ NEW
-- **Set up webhooks & automations** → [WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md) ⭐ NEW
-- **Understand the full process** → [DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md)
-- **Set up a backend server** → [BACKEND_SETUP.md](./BACKEND_SETUP.md)
-- **Build staff management** → [STAFF_DASHBOARD_SETUP.md](./STAFF_DASHBOARD_SETUP.md)
-- **Troubleshoot issues** → [DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md#troubleshooting)
-
-## 🔄 Implementation Flow
-
-```
-Step 1: QUICK_START.md
-├─ Install dependencies
-├─ Set up Google Cloud Project
-├─ Configure environment variables
-├─ Customize branding
-└─ Run locally & test
-
-Step 2: COMMISSION_RULES_SYSTEM.md (NEW!)
-├─ Understand 3-stage commission workflow
-├─ Set up commission schemes
-├─ Configure field rules (Stage 1)
-├─ Create formulas (Stage 2)
-└─ Define outputs by payment method (Stage 3)
-
-Step 3: DISPATCH_PAGE_GUIDE.md (NEW!)
-├─ Understand dispatch interface
-├─ Create and manage bookings
-├─ Assign drivers to jobs
-├─ Track real-time status
-└─ View activity logs
-
-Step 4: LOGGING_AND_AUDIT_GUIDE.md (NEW!)
-├─ View activity logs
-├─ Filter and search logs
-├─ Export audit trails
-├─ Set up permission-based access
-└─ Maintain compliance records
-
-Step 5: WEBHOOKS_AND_AUTOMATIONS_GUIDE.md (NEW!)
-├─ Configure webhook triggers
-├─ Set up automation rules
-├─ Define message templates
-├─ Execute webhook deliveries
-└─ Monitor automation runs
-
-Step 6: DRIVER_SIGNUP_DEPLOYMENT.md
-├─ Complete Google Workspace setup
-├─ Create service accounts
-├─ Set up Google Sheets & Drive
-├─ Configure notifications
-└─ Deploy to production
-
-Step 7 (Optional): BACKEND_SETUP.md
-├─ Create backend server
-├─ Set up Google APIs
-├─ Implement email notifications
-└─ Deploy backend
-
-Step 8 (Stretch): STAFF_DASHBOARD_SETUP.md
-├─ Build staff interface
-├─ Implement review workflows
-├─ Add task management
-└─ Deploy staff dashboard
-```
-
-## 📦 New Files Added
-
-### Configuration & Integration
-- `lib/branding.ts` - Branding configuration system
-- `lib/googleIntegration.ts` - Google API integration functions
-- `.env.local` - Environment variables template (Git ignored)
-
-### Components
-- `views/driver/BrandedDriverSignUp.tsx` - Branded signup wrapper
-- `views/driver/EnhancedDriverSignUp.tsx` - Enhanced with Google integration
-- `views/staff/DriverSignupManagement.tsx` - Staff dashboard (template)
-- `views/staff/ApplicationsList.tsx` - Applications list view
-- `views/staff/ApplicationDetail.tsx` - Application detail view
-- `views/staff/DocumentViewer.tsx` - Document viewing component
-- `views/staff/TaskPanel.tsx` - Task assignment interface
-- `views/staff/Analytics.tsx` - Analytics dashboard
-
-### Documentation
-- `docs/QUICK_START.md` - Quick start guide (5-minute setup)
-- `docs/DRIVER_SIGNUP_DEPLOYMENT.md` - Complete deployment guide
-- `docs/BACKEND_SETUP.md` - Backend server setup
-- `docs/STAFF_DASHBOARD_SETUP.md` - Staff management dashboard
-- `docs/INDEX.md` - This file
-
-## ✨ Features Implemented
-
-### ✅ Core Features (Complete)
-
-- [x] Custom company branding
-  - Logo URL configuration
-  - Primary & accent colors
-  - Contact information
-  - Company name customization
-
-- [x] **3-Stage Commission Rules System** (NEW!)
-  - Stage 1: Select & filter booking fields
-  - Stage 2: Define commission formula
-  - Stage 3: Configure output rules & payment splits
-  - Payment method filtering (Cash/Card/Invoice)
-  - Location-based rules with airport detection
-  - 13 booking fields with category grouping
-  - 12 UK airports for location-based rules
-
-- [x] Driver signup form
-  - Basic applicant information
-  - License details (if licensed)
-  - Vehicle information
-  - Document uploads
-
-- [x] Google Drive integration
-  - Automatic document uploads
-  - Organized folder structure
-  - File sharing configuration
-  - Public URL generation
-
-- [x] Google Sheets logging
-  - Application data logging
-  - Status tracking
-  - Historical records
-  - Easy reporting
-
-- [x] Staff notifications
-  - Email to Google Workspace group
-  - Application details included
-  - Automatic on submission
-  - Customizable content
-
-- [x] Applicant portal
-  - Login with email & password
-  - Check application status
-  - View notes from staff
-  - Update information
-
-### 📋 Stretch Features (Template Provided)
-
-- [ ] Staff dashboard
-  - Application review interface
-  - Approval/rejection workflows
-  - Task assignment
-  - Analytics & reporting
-  - Document management
-  - Internal notes
-  - Communication tools
-
-## 🔧 Configuration Files
-
-### Modified Files
-
-- `package.json` - Added Google API dependencies
-- `vite.config.ts` - Added environment variable definitions
-- `.env.local` - Google & branding configuration
-- `index.html` - Update title & meta tags
-
-### Environment Variables
-
-```bash
-# Google APIs
-VITE_GOOGLE_API_KEY
-VITE_GOOGLE_CLIENT_ID
-VITE_GOOGLE_CLIENT_SECRET
-VITE_GOOGLE_SHEETS_ID
-VITE_GOOGLE_DRIVE_FOLDER_ID
-VITE_GOOGLE_WORKSPACE_GROUP
-
-# Branding
-VITE_COMPANY_NAME
-VITE_COMPANY_LOGO_URL
-VITE_PRIMARY_COLOR
-VITE_SUPPORT_EMAIL
-```
-
-## 🚀 Deployment Checklist
-
-- [ ] Google Workspace setup complete
-- [ ] OAuth credentials obtained
-- [ ] Google Sheet created
-- [ ] Google Drive folder created
-- [ ] Service account created (if using backend)
-- [ ] Environment variables configured
-- [ ] Custom branding added
-- [ ] Local testing passed
-- [ ] Backend server deployed (optional)
-- [ ] Frontend deployed to production
-- [ ] SSL/HTTPS configured
-- [ ] Domain DNS configured
-- [ ] Staff group notifications verified
-- [ ] Applicant testing completed
-
-## 📊 Architecture
-
-```
-┌─────────────────────────────────────────────┐
-│    Frontend: Driver Signup Application      │
-│  (React + TypeScript + Vite)                │
-├─────────────────────────────────────────────┤
-│  • Branded signup form                      │
-│  • Document upload (to Google Drive)        │
-│  • Applicant portal                         │
-│  • (Stretch) Staff dashboard                │
-└────────────┬────────────────────────────────┘
-             │
-             │ API Calls
-             ▼
-┌─────────────────────────────────────────────┐
-│    Backend Server (Optional)                │
-│  (Node.js + Express)                        │
-├─────────────────────────────────────────────┤
-│  • Secure credential management             │
-│  • Google Sheets API calls                  │
-│  • Email notifications                      │
-│  • Document processing                      │
-└────┬────────────┬──────────────┬────────────┘
-     │            │              │
-     ▼            ▼              ▼
-┌──────────┐ ┌─────────┐ ┌──────────────┐
-│ Google   │ │ Google  │ │ Google       │
-│ Drive    │ │ Sheets  │ │ Workspace    │
-└──────────┘ └─────────┘ └──────────────┘
-```
-
-## 🔐 Security Features
-
-- Environment variables for all secrets
-- OAuth 2.0 for Google authentication
-- Service account credentials (for backend)
-- HTTPS enforcement in production
-- Input validation
-- CORS protection
-- Rate limiting (recommended)
-- Audit logging
-
-## 📱 Device Support
-
-- ✅ Desktop (1024px+)
-- ✅ Tablet (768px - 1023px)
-- ✅ Mobile (< 768px)
-- ✅ Dark mode support
-- ✅ Touch-friendly interface
-
-## 🧪 Testing Guides
-
-### Local Testing
-1. Run `npm run dev`
-2. Fill out signup form
-3. Upload test documents
-4. Check Google Drive
-5. Check Google Sheets
-6. Check email notifications
-
-### Production Testing
-1. Deploy to staging environment
-2. Run full integration tests
-3. Test with team members
-4. Verify all Google integrations
-5. Test on different devices/browsers
-6. Verify email delivery
-
-## 📈 Metrics & Analytics
-
-The implementation includes:
-- Application submission tracking
-- Status distribution analytics
-- Licensed vs unlicensed drivers
-- Area/location distribution
-- Document upload tracking
-- Response time metrics
-
-## 🆘 Support Resources
-
-- **Google API Docs**: https://developers.google.com/
-- **React Documentation**: https://react.dev
-- **TypeScript Handbook**: https://www.typescriptlang.org/docs/
-- **Vite Documentation**: https://vitejs.dev
-
-## 📞 Common Issues & Solutions
-
-| Issue | Solution | Details |
-|-------|----------|---------|
-| OAuth Error | Check redirect URI | See DRIVER_SIGNUP_DEPLOYMENT.md |
-| Sheets not logging | Verify Sheet ID & permissions | Troubleshooting section |
-| Files not uploading | Check Drive folder permissions | BACKEND_SETUP.md |
-| Notifications not sending | Set up backend server | BACKEND_SETUP.md |
-| Branding not showing | Clear browser cache | Check branding.ts config |
-
-## 🎓 Learning Path
-
-For developers new to the codebase:
-
-1. **Understanding the structure** (15 min)
-   - Read [QUICK_START.md](./QUICK_START.md) overview
-   - Review project file structure
-
-2. **Local setup** (10 min)
-   - Follow QUICK_START.md steps 1-5
-   - Run locally with `npm run dev`
-
-3. **Google integration** (30 min)
-   - Read DRIVER_SIGNUP_DEPLOYMENT.md Google setup section
-   - Understand API flow in googleIntegration.ts
-
-4. **Deployment** (30 min)
-   - Choose deployment option
-   - Follow deployment steps
-   - Test in production
-
-5. **Backend (optional)** (1-2 hours)
-   - Read BACKEND_SETUP.md
-   - Understand Express server setup
-   - Deploy backend
-
-6. **Staff Dashboard (stretch)** (2-4 hours)
-   - Read STAFF_DASHBOARD_SETUP.md
-   - Implement components
-   - Test workflows
-
-## 📝 Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | Nov 2, 2025 | Initial release with Google integration |
-
-## 🎉 Success Criteria
-
-You'll know everything is working when:
-
-- ✅ Signup form loads with custom branding
-- ✅ Documents upload to Google Drive
-- ✅ Applications appear in Google Sheets
-- ✅ Staff receives email notifications
-- ✅ Applicants can log in and check status
-- ✅ Responsive design works on mobile
-- ✅ Deployment is fast and stable
-
-## 🚀 Getting Started
-
-**First time?** Start with [QUICK_START.md](./QUICK_START.md) - you'll be live in 30 minutes!
-
-For detailed information, see the navigation section above.
+**Last Updated**: November 3, 2025  
+**Status**: Production Ready
 
 ---
 
-**Created**: November 2, 2025  
-**Status**: Ready for Production  
-**Support**: See individual documentation files
+## 🚀 Quick Navigation by Role
+
+### 👨‍💼 For Administrators
+1. [START_HERE.md](./START_HERE.md) - Project overview and navigation
+2. [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) - Architecture and design
+3. [STAFF_DASHBOARD_SETUP.md](./STAFF_DASHBOARD_SETUP.md) - Admin panel setup
+4. [LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md) - Activity monitoring
+
+### 💼 For Finance Staff
+1. [COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md) - Commission rules builder
+2. [LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md) - Financial audit trails
+3. [CUSTOMER_PROMOTIONS_GUIDE.md](./CUSTOMER_PROMOTIONS_GUIDE.md) - Promotion management
+
+### �� For Dispatch Managers
+1. [DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md) - Dispatch interface
+2. [LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md) - Booking activity tracking
+3. [WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md) - Automations setup
+
+### 🚗 For Driver Recruitment
+1. [DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md) - Driver signup setup
+2. [BRANDING_LOGO_IMPLEMENTATION.md](./BRANDING_LOGO_IMPLEMENTATION.md) - Company branding
+
+### 👨‍💻 For Developers
+1. [QUICK_START.md](./QUICK_START.md) - Development setup (5 min)
+2. [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) - Architecture overview
+3. [BACKEND_SETUP.md](./BACKEND_SETUP.md) - Backend integration
+4. [ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md) - System architecture
+5. [PRODUCT_REQUIREMENTS.md](./PRODUCT_REQUIREMENTS.md) - Feature specifications
+
+---
+
+## 📋 Complete Documentation List
+
+### 🎯 Getting Started
+- **[START_HERE.md](./START_HERE.md)** - Primary entry point with project overview
+- **[QUICK_START.md](./QUICK_START.md)** - 5-minute local development setup
+- **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - Command and troubleshooting reference
+
+### �� System Documentation
+- **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - Complete project architecture
+- **[PRODUCT_REQUIREMENTS.md](./PRODUCT_REQUIREMENTS.md)** - Feature specifications
+- **[ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md)** - System architecture and flows
+- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Implementation status
+
+### 🎨 Branding & Logo
+- **[BRANDING_LOGO_IMPLEMENTATION.md](./BRANDING_LOGO_IMPLEMENTATION.md)** - Logo upload and display
+- **[LOGO_QUICK_START.md](./LOGO_QUICK_START.md)** - Quick logo setup (3 min)
+- **[LOGO_PLACEMENT_GUIDE.md](./LOGO_PLACEMENT_GUIDE.md)** - Where logos appear
+- **[COMPANY_LOGO_GUIDE.md](./COMPANY_LOGO_GUIDE.md)** - Complete branding guide
+
+### 📊 Core Features
+
+#### Commission System
+- **[COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md)** - 3-stage commission engine
+
+#### Dispatch & Booking
+- **[DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md)** - Modern dispatch interface
+
+#### Customer Promotions
+- **[CUSTOMER_PROMOTIONS_GUIDE.md](./CUSTOMER_PROMOTIONS_GUIDE.md)** - Promotions and scheduling
+
+#### Logging & Audit
+- **[LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md)** - Comprehensive audit logging
+
+#### Webhooks & Automations
+- **[WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md)** - Event-driven automations
+
+### 👥 User Management
+
+#### Driver Signup
+- **[DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md)** - Driver recruitment system
+
+#### Staff Management
+- **[STAFF_DASHBOARD_SETUP.md](./STAFF_DASHBOARD_SETUP.md)** - Staff admin panel
+
+### 🔧 Deployment & Backend
+- **[BACKEND_SETUP.md](./BACKEND_SETUP.md)** - Backend server configuration
+
+### ✅ Implementation Guides
+- **[DELIVERABLES.md](./DELIVERABLES.md)** - Project deliverables checklist
+- **[IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md)** - Implementation status
+- **[SCHEDULING_FEATURE_SUMMARY.md](./SCHEDULING_FEATURE_SUMMARY.md)** - Time-based scheduling
+
+### 🛠️ Troubleshooting & Reference
+- **[BUILD_ERRORS_RESOLVED.md](./BUILD_ERRORS_RESOLVED.md)** - Build error solutions
+- **[SYNTAX_ERRORS_EXPLAINED.md](./SYNTAX_ERRORS_EXPLAINED.md)** - Syntax error reference
+- **[LOGGING_TRIGGERS_READINESS.md](./LOGGING_TRIGGERS_READINESS.md)** - Logging system readiness
+
+---
+
+## 📈 Recent Updates
+
+### November 3, 2025
+- ✅ **Time-Based Scheduling for Promotions** - NEW!
+  - Day-of-week scheduling
+  - Specific time periods (including overnight)
+  - Timezone support (7 timezones)
+  - Quick presets for common schedules
+
+### November 2, 2025
+- ✅ Logo and Branding System
+- ✅ Customer Promotions with Voucherify
+- ✅ Complete Documentation
+
+---
+
+## ✅ Completed Features
+- [x] Commission Rules System (3-stage)
+- [x] Dispatch Interface
+- [x] Logging & Audit System
+- [x] Webhooks & Automations
+- [x] Customer Promotions
+- [x] Time-Based Promotion Scheduling
+- [x] Logo & Branding
+- [x] Driver Signup
+- [x] Staff Management
+- [x] Permission System
+- [x] Document Viewer
+
+---
+
+## 📞 Quick Links
+
+| Need | Link |
+|------|------|
+| Setup Development Environment | [QUICK_START.md](./QUICK_START.md) |
+| Understand Project Structure | [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) |
+| View System Architecture | [ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md) |
+| Learn Commission Rules | [COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md) |
+| Use Dispatch Interface | [DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md) |
+| Setup Promotions & Scheduling | [CUSTOMER_PROMOTIONS_GUIDE.md](./CUSTOMER_PROMOTIONS_GUIDE.md) |
+| Configure Logging | [LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md) |
+| Deploy Driver Signup | [DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md) |
+| Set Up Backend | [BACKEND_SETUP.md](./BACKEND_SETUP.md) |
+| Troubleshoot Issues | [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) |
+
+---
+
+**Last Updated**: November 3, 2025  
+**Status**: Production Ready  
+**All Documentation**: Complete ✅
