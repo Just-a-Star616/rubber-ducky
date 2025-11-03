@@ -29,7 +29,7 @@ const ProfileHeader = ({ staffMember }: { staffMember: StaffMember }) => (
     </div>
 );
 
-const OfficeHoursSection = ({ initialHours }: { initialHours: OfficeHours[] }) => {
+const OfficeHoursSection = ({ initialHours, onHoursSave }: { initialHours: OfficeHours[], onHoursSave?: (hours: OfficeHours[]) => void }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [hours, setHours] = useState<OfficeHours[]>(initialHours);
 
@@ -38,7 +38,10 @@ const OfficeHoursSection = ({ initialHours }: { initialHours: OfficeHours[] }) =
     };
 
     const handleSave = () => {
-        // Here you would typically make an API call to save the hours
+        // Call the callback if provided to persist the hours
+        if (onHoursSave) {
+            onHoursSave(hours);
+        }
         setIsEditing(false);
     };
 
@@ -213,6 +216,15 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ onThemeChange }) => (
 
 const ProfilePage: React.FC = () => {
     const [readNoticeIds, setReadNoticeIds] = useState(new Set<string>());
+    const [staffMember, setStaffMember] = useState<StaffMember>(mockStaffMember);
+
+    const handleOfficeHoursSave = (updatedHours: OfficeHours[]) => {
+        setStaffMember(prev => ({
+            ...prev,
+            officeHours: updatedHours
+        }));
+        // In a real app, you would also call an API to persist the changes
+    };
 
     const staffNotices = useMemo(() => {
         return mockMessageTemplates
@@ -230,10 +242,10 @@ const ProfilePage: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-8">
-            <ProfileHeader staffMember={mockStaffMember} />
+            <ProfileHeader staffMember={staffMember} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="flex flex-col gap-8">
-                    <OfficeHoursSection initialHours={mockStaffMember.officeHours} />
+                    <OfficeHoursSection initialHours={staffMember.officeHours} onHoursSave={handleOfficeHoursSave} />
                     <NoticesSection notices={staffNotices} />
                 </div>
                 <div className="flex flex-col gap-8">
