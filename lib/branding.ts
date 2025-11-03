@@ -45,6 +45,12 @@ export const getBrandingConfig = (): BrandingConfig => {
     if (storedBranding) {
       try {
         const parsed = JSON.parse(storedBranding);
+        // Filter out old Project Rubber Ducky references
+        if (parsed.companyName && parsed.companyName.includes('Project Rubber Ducky')) {
+          // Remove the old branding so defaults are used
+          window.localStorage.removeItem('companyBranding');
+          return branding;
+        }
         return { ...branding, ...parsed };
       } catch (e) {
         console.error('Failed to parse stored branding config:', e);

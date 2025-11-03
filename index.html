@@ -191,6 +191,27 @@
 </head>
   <body class="bg-background text-foreground font-sans">
     <div id="root"></div>
+    <script>
+      // Initialize branding to ensure it's set to the correct company name
+      // This prevents old localStorage data from persisting
+      const initializeBranding = () => {
+        try {
+          const stored = window.localStorage.getItem('companyBranding');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            // If the company name is still the old placeholder, update it
+            if (parsed.companyName && parsed.companyName.includes('Project Rubber Ducky')) {
+              // Remove old branding so the default loads
+              window.localStorage.removeItem('companyBranding');
+              console.log('Cleared outdated branding from localStorage');
+            }
+          }
+        } catch (e) {
+          console.error('Error initializing branding:', e);
+        }
+      };
+      initializeBranding();
+    </script>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
