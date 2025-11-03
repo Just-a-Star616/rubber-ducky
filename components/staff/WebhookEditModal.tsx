@@ -1,12 +1,12 @@
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WebhookDefinition, WebhookEvent } from '../../types';
 import { Button } from '../ui/button';
-import { XIcon, TrashIcon } from '../icons/Icon';
-import CodeEditor from '../ui/CodeEditor';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
+import { XIcon, TrashIcon } from '../icons/Icon';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import BaseRuleBuilder, { RuleConfig } from '../BaseRuleBuilder';
+import { RULE_CONTEXTS } from '../../lib/ruleBuilder';
 
 interface WebhookEditModalProps {
   webhook: WebhookDefinition | null;
@@ -18,88 +18,192 @@ interface WebhookEditModalProps {
 }
 
 const WebhookEditModal: React.FC<WebhookEditModalProps> = ({ webhook, events, isOpen, onClose, onSave, onDelete }) => {
-  const [formData, setFormData] = useState<Partial<WebhookDefinition>>({});
+  const [targetUrl, setTargetUrl] = useState('');
+  const [headerTemplate, setHeaderTemplate] = useState('');
+  const [bodyTemplate, setBodyTemplate] = useState('');
+  const [status, setStatus] = useState('Active');
+  const [selectedEventName, setSelectedEventName] = useState(webhook?.eventName || events[0]?.name || '');
+
   const isNew = !webhook?.id;
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); }, [onClose]);
   useEffect(() => {
-    setFormData(isNew ? { eventName: events[0]?.name, targetUrl: '', status: 'Active', bodyTemplate: '{\n  "key": "value"\n}', headerTemplate: '{\n  "Content-Type": "application/json"\n}', conditions: '' } : { ...webhook });
-    if (isOpen) document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [webhook, isOpen, isNew, events, handleKeyDown]);
-  
-  const selectedEvent = useMemo(() => {
-      return events.find(e => e.name === formData.eventName);
-  }, [formData.eventName, events]);
+    if (webhook) {
+      setTargetUrl(webhook.targetUrl || '');
+      setHeaderTemplate(webhook.headerTemplate || '');
+      setBodyTemplate(webhook.bodyTemplate || '');
+      setStatus(webhook.status || 'Active');
+      setSelectedEventName(webhook.eventName || '');
+    } else if (events.length > 0) {
+      setTargetUrl('');
+      setHeaderTemplate('{\n  "Content-Type": "application/json"\n}');
+      setBodyTemplate('{\n  "key": "value"\n}');
+      setStatus('Active');
+      setSelectedEventName(events[0].name);
+    }
+  }, [webhook, events, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleSaveRule = (config: RuleConfig) => {
+    if (!targetUrl.trim()) {
+      alert('Target URL is required');
+      return;
+    }
+
+    const newWebhook: WebhookDefinition = {
+      id: webhook?.id || `WH${Date.now()}`,
+      eventName: selectedEventName,
+      targetUrl,
+      headerTemplate,
+      bodyTemplate,
+      status: status as any,
+      conditions: config.expression,
+    };
+
+    onSave(newWebhook);
+    onClose();
   };
-  
-  const handleSave = () => { onSave(formData as WebhookDefinition); };
+
+  const handleDeleteClick = () => {
+    if (webhook?.id && confirm('Delete this webhook?')) {
+      onDelete(webhook.id);
+      onClose();
+    }
+  };
+
+  const selectedEvent = events.find(e => e.name === selectedEventName);
+  const initialConfig = webhook ? {
+    name: `Webhook: ${webhook.eventName}`,
+    description: webhook.eventName,
+    trigger: 'webhook_booking',
+    conditions: [],
+    expression: webhook.conditions || '',
+    enabled: webhook.status === 'Active',
+  } : undefined;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4" onClick={onClose}>
-      <Card className="w-full max-w-2xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{isNew ? 'Add Webhook' : 'Edit Webhook'}</CardTitle>
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full h-8 w-8 -mt-1 -mr-2"><XIcon className="w-5 h-5" /></Button>
-        </CardHeader>
-        <form className="flex-grow overflow-y-auto" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-          <CardContent className="space-y-4">
+      <div className="relative bg-card text-card-foreground rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+        <header className="sticky top-0 bg-card px-6 py-4 border-b border-border flex justify-between items-center z-10">
+          <h2 className="text-xl font-bold">{isNew ? 'Add Webhook' : 'Edit Webhook'}</h2>
+          <button type="button" onClick={onClose} className="hover:opacity-75"><XIcon className="w-6 h-6" /></button>
+        </header>
+
+        <div className="flex-grow overflow-y-auto p-6 space-y-6">
+          {/* Event & URL Configuration */}
+          <div className="bg-background/50 border border-border rounded-lg p-4 space-y-4">
             <div>
-              <label htmlFor="eventName" className="block text-sm font-medium text-muted-foreground">Trigger Event</label>
-              <Select value={formData.eventName} onValueChange={(v) => setFormData(p => ({...p, eventName: v}))}>
-                <SelectTrigger id="eventName" className="mt-1"><SelectValue/></SelectTrigger>
-                <SelectContent>{events.map(event => <SelectItem key={event.id} value={event.name}>{event.name}</SelectItem>)}</SelectContent>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Trigger Event</label>
+              <Select value={selectedEventName} onValueChange={setSelectedEventName}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {events.map(event => (
+                    <SelectItem key={event.id} value={event.name}>{event.name}</SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
-              {selectedEvent && <p className="text-xs text-muted-foreground mt-1">{selectedEvent.description}</p>}
+              {selectedEvent && <p className="text-xs text-muted-foreground mt-2">{selectedEvent.description}</p>}
             </div>
 
             <div>
-              <label htmlFor="targetUrl" className="block text-sm font-medium text-muted-foreground">Target URL</label>
-              <Input id="targetUrl" name="targetUrl" type="url" value={formData.targetUrl || ''} onChange={handleInputChange} required placeholder="https://api.example.com/webhook" className="mt-1"/>
-            </div>
-            
-            <div>
-                <label className="block text-sm font-medium text-muted-foreground">Conditions (JavaScript Expression)</label>
-                 <CodeEditor 
-                    language="js"
-                    value={formData.conditions || ''}
-                    onChange={(value) => setFormData(prev => ({...prev, conditions: value}))}
-                    placeholder="e.g., driver.status === 'Active' && driver.commissionTotal > 1000"
-                    availableVariables={selectedEvent?.availableVariables}
-                 />
-                <p className="mt-1 text-xs text-muted-foreground">Optional. The webhook will only fire if this expression evaluates to true.</p>
-            </div>
-            
-            <div>
-                <label className="block text-sm font-medium text-muted-foreground">Header Template (JSON)</label>
-                <CodeEditor language="json" value={formData.headerTemplate || ''} onChange={(value) => setFormData(prev => ({...prev, headerTemplate: value}))} />
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Target URL</label>
+              <Input 
+                type="url" 
+                value={targetUrl} 
+                onChange={(e) => setTargetUrl(e.target.value)} 
+                placeholder="https://api.example.com/webhook"
+                required
+              />
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-muted-foreground">Body Template (JSON)</label>
-                <CodeEditor language="json" value={formData.bodyTemplate || ''} onChange={(value) => setFormData(prev => ({...prev, bodyTemplate: value}))} />
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Status</label>
+              <Select value={status} onValueChange={setStatus}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Conditions using unified builder */}
+          <div>
+            <h3 className="font-semibold mb-3">Trigger Conditions</h3>
+            <BaseRuleBuilder
+              title=""
+              description=""
+              context={RULE_CONTEXTS.webhook_booking}
+              onSave={handleSaveRule}
+              onCancel={onClose}
+              initialConfig={initialConfig}
+              showAdvancedOptions={false}
+            />
+          </div>
+
+          {/* JSON Templates */}
+          <div className="bg-background/50 border border-border rounded-lg p-4 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Header Template (JSON)</label>
+              <textarea
+                value={headerTemplate}
+                onChange={(e) => setHeaderTemplate(e.target.value)}
+                className="w-full bg-muted rounded p-2 font-mono text-sm h-32"
+              />
             </div>
 
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-muted-foreground">Status</label>
-              <Select value={formData.status} onValueChange={(v) => setFormData(p => ({...p, status: v as any}))}><SelectTrigger id="status" className="mt-1"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="Active">Active</SelectItem><SelectItem value="Inactive">Inactive</SelectItem></SelectContent></Select>
+              <label className="block text-sm font-medium text-muted-foreground mb-2">Body Template (JSON)</label>
+              <textarea
+                value={bodyTemplate}
+                onChange={(e) => setBodyTemplate(e.target.value)}
+                className="w-full bg-muted rounded p-2 font-mono text-sm h-32"
+              />
             </div>
-          </CardContent>
-          <CardFooter className="flex justify-between items-center">
-            <Button type="button" onClick={() => onDelete(formData.id!)} variant="destructive" disabled={isNew}><TrashIcon className="w-4 h-4 mr-2"/>Delete</Button>
-            <div className="space-x-3">
-              <Button type="button" onClick={onClose} variant="outline">Cancel</Button>
-              <Button type="submit">Save</Button>
-            </div>
-          </CardFooter>
-        </form>
-      </Card>
+          </div>
+        </div>
+
+        <footer className="sticky bottom-0 bg-card/80 backdrop-blur-sm px-6 py-4 border-t border-border flex justify-between items-center">
+          <button 
+            type="button" 
+            onClick={handleDeleteClick}
+            disabled={isNew}
+            className="px-4 py-2 bg-red-600/20 text-red-400 rounded hover:bg-red-600/30 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <TrashIcon className="w-4 h-4 inline mr-2"/> Delete
+          </button>
+          <div className="space-x-3">
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="px-4 py-2 border border-border rounded hover:bg-muted"
+            >
+              Cancel
+            </button>
+            <button 
+              type="button" 
+              onClick={() => {
+                if (!targetUrl.trim()) {
+                  alert('Target URL is required');
+                  return;
+                }
+                handleSaveRule({
+                  name: `Webhook: ${selectedEventName}`,
+                  description: selectedEventName,
+                  trigger: 'webhook_booking',
+                  conditions: [],
+                  expression: '',
+                  enabled: status === 'Active',
+                });
+              }}
+              className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+            >
+              Save Webhook
+            </button>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 };
