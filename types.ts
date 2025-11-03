@@ -525,6 +525,11 @@ export interface SiteDetails {
     areaManagerName: string;
     areaManagerEmail: string;
     officeHours: OfficeHours[];
+    defaultInvoiceTemplates?: {
+        driverInvoice: string; // Template ID for driver invoices
+        factoringInvoice: string; // Template ID for factoring invoices
+        standardInvoice: string; // Template ID for standard/account invoices
+    };
 }
 
 export interface BaseApiConfig {

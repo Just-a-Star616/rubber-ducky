@@ -47,6 +47,11 @@ export const mockSiteDetails: SiteDetails[] = [
         areaManagerName: "Alex Johnson",
         areaManagerEmail: "alex.j@example.com",
         officeHours: manchesterOfficeHours,
+        defaultInvoiceTemplates: {
+            driverInvoice: 'detailed-template',
+            factoringInvoice: 'default-template',
+            standardInvoice: 'compact-template',
+        },
     },
     {
         id: 'SITE02',
@@ -58,5 +63,10 @@ export const mockSiteDetails: SiteDetails[] = [
         areaManagerName: "Jane Doe",
         areaManagerEmail: "jane.d@example.com",
         officeHours: liverpoolOfficeHours,
+        defaultInvoiceTemplates: {
+            driverInvoice: 'detailed-template',
+            factoringInvoice: 'default-template',
+            standardInvoice: 'default-template',
+        },
     },
 ];

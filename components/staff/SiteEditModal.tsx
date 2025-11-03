@@ -6,6 +6,7 @@ import { XIcon, TrashIcon } from '../icons/Icon';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface SiteEditModalProps {
   site: Partial<SiteDetails> | null;
@@ -13,6 +14,7 @@ interface SiteEditModalProps {
   onClose: () => void;
   onSave: (site: SiteDetails) => void;
   onDelete: (siteId: string) => void;
+  availableTemplates?: Array<{ id: string; name: string }>;
 }
 
 const FormField: React.FC<React.InputHTMLAttributes<HTMLInputElement> & { label: string }> = ({ label, ...props }) => (
@@ -67,7 +69,7 @@ const defaultHours: OfficeHours[] = [
     { day: 'Sunday', isOff: true, start: '00:00', end: '00:00' },
 ];
 
-const SiteEditModal: React.FC<SiteEditModalProps> = ({ site, isOpen, onClose, onSave, onDelete }) => {
+const SiteEditModal: React.FC<SiteEditModalProps> = ({ site, isOpen, onClose, onSave, onDelete, availableTemplates = [] }) => {
     const [formData, setFormData] = useState<Partial<SiteDetails>>({});
     const isNew = !site?.id;
 
@@ -108,18 +110,89 @@ const SiteEditModal: React.FC<SiteEditModalProps> = ({ site, isOpen, onClose, on
                     </Button>
                 </CardHeader>
                 <form className="flex-grow flex flex-col overflow-hidden" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-                    <CardContent className="flex-grow overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="space-y-4">
-                            <FormField label="Site Name (inc. Service Area)" id="name" name="name" value={formData.name || ''} onChange={handleInputChange} required />
-                            <TextareaField label="Address" id="address" name="address" value={formData.address || ''} onChange={handleInputChange} rows={3} />
-                            <FormField label="Booking Telephone" id="bookingTel" name="bookingTel" value={formData.bookingTel || ''} onChange={handleInputChange} />
-                            <FormField label="Office Email" id="officeEmail" name="officeEmail" type="email" value={formData.officeEmail || ''} onChange={handleInputChange} />
-                            <FormField label="Area Manager Name" id="areaManagerName" name="areaManagerName" value={formData.areaManagerName || ''} onChange={handleInputChange} />
-                            <FormField label="Area Manager Email" id="areaManagerEmail" name="areaManagerEmail" type="email" value={formData.areaManagerEmail || ''} onChange={handleInputChange} />
+                    <CardContent className="flex-grow overflow-y-auto space-y-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <FormField label="Site Name (inc. Service Area)" id="name" name="name" value={formData.name || ''} onChange={handleInputChange} required />
+                                <TextareaField label="Address" id="address" name="address" value={formData.address || ''} onChange={handleInputChange} rows={3} />
+                                <FormField label="Booking Telephone" id="bookingTel" name="bookingTel" value={formData.bookingTel || ''} onChange={handleInputChange} />
+                                <FormField label="Office Email" id="officeEmail" name="officeEmail" type="email" value={formData.officeEmail || ''} onChange={handleInputChange} />
+                                <FormField label="Area Manager Name" id="areaManagerName" name="areaManagerName" value={formData.areaManagerName || ''} onChange={handleInputChange} />
+                                <FormField label="Area Manager Email" id="areaManagerEmail" name="areaManagerEmail" type="email" value={formData.areaManagerEmail || ''} onChange={handleInputChange} />
+                            </div>
+                            <div>
+                                <OfficeHoursEditor hours={formData.officeHours || []} onHoursChange={handleHoursChange} />
+                            </div>
                         </div>
-                        <div>
-                            <OfficeHoursEditor hours={formData.officeHours || []} onHoursChange={handleHoursChange} />
-                        </div>
+
+                        {availableTemplates.length > 0 && (
+                            <div className="border-t pt-6">
+                                <h4 className="text-md font-medium text-card-foreground mb-4">Default Invoice Templates</h4>
+                                <p className="text-sm text-muted-foreground mb-4">Select default invoice templates for this site:</p>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-muted-foreground mb-2">Driver Invoice</label>
+                                        <Select 
+                                            value={formData.defaultInvoiceTemplates?.driverInvoice || ''}
+                                            onValueChange={(value) => setFormData(prev => ({
+                                                ...prev,
+                                                defaultInvoiceTemplates: {
+                                                    ...(prev.defaultInvoiceTemplates || {}),
+                                                    driverInvoice: value
+                                                }
+                                            }))}
+                                        >
+                                            <SelectTrigger><SelectValue placeholder="Select template" /></SelectTrigger>
+                                            <SelectContent>
+                                                {availableTemplates.map(template => (
+                                                    <SelectItem key={template.id} value={template.id}>{template.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-muted-foreground mb-2">Factoring Invoice</label>
+                                        <Select 
+                                            value={formData.defaultInvoiceTemplates?.factoringInvoice || ''}
+                                            onValueChange={(value) => setFormData(prev => ({
+                                                ...prev,
+                                                defaultInvoiceTemplates: {
+                                                    ...(prev.defaultInvoiceTemplates || {}),
+                                                    factoringInvoice: value
+                                                }
+                                            }))}
+                                        >
+                                            <SelectTrigger><SelectValue placeholder="Select template" /></SelectTrigger>
+                                            <SelectContent>
+                                                {availableTemplates.map(template => (
+                                                    <SelectItem key={template.id} value={template.id}>{template.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-muted-foreground mb-2">Standard Invoice</label>
+                                        <Select 
+                                            value={formData.defaultInvoiceTemplates?.standardInvoice || ''}
+                                            onValueChange={(value) => setFormData(prev => ({
+                                                ...prev,
+                                                defaultInvoiceTemplates: {
+                                                    ...(prev.defaultInvoiceTemplates || {}),
+                                                    standardInvoice: value
+                                                }
+                                            }))}
+                                        >
+                                            <SelectTrigger><SelectValue placeholder="Select template" /></SelectTrigger>
+                                            <SelectContent>
+                                                {availableTemplates.map(template => (
+                                                    <SelectItem key={template.id} value={template.id}>{template.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                     <CardFooter className="flex-shrink-0 flex justify-between items-center">
                         <Button type="button" onClick={() => onDelete(formData.id!)} variant="destructive" disabled={isNew}><TrashIcon className="w-4 h-4 mr-2"/>Delete Site</Button>

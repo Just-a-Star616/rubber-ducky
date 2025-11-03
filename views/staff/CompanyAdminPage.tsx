@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { mockCompanyDetails, mockSiteDetails } from '../../lib/mockData';
-import { CompanyDetails, SiteDetails } from '../../types';
+import { CompanyDetails, SiteDetails, InvoiceTemplate } from '../../types';
 import { PencilIcon } from '../../components/icons/Icon';
 import SiteEditModal from '../../components/staff/SiteEditModal';
 import { Input } from '../../components/ui/input';
@@ -125,6 +125,43 @@ const SiteDetailsSection: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingSite, setEditingSite] = useState<Partial<SiteDetails> | null>(null);
 
+    // Default invoice templates (in a real app, these would come from AccountingSettingsPage)
+    const [invoiceTemplates] = useState<InvoiceTemplate[]>([
+        {
+            id: 'default-template',
+            name: 'Default',
+            columns: ['date', 'pickup', 'destination', 'fare', 'charges'],
+            summaryMethod: 'detailed',
+            summaryTotals: ['total'],
+            vatApplication: 'nothing',
+            includeNotes: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            id: 'detailed-template',
+            name: 'Detailed',
+            columns: ['date', 'time', 'pickup', 'destination', 'distance', 'duration', 'fare', 'charges', 'tips', 'reference'],
+            summaryMethod: 'detailed',
+            summaryTotals: ['subtotal', 'serviceCharge', 'tax', 'total'],
+            vatApplication: 'serviceChargeAndPrice',
+            includeNotes: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+        {
+            id: 'compact-template',
+            name: 'Compact',
+            columns: ['date', 'pickup', 'fare'],
+            summaryMethod: 'summarized',
+            summaryTotals: ['total'],
+            vatApplication: 'nothing',
+            includeNotes: false,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        },
+    ]);
+
     const handleOpenModal = (site: SiteDetails | null) => {
         setEditingSite(site);
         setIsModalOpen(true);
@@ -193,6 +230,7 @@ const SiteDetailsSection: React.FC = () => {
                     onClose={handleCloseModal}
                     onSave={handleSaveSite}
                     onDelete={handleDeleteSite}
+                    availableTemplates={invoiceTemplates.map(t => ({ id: t.id, name: t.name }))}
                 />
             )}
         </div>
