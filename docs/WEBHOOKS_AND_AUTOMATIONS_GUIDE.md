@@ -396,23 +396,24 @@ Actions:
   4. Log Event (category: DISPATCH, desc: "Auto-assigned urgent booking")
 ```
 
-#### Example 2: Payment Reminder Automation
+#### Example 2: VIP Late Driver Alert
 
 ```
-Name: Invoice Payment Reminders
+Name: Alert Staff on VIP Booking Delays
 Enabled: ✅
 
-Trigger: On Invoice Due
+Trigger: On Driver ETA Updated
 
 Conditions:
-  • invoice.status == "UNPAID"
-  • invoice.amount >= 25.00
-  • days_overdue == 3
+  • customer.account_type == "VIP"
+  • estimated_arrival_delay > 10 (minutes late)
+  • booking.status == "ASSIGNED"
 
 Actions:
-  1. Send Email (to: customer, template: "payment_reminder_3days")
-  2. Create Task (for: accounting_team, desc: "Follow up on overdue invoice")
-  3. Log Event (category: INVOICE, desc: "Payment reminder sent")
+  1. Send Email (to: staff_managers, template: "vip_delay_alert")
+  2. Send In-App Notification (to: dispatch_team, message: "{{driver_name}} running {{delay_minutes}} minutes late for VIP {{customer_name}}")
+  3. Create Task (for: senior_dispatcher, desc: "Monitor VIP booking {{booking_id}} - Driver delayed {{delay_minutes}} minutes")
+  4. Log Event (category: VIP_SERVICE, desc: "VIP booking delay alert triggered")
 ```
 
 #### Example 3: Driver Availability Broadcast
@@ -434,6 +435,26 @@ Actions:
   4. Log Event (category: DRIVER, desc: "Driver online notification sent")
 ```
 
+#### Example 4: Driver Rejection Alert to Manager
+
+```
+Name: Multi-Rejection Manager Alert
+Enabled: ✅
+
+Trigger: On Booking Rejected by Driver
+
+Conditions:
+  • driver.consecutive_rejections >= 3
+  • tracking_window == "current_session"
+  • driver.status == "AVAILABLE"
+
+Actions:
+  1. Send Email (to: driver_manager, template: "driver_rejection_alert")
+  2. Send In-App Notification (to: driver_manager, message: "⚠️ {{driver_name}} has rejected {{rejection_count}} jobs in a row")
+  3. Create Task (for: driver_manager, desc: "Review driver {{driver_name}} - {{rejection_count}} consecutive rejections. Consider disciplinary action or check-in.")
+  4. Log Event (category: DRIVER_PERFORMANCE, desc: "Driver {{driver_name}} reached {{rejection_count}} consecutive rejections")
+```
+
 ### Automation Dashboard
 
 1. Navigate to **Admin → Automations & Workflows → Rules**
@@ -443,8 +464,9 @@ Actions:
 Rule Name | Trigger | Enabled | Executions | Success Rate | Last Run
 ─────────────────────────────────────────────────────────────────────
 Auto-assign Urgent | booking.created | ✅ | 342 | 98.2% | 5m ago
-Payment Reminders | invoice.due | ✅ | 45 | 100% | 2h ago
+VIP Late Alert | driver.eta_updated | ✅ | 127 | 99.1% | 3m ago
 Driver Online BC | driver.online | ⚠️ | 128 | 94.5% | 12m ago (error)
+Multi-Rejection Alert | booking.rejected | ✅ | 45 | 97.8% | 8m ago
 ```
 
 **Details Available**:
