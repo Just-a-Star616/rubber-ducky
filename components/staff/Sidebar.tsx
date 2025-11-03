@@ -3,7 +3,7 @@ import {
     HomeIcon, ChartBarIcon, UserGroupIcon, CogIcon, ShieldExclamationIcon, 
     StarIcon, UserCircleIcon, TruckIcon, CollectionIcon, BriefcaseIcon, 
     ClipboardListIcon, IdentificationIcon, SparklesIcon, ServerStackIcon, 
-    CalendarIcon, CurrencyPoundIcon, ArchiveIcon, CreditCardIcon, ChatBubbleLeftEllipsisIcon, TagIcon, BoltIcon, UserPlusIcon
+    CalendarIcon, CurrencyPoundIcon, ArchiveIcon, CreditCardIcon, ChatBubbleLeftEllipsisIcon, TagIcon, BoltIcon, UserPlusIcon, CommandLineIcon
 } from '../icons/Icon';
 import { StaffPage } from '../../views/staff/StaffDashboard';
 import { Logo } from '../icons/Logo';
@@ -32,6 +32,7 @@ const navigationData: PrimaryNavItem[] = [
         name: 'Operations',
         icon: BriefcaseIcon,
         children: [
+            { name: 'Dispatch', href: 'dispatch', icon: CommandLineIcon },
             { name: 'Drivers', href: 'drivers/list', icon: UserGroupIcon, children: [
                 { name: 'Applications', href: 'drivers/applications' },
                 { name: 'Promotions', href: 'drivers/promotions' }
@@ -72,13 +73,6 @@ const navigationData: PrimaryNavItem[] = [
             { name: 'Accounting', href: 'settings/accounting', icon: CurrencyPoundIcon },
             { name: 'Connectors', href: 'admin/connectors', icon: ServerStackIcon },
             { name: 'System Settings', href: 'admin/system', icon: CogIcon },
-        ],
-    },
-    {
-        id: 'audit',
-        name: 'Audit & Compliance',
-        icon: ClipboardListIcon,
-        children: [
             { name: 'Activity Logs', href: 'audit/logs', icon: ArchiveIcon },
         ],
     },

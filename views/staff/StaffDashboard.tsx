@@ -33,8 +33,9 @@ import AutomationsAdminPage from './AutomationsAdminPage';
 import ConnectorsPage from './ConnectorsPage';
 import ApplicationsPage from './ApplicationsPage';
 import AuditLogsPage from './AuditLogsPage';
+import DispatchPage from './DispatchPage';
 
-export type StaffPage = 'home' | 'schemes' | 'drivers/list' | 'drivers/applications' | 'drivers/promotions' | 'drivers/invoicing' | 'drivers/historic-invoices' | 'vehicles' | 'bookings/list' | 'bookings/customers' | 'accounts/list' | 'accounts/invoicing' | 'accounts/historic-invoices' | 'admin/company' | 'admin/staff' | 'admin/driver' | 'admin/payments' | 'admin/messaging' | 'admin/attributes' | 'admin/automations' | 'admin/connectors' | 'admin/system' | 'audit/logs' | 'settings/accounting' | 'profile';
+export type StaffPage = 'home' | 'dispatch' | 'schemes' | 'drivers/list' | 'drivers/applications' | 'drivers/promotions' | 'drivers/invoicing' | 'drivers/historic-invoices' | 'vehicles' | 'bookings/list' | 'bookings/customers' | 'accounts/list' | 'accounts/invoicing' | 'accounts/historic-invoices' | 'admin/company' | 'admin/staff' | 'admin/driver' | 'admin/payments' | 'admin/messaging' | 'admin/attributes' | 'admin/automations' | 'admin/connectors' | 'admin/system' | 'audit/logs' | 'settings/accounting' | 'profile';
 
 interface StaffDashboardProps {
   isDarkMode: boolean;
@@ -46,6 +47,7 @@ interface StaffDashboardProps {
 
 const PAGE_METADATA: Record<StaffPage, { title: string; description: string }> = {
     'home': { title: 'Home Dashboard', description: 'A high-level overview of your operations, key metrics, and recent activity.' },
+    'dispatch': { title: 'Dispatch & Booking Management', description: 'Real-time dispatch, booking creation, driver assignment, and trip management.' },
     'schemes': { title: 'Commission Scheme Definitions', description: "Define charges for vehicle rent and insurance, and manage commission schemes." },
     'drivers/list': { title: 'Drivers', description: "A detailed list of all drivers with their current status, contact details, and scheme information." },
     'drivers/applications': { title: 'Driver Applications', description: "Review and manage new driver applications." },
@@ -139,6 +141,8 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ isDarkMode, toggleDarkM
     switch (currentPage) {
       case 'home':
         return <HomePage />;
+      case 'dispatch':
+        return <DispatchPage />;
       case 'schemes':
         return <SchemesPage />;
       case 'drivers/list':

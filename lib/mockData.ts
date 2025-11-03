@@ -121,32 +121,73 @@ export const mockEndpointDefinitions: EndpointDefinition[] = [
 export const mockWebhookEvents: WebhookEvent[] = [
     { id: 'EVT01', name: 'Booking Created', description: 'Fires when a new booking is created.', availableVariables: {'booking': [], 'customer': []} },
     { id: 'EVT02', name: 'Driver Document Expiring', description: 'Fires 30 days before a driver document expires.', availableVariables: {'driver': [], 'document': []} },
+    { id: 'EVT03', name: 'Booking Updated', description: 'Fires when a booking is updated.', availableVariables: {'booking': [], 'customer': [], 'changes': []} },
+    { id: 'EVT04', name: 'Booking Cancelled', description: 'Fires when a booking is cancelled.', availableVariables: {'booking': [], 'customer': [], 'reason': []} },
+    { id: 'EVT05', name: 'Driver Assigned', description: 'Fires when a driver is assigned to a booking.', availableVariables: {'booking': [], 'driver': [], 'vehicle': []} },
+    { id: 'EVT06', name: 'Driver Arrived', description: 'Fires when driver arrives at pickup location.', availableVariables: {'booking': [], 'driver': [], 'location': []} },
+    { id: 'EVT07', name: 'Journey Started', description: 'Fires when a journey begins.', availableVariables: {'booking': [], 'driver': [], 'location': []} },
+    { id: 'EVT08', name: 'Journey Completed', description: 'Fires when a journey is completed.', availableVariables: {'booking': [], 'driver': [], 'duration': [], 'distance': [], 'fare': []} },
+    { id: 'EVT09', name: 'Journey No-Show', description: 'Fires when a journey is marked as no-show.', availableVariables: {'booking': [], 'customer': [], 'driver': [], 'reason': []} },
+    { id: 'EVT10', name: 'Invoice Generated', description: 'Fires when an invoice is generated.', availableVariables: {'invoice': [], 'driver': [], 'amount': [], 'period': []} },
+    { id: 'EVT11', name: 'Invoice Paid', description: 'Fires when an invoice payment is received.', availableVariables: {'invoice': [], 'driver': [], 'amount': [], 'paymentMethod': []} },
+    { id: 'EVT12', name: 'Driver Created', description: 'Fires when a new driver is created.', availableVariables: {'driver': [], 'site': []} },
+    { id: 'EVT13', name: 'Driver Updated', description: 'Fires when driver information is updated.', availableVariables: {'driver': [], 'changes': []} },
+    { id: 'EVT14', name: 'Driver Status Changed', description: 'Fires when driver status is changed (Active/Inactive).', availableVariables: {'driver': [], 'status': [], 'reason': []} },
+    { id: 'EVT15', name: 'Account Created', description: 'Fires when a new account is created.', availableVariables: {'account': [], 'site': []} },
+    { id: 'EVT16', name: 'Account Updated', description: 'Fires when account information is updated.', availableVariables: {'account': [], 'changes': []} },
+    { id: 'EVT17', name: 'Payment Processed', description: 'Fires when a payment is processed.', availableVariables: {'transaction': [], 'amount': [], 'method': [], 'account': []} },
+    { id: 'EVT18', name: 'System Event', description: 'Fires for general system events and API calls.', availableVariables: {'event': [], 'details': []} },
 ];
 
 export const mockWebhookDefinitions: WebhookDefinition[] = [
     { id: 'WH01', eventName: 'Booking Created', targetUrl: 'https://my-analytics.com/hooks/booking', status: 'Active', conditions: 'booking.price > 100' },
+    { id: 'WH02', eventName: 'Driver Assigned', targetUrl: 'https://my-crm.com/hooks/driver-assignment', status: 'Active' },
+    { id: 'WH03', eventName: 'Journey Completed', targetUrl: 'https://my-analytics.com/hooks/journey-complete', status: 'Active' },
+    { id: 'WH04', eventName: 'Invoice Generated', targetUrl: 'https://my-accounting.com/hooks/invoice', status: 'Active' },
+    { id: 'WH05', eventName: 'Journey No-Show', targetUrl: 'https://my-analytics.com/hooks/no-show', status: 'Inactive' },
 ];
 
 export const mockMessageEvents: AppMessageEvent[] = [
     { id: 'MEVT01', name: 'Booking Confirmation', description: 'Sent to customer when a booking is created.', availablePlaceholders: ['customer.name', 'booking.pickupDateTime', 'booking.pickupAddress'] },
     { id: 'MEVT02', name: 'Driver Assigned', description: 'Sent to customer when a driver is assigned.', availablePlaceholders: ['customer.name', 'driver.firstName', 'vehicle.registration', 'vehicle.make', 'vehicle.model'] },
+    { id: 'MEVT03', name: 'Driver Arrived', description: 'Sent to customer when driver arrives at pickup.', availablePlaceholders: ['driver.firstName', 'driver.mobileNumber', 'vehicle.registration'] },
+    { id: 'MEVT04', name: 'Journey Completed', description: 'Sent to customer and driver when journey is completed.', availablePlaceholders: ['booking.id', 'duration', 'distance', 'fare', 'dropoffDateTime'] },
+    { id: 'MEVT05', name: 'No-Show Alert', description: 'Sent to driver and dispatcher when booking is no-show.', availablePlaceholders: ['booking.id', 'customer.name', 'pickupTime', 'reason'] },
+    { id: 'MEVT06', name: 'Invoice Generated', description: 'Sent to driver when invoice is generated.', availablePlaceholders: ['driver.firstName', 'invoice.id', 'invoice.amount', 'invoicePeriod'] },
+    { id: 'MEVT07', name: 'Payment Confirmation', description: 'Sent to account when payment is processed.', availablePlaceholders: ['account.name', 'amount', 'paymentMethod', 'transactionId'] },
 ];
 
 export const mockMessageTemplates: MessageTemplate[] = [
     { id: 'TPL01', eventId: 'MEVT01', name: 'Standard Booking Confirmation (SMS)', target: 'Customer', content: 'Hi {{customer.name}}, your booking for {{booking.pickupDateTime}} from {{booking.pickupAddress}} is confirmed.' },
     { id: 'TPL02', eventId: 'MEVT02', name: 'Driver Assigned Notification (SMS)', target: 'Customer', content: 'Your driver, {{driver.firstName}}, is on their way in a {{vehicle.make}} {{vehicle.model}} ({{vehicle.registration}}).' },
     { id: 'TPL03', eventId: 'MEVT01', name: 'New Booking Alert (Staff Notice)', target: 'Staff', content: 'New booking {{booking.id}} created for {{customer.name}}.', isNotice: true },
+    { id: 'TPL04', eventId: 'MEVT03', name: 'Driver Arrived (SMS)', target: 'Customer', content: '{{driver.firstName}} has arrived. Call {{driver.mobileNumber}} or see {{vehicle.registration}}.' },
+    { id: 'TPL05', eventId: 'MEVT04', name: 'Journey Complete Receipt (Email)', target: 'Customer', content: 'Journey completed in {{duration}} minutes. Distance: {{distance}} miles. Fare: {{fare}}. Thank you for using our service!' },
+    { id: 'TPL06', eventId: 'MEVT05', name: 'No-Show Notification (Staff Notice)', target: 'Staff', content: 'Booking {{booking.id}} for {{customer.name}} is a no-show. Reason: {{reason}}', isNotice: true },
+    { id: 'TPL07', eventId: 'MEVT06', name: 'Invoice Ready (SMS)', target: 'Driver', content: 'Hi {{driver.firstName}}, your invoice for {{invoicePeriod}} is ready. Total: {{invoice.amount}}' },
+    { id: 'TPL08', eventId: 'MEVT07', name: 'Payment Received (Email)', target: 'Account', content: 'Payment of {{amount}} received via {{paymentMethod}}. Ref: {{transactionId}}' },
 ];
 
 export const mockAutomationTriggers: AutomationTrigger[] = [
-    { id: 'TRG01', name: 'Booking Status Changed', description: 'Fires when a booking\'s status is updated.', availableVariables: {'booking': [], 'customer': [], 'driver': []} },
+    { id: 'TRG01', name: 'Booking Created', description: 'Fires when a booking is created.', availableVariables: {'booking': [], 'customer': []} },
+    { id: 'TRG02', name: 'Booking Status Changed', description: 'Fires when a booking\'s status is updated.', availableVariables: {'booking': [], 'customer': [], 'driver': [], 'oldStatus': [], 'newStatus': []} },
+    { id: 'TRG03', name: 'Driver Assigned', description: 'Fires when a driver is assigned to a booking.', availableVariables: {'booking': [], 'driver': [], 'vehicle': []} },
+    { id: 'TRG04', name: 'Driver Arrived', description: 'Fires when driver arrives at pickup location.', availableVariables: {'booking': [], 'driver': [], 'location': []} },
+    { id: 'TRG05', name: 'Journey Completed', description: 'Fires when a journey is completed.', availableVariables: {'booking': [], 'driver': [], 'duration': [], 'distance': [], 'fare': []} },
+    { id: 'TRG06', name: 'Journey No-Show', description: 'Fires when a journey is marked as no-show.', availableVariables: {'booking': [], 'customer': [], 'driver': [], 'reason': []} },
+    { id: 'TRG07', name: 'Invoice Generated', description: 'Fires when an invoice is generated.', availableVariables: {'invoice': [], 'driver': [], 'amount': [], 'period': []} },
+    { id: 'TRG08', name: 'Invoice Paid', description: 'Fires when an invoice payment is received.', availableVariables: {'invoice': [], 'driver': [], 'amount': [], 'paymentMethod': []} },
+    { id: 'TRG09', name: 'Driver Status Changed', description: 'Fires when driver status changes (Active/Inactive).', availableVariables: {'driver': [], 'oldStatus': [], 'newStatus': [], 'reason': []} },
+    { id: 'TRG10', name: 'Payment Processed', description: 'Fires when a payment is processed.', availableVariables: {'transaction': [], 'amount': [], 'method': [], 'account': []} },
 ];
 export const mockAutomationActions: AutomationAction[] = [
     { id: 'ACT01', name: 'Send Message Template', description: 'Sends a pre-defined message template.', parameters: [{id: 'templateId', name: 'Template', type: 'template'}] },
     { id: 'ACT02', name: 'Add Attribute to Booking', description: 'Adds a system attribute to the booking.', parameters: [{id: 'attributeId', name: 'Attribute', type: 'attribute'}] },
 ];
 export const mockAutomations: Automation[] = [
-    { id: 'AUTO01', name: 'Notify VIP Booking', description: 'Sends a message when a VIP customer makes a booking.', isActive: true, triggerId: 'TRG01', conditions: 'customer.priorityLevel === "VIP"', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL03'}}] }
+    { id: 'AUTO01', name: 'Notify VIP Booking', description: 'Sends a message when a VIP customer makes a booking.', isActive: true, triggerId: 'TRG01', conditions: 'customer.priorityLevel === "VIP"', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL03'}}] },
+    { id: 'AUTO02', name: 'Send Driver Arrived Alert', description: 'Notifies customer when driver arrives at pickup.', isActive: true, triggerId: 'TRG04', conditions: '', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL02'}}] },
+    { id: 'AUTO03', name: 'Invoice Payment Reminder', description: 'Sends reminder when invoice is generated.', isActive: true, triggerId: 'TRG07', conditions: 'invoice.amount > 500', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL01'}}] },
 ];
 
 export const mockAccountingDefaults = {
