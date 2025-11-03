@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Checkbox } from '../ui/checkbox';
 import { XIcon, UploadIcon, LinkIcon, ArchiveIcon, ArrowUturnLeftIcon } from '../icons/Icon';
 import { mockLicensingCouncils, mockVehicleAttributes, mockSiteDetails } from '../../lib/mockData';
+import DocumentViewerModal from './DocumentViewerModal';
 
 interface VehicleEditModalProps {
   vehicle: Vehicle;
@@ -55,7 +56,8 @@ const DocumentUploadField: React.FC<{
   documentUrl?: string;
   onFileSelect: (file: File | null) => void;
   isDriverEditable?: boolean;
-}> = ({ label, documentUrl, onFileSelect, isDriverEditable }) => {
+  onViewDocument?: (url: string, name: string) => void;
+}> = ({ label, documentUrl, onFileSelect, isDriverEditable, onViewDocument }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,7 +77,7 @@ const DocumentUploadField: React.FC<{
                 </span>
             </label>
             <div className="flex items-center space-x-2 flex-shrink-0">
-                {documentUrl && <Button type="button" variant="outline" size="sm" onClick={() => window.open(documentUrl, '_blank')}><LinkIcon className="w-4 h-4 mr-2"/> View Current</Button>}
+                {documentUrl && <Button type="button" variant="outline" size="sm" onClick={() => onViewDocument?.(documentUrl, label)}><LinkIcon className="w-4 h-4 mr-2"/> View Current</Button>}
                 <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}><UploadIcon className="w-4 h-4 mr-2"/> Upload New</Button>
                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
             </div>
@@ -88,6 +90,11 @@ const DocumentUploadField: React.FC<{
 const VehicleEditModal: React.FC<VehicleEditModalProps> = ({ vehicle, isNew, isOpen, onClose, onSave, onArchive }) => {
   const [formData, setFormData] = useState<Vehicle>(vehicle);
   const [uploadedFiles, setUploadedFiles] = useState<{ [key: string]: File | null }>({});
+  const [documentViewer, setDocumentViewer] = useState<{ isOpen: boolean; url: string; name: string }>({ 
+    isOpen: false, 
+    url: '', 
+    name: '' 
+  });
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); }, [onClose]);
 
@@ -116,6 +123,14 @@ const VehicleEditModal: React.FC<VehicleEditModalProps> = ({ vehicle, isNew, isO
   
   const handleFileSelect = (docType: string, file: File | null) => {
     setUploadedFiles(prev => ({ ...prev, [docType]: file }));
+  };
+
+  const handleViewDocument = (url: string, name: string) => {
+    setDocumentViewer({ isOpen: true, url, name });
+  };
+
+  const handleCloseDocumentViewer = () => {
+    setDocumentViewer({ isOpen: false, url: '', name: '' });
   };
 
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -173,7 +188,7 @@ const VehicleEditModal: React.FC<VehicleEditModalProps> = ({ vehicle, isNew, isO
                         <div className="p-4 rounded-lg border space-y-3">
                            <h4 className="font-semibold">V5C (Registration)</h4>
                            <FormField id="registration" name="registration" label="Registration Number" value={formData.registration} onChange={handleInputChange} isDriverEditable />
-                           <DocumentUploadField label="V5C Document" documentUrl={formData.v5cDocumentUrl} onFileSelect={(file) => handleFileSelect('v5c', file)} isDriverEditable />
+                           <DocumentUploadField label="V5C Document" documentUrl={formData.v5cDocumentUrl} onFileSelect={(file) => handleFileSelect('v5c', file)} isDriverEditable onViewDocument={handleViewDocument} />
                         </div>
                         <div className="p-4 rounded-lg border space-y-3">
                            <h4 className="font-semibold">Plate</h4>
@@ -186,18 +201,18 @@ const VehicleEditModal: React.FC<VehicleEditModalProps> = ({ vehicle, isNew, isO
                            </SelectField>
                            <FormField id="plateNumber" name="plateNumber" label="Plate Number" value={formData.plateNumber} onChange={handleInputChange} isDriverEditable/>
                            <FormField type="datetime-local" id="plateExpiry" name="plateExpiry" label="Plate Expiry" value={formatDateForDateTimeInput(formData.plateExpiry)} onChange={handleExpiryChange} isDriverEditable/>
-                           <DocumentUploadField label="Plate Document" documentUrl={formData.plateDocumentUrl} onFileSelect={(file) => handleFileSelect('plate', file)} isDriverEditable />
+                           <DocumentUploadField label="Plate Document" documentUrl={formData.plateDocumentUrl} onFileSelect={(file) => handleFileSelect('plate', file)} isDriverEditable onViewDocument={handleViewDocument} />
                         </div>
                         <div className="p-4 rounded-lg border space-y-3">
                            <h4 className="font-semibold">Insurance</h4>
                            <FormField id="insuranceCertificateNumber" name="insuranceCertificateNumber" label="Insurance Certificate No." value={formData.insuranceCertificateNumber} onChange={handleInputChange} isDriverEditable/>
                            <FormField type="datetime-local" id="insuranceExpiry" name="insuranceExpiry" label="Insurance Expiry" value={formatDateForDateTimeInput(formData.insuranceExpiry)} onChange={handleExpiryChange} isDriverEditable/>
-                           <DocumentUploadField label="Insurance Certificate" documentUrl={formData.insuranceDocumentUrl} onFileSelect={(file) => handleFileSelect('insurance', file)} isDriverEditable />
+                           <DocumentUploadField label="Insurance Certificate" documentUrl={formData.insuranceDocumentUrl} onFileSelect={(file) => handleFileSelect('insurance', file)} isDriverEditable onViewDocument={handleViewDocument} />
                         </div>
                         <div className="p-4 rounded-lg border space-y-3">
                            <h4 className="font-semibold">MOT & Road Tax</h4>
                            <FormField type="datetime-local" id="motComplianceExpiry" name="motComplianceExpiry" label="MOT / Compliance Expiry" value={formatDateForDateTimeInput(formData.motComplianceExpiry)} onChange={handleExpiryChange} isDriverEditable/>
-                           <DocumentUploadField label="MOT / Compliance Certificate" documentUrl={formData.motComplianceCertificateUrl} onFileSelect={(file) => handleFileSelect('mot', file)} isDriverEditable />
+                           <DocumentUploadField label="MOT / Compliance Certificate" documentUrl={formData.motComplianceCertificateUrl} onFileSelect={(file) => handleFileSelect('mot', file)} isDriverEditable onViewDocument={handleViewDocument} />
                            <hr className="border-border"/>
                            <FormField type="datetime-local" id="roadTaxExpiry" name="roadTaxExpiry" label="Road Tax Expiry" value={formatDateForDateTimeInput(formData.roadTaxExpiry)} onChange={handleExpiryChange} isDriverEditable/>
                         </div>
@@ -223,6 +238,12 @@ const VehicleEditModal: React.FC<VehicleEditModalProps> = ({ vehicle, isNew, isO
                 </div>
             </footer>
         </form>
+        <DocumentViewerModal
+          isOpen={documentViewer.isOpen}
+          onClose={handleCloseDocumentViewer}
+          documentUrl={documentViewer.url}
+          documentName={documentViewer.name}
+        />
       </div>
     </div>
   );

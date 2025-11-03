@@ -9,6 +9,7 @@ import { mockStaffList, mockLicensingCouncils } from '../../lib/mockData';
 import { Checkbox } from '../ui/checkbox';
 import { Input } from '../ui/input';
 import { DriverForm } from './DriverEditModal';
+import DocumentViewerModal from './DocumentViewerModal';
 
 interface ApplicationDetailModalProps {
     application: DriverApplication;
@@ -89,6 +90,11 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ isOpen,
         taskType: 'Re-contact',
         assignedToId: '',
     });
+    const [documentViewer, setDocumentViewer] = useState<{ isOpen: boolean; url: string; name: string }>({ 
+        isOpen: false, 
+        url: '', 
+        name: '' 
+    });
 
     const handleKeyDown = useCallback((event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); }, [onClose]);
     useEffect(() => {
@@ -168,6 +174,14 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ isOpen,
         setNewTask({ taskType: 'Re-contact', assignedToId: '' });
     };
 
+    const handleViewDocument = (url: string, name: string) => {
+        setDocumentViewer({ isOpen: true, url, name });
+    };
+
+    const handleCloseDocumentViewer = () => {
+        setDocumentViewer({ isOpen: false, url: '', name: '' });
+    };
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4" onClick={onClose}>
             <div className="relative bg-card text-card-foreground rounded-xl shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
@@ -184,6 +198,7 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ isOpen,
                             formData={editableData}
                             setFormData={setEditableData}
                             showVehicleDetails={showVehicleDetails}
+                            onViewDocument={handleViewDocument}
                         />
                          <div className="mt-8 pt-6 border-t">
                             <Button type="button" variant="outline" onClick={handleToggleVehicleDetails}>
@@ -192,6 +207,16 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ isOpen,
                         </div>
                     </div>
                     <div className="lg:col-span-1 space-y-4">
+                        <Card>
+                            <CardHeader><CardTitle>Application Documents</CardTitle></CardHeader>
+                            <CardContent className="space-y-2">
+                                {application.badgeDocumentUrl && <Button size="sm" variant="outline" className="w-full justify-start" onClick={() => handleViewDocument(application.badgeDocumentUrl, 'Badge Document')}><span className="w-4 h-4 mr-2">📄</span> Badge Document</Button>}
+                                {application.licenseDocumentUrl && <Button size="sm" variant="outline" className="w-full justify-start" onClick={() => handleViewDocument(application.licenseDocumentUrl, 'License Document')}><span className="w-4 h-4 mr-2">📄</span> License Document</Button>}
+                                {application.v5cDocumentUrl && <Button size="sm" variant="outline" className="w-full justify-start" onClick={() => handleViewDocument(application.v5cDocumentUrl, 'V5C Document')}><span className="w-4 h-4 mr-2">📄</span> V5C Document</Button>}
+                                {application.insuranceDocumentUrl && <Button size="sm" variant="outline" className="w-full justify-start" onClick={() => handleViewDocument(application.insuranceDocumentUrl, 'Insurance Document')}><span className="w-4 h-4 mr-2">📄</span> Insurance Document</Button>}
+                                {!application.badgeDocumentUrl && !application.licenseDocumentUrl && !application.v5cDocumentUrl && !application.insuranceDocumentUrl && <p className="text-xs text-center text-muted-foreground py-2">No documents uploaded yet.</p>}
+                            </CardContent>
+                        </Card>
                         <Card>
                             <CardHeader><CardTitle>Tracking & Status</CardTitle></CardHeader>
                             <CardContent>
@@ -248,6 +273,12 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ isOpen,
                          <Button onClick={() => onOnboard(editableData)}><CheckIcon className="w-4 h-4 mr-2"/> Onboard Driver</Button>
                     </div>
                 </footer>
+                <DocumentViewerModal
+                  isOpen={documentViewer.isOpen}
+                  onClose={handleCloseDocumentViewer}
+                  documentUrl={documentViewer.url}
+                  documentName={documentViewer.name}
+                />
             </div>
         </div>
     );

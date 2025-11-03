@@ -8,6 +8,7 @@ import { Textarea } from '../ui/textarea';
 import { XIcon, UploadIcon, LinkIcon, ArchiveIcon, ArrowUturnLeftIcon } from '../icons/Icon';
 import { mockLicensingCouncils, mockSiteDetails, mockDriverAttributes, mockVehicles } from '../../lib/mockData';
 import { Checkbox } from '../ui/checkbox';
+import DocumentViewerModal from './DocumentViewerModal';
 
 interface DriverEditModalProps {
   driver: Driver;
@@ -76,7 +77,8 @@ const DocumentSection: React.FC<{
     onExpiryChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     isDriverEditable?: boolean;
     children?: React.ReactNode;
-}> = ({ title, numberName, expiryName, numberValue, expiryValue, documentUrl, onInputChange, onExpiryChange, isDriverEditable, children }) => (
+    onViewDocument?: (url: string, name: string) => void;
+}> = ({ title, numberName, expiryName, numberValue, expiryValue, documentUrl, onInputChange, onExpiryChange, isDriverEditable, children, onViewDocument }) => (
     <div className="md:col-span-2 p-4 border rounded-lg space-y-3 bg-background">
         <h4 className="font-semibold">{title}</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,7 +86,7 @@ const DocumentSection: React.FC<{
              <FormField type="datetime-local" label="Expiry" name={expiryName} value={formatDateForDateTimeInput(expiryValue)} onChange={onExpiryChange} isDriverEditable={isDriverEditable}/>
              {children}
              <div className="md:col-span-2 flex items-center justify-end space-x-2">
-                {documentUrl && <Button variant="outline" size="sm" type="button"><LinkIcon className="w-4 h-4 mr-2"/> View Document</Button>}
+                {documentUrl && <Button variant="outline" size="sm" type="button" onClick={() => onViewDocument?.(documentUrl, `${title} Document`)}><LinkIcon className="w-4 h-4 mr-2"/> View Document</Button>}
                 <Button variant="outline" size="sm" type="button"><UploadIcon className="w-4 h-4 mr-2"/> Upload New</Button>
             </div>
         </div>
@@ -96,9 +98,10 @@ interface DriverFormProps {
   formData: Partial<Driver>;
   setFormData: React.Dispatch<React.SetStateAction<Partial<Driver>>>;
   showVehicleDetails: boolean;
+  onViewDocument?: (url: string, name: string) => void;
 }
 
-export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, showVehicleDetails }) => {
+export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, showVehicleDetails, onViewDocument }) => {
     
     const [vehicleSearchTerm, setVehicleSearchTerm] = useState(formData.vehicleRef || '');
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -279,7 +282,7 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
             <fieldset>
                 <legend className="text-lg font-semibold text-foreground md:col-span-2 border-b pb-2 mb-4">Licensing & Documents</legend>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <DocumentSection title="Badge" numberName="badgeNumber" expiryName="badgeExpiry" numberValue={formData.badgeNumber} expiryValue={formData.badgeExpiry} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} documentUrl={formData.badgeDocumentUrl} isDriverEditable>
+                    <DocumentSection title="Badge" numberName="badgeNumber" expiryName="badgeExpiry" numberValue={formData.badgeNumber} expiryValue={formData.badgeExpiry} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} documentUrl={formData.badgeDocumentUrl} isDriverEditable onViewDocument={onViewDocument}>
                         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <SelectField id="badgeType" label="Badge Type" value={formData.badgeType || ''} onValueChange={(v) => setFormData(p => ({...p, badgeType: v as any}))}>
                                 <SelectItem value="Private Hire">Private Hire</SelectItem>
@@ -290,8 +293,8 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
                             </SelectField>
                         </div>
                     </DocumentSection>
-                    <DocumentSection title="Driving License" numberName="drivingLicenseNumber" expiryName="drivingLicenseExpiry" numberValue={formData.drivingLicenseNumber} expiryValue={formData.drivingLicenseExpiry} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} documentUrl={formData.drivingLicenseDocumentUrl} isDriverEditable />
-                    <DocumentSection title="School Badge" numberName="schoolBadgeNumber" expiryName="schoolBadgeExpiry" numberValue={formData.schoolBadgeNumber} expiryValue={formData.schoolBadgeExpiry} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} documentUrl={formData.schoolBadgeDocumentUrl} isDriverEditable />
+                    <DocumentSection title="Driving License" numberName="drivingLicenseNumber" expiryName="drivingLicenseExpiry" numberValue={formData.drivingLicenseNumber} expiryValue={formData.drivingLicenseExpiry} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} documentUrl={formData.drivingLicenseDocumentUrl} isDriverEditable onViewDocument={onViewDocument} />
+                    <DocumentSection title="School Badge" numberName="schoolBadgeNumber" expiryName="schoolBadgeExpiry" numberValue={formData.schoolBadgeNumber} expiryValue={formData.schoolBadgeExpiry} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} documentUrl={formData.schoolBadgeDocumentUrl} isDriverEditable onViewDocument={onViewDocument} />
                 </div>
             </fieldset>
 
@@ -307,8 +310,8 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
                         
                         <div className="md:col-span-4 p-4 rounded-lg border bg-background space-y-3">
                            <h4 className="font-semibold">V5C & Plate</h4>
-                           <DocumentSection title="V5C" numberName="v5cNumber" expiryName="v5cExpiry" numberValue={null} expiryValue={null} onInputChange={()=>{}} onExpiryChange={()=>{}} documentUrl={formData.pendingNewVehicle.v5cDocumentUrl}/>
-                           <DocumentSection title="Plate" numberName="pendingNewVehicle.plateNumber" expiryName="pendingNewVehicle.plateExpiry" numberValue={formData.pendingNewVehicle.plateNumber} expiryValue={formData.pendingNewVehicle.plateExpiry} documentUrl={formData.pendingNewVehicle.plateDocumentUrl} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange}>
+                           <DocumentSection title="V5C" numberName="v5cNumber" expiryName="v5cExpiry" numberValue={null} expiryValue={null} onInputChange={()=>{}} onExpiryChange={()=>{}} documentUrl={formData.pendingNewVehicle.v5cDocumentUrl} onViewDocument={onViewDocument}/>
+                           <DocumentSection title="Plate" numberName="pendingNewVehicle.plateNumber" expiryName="pendingNewVehicle.plateExpiry" numberValue={formData.pendingNewVehicle.plateNumber} expiryValue={formData.pendingNewVehicle.plateExpiry} documentUrl={formData.pendingNewVehicle.plateDocumentUrl} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} onViewDocument={onViewDocument}>
                                  <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <SelectField id="pendingNewVehicle.plateType" label="Plate Type" value={formData.pendingNewVehicle.plateType || ''} onValueChange={(v) => setFormData(p => ({ ...p, pendingNewVehicle: { ...p.pendingNewVehicle!, plateType: v as any } }))}>
                                         <SelectItem value="Private Hire">Private Hire</SelectItem>
@@ -322,8 +325,8 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
                         </div>
                          <div className="md:col-span-4 p-4 rounded-lg border bg-background space-y-3">
                            <h4 className="font-semibold">Insurance, MOT & Road Tax</h4>
-                           <DocumentSection title="Insurance" numberName="pendingNewVehicle.insuranceCertificateNumber" expiryName="pendingNewVehicle.insuranceExpiry" numberValue={formData.pendingNewVehicle.insuranceCertificateNumber} expiryValue={formData.pendingNewVehicle.insuranceExpiry} documentUrl={formData.pendingNewVehicle.insuranceDocumentUrl} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange}/>
-                           <DocumentSection title="MOT" numberName="motNumber" expiryName="pendingNewVehicle.motComplianceExpiry" numberValue={null} expiryValue={formData.pendingNewVehicle.motComplianceExpiry} documentUrl={formData.pendingNewVehicle.motComplianceCertificateUrl} onInputChange={()=>{}} onExpiryChange={handleExpiryChange}/>
+                           <DocumentSection title="Insurance" numberName="pendingNewVehicle.insuranceCertificateNumber" expiryName="pendingNewVehicle.insuranceExpiry" numberValue={formData.pendingNewVehicle.insuranceCertificateNumber} expiryValue={formData.pendingNewVehicle.insuranceExpiry} documentUrl={formData.pendingNewVehicle.insuranceDocumentUrl} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} onViewDocument={onViewDocument}/>
+                           <DocumentSection title="MOT" numberName="motNumber" expiryName="pendingNewVehicle.motComplianceExpiry" numberValue={null} expiryValue={formData.pendingNewVehicle.motComplianceExpiry} documentUrl={formData.pendingNewVehicle.motComplianceCertificateUrl} onInputChange={()=>{}} onExpiryChange={handleExpiryChange} onViewDocument={onViewDocument}/>
                            <FormField type="datetime-local" label="Road Tax Expiry" name="pendingNewVehicle.roadTaxExpiry" value={formatDateForDateTimeInput(formData.pendingNewVehicle.roadTaxExpiry)} onChange={handleExpiryChange} />
                         </div>
                     </div>
@@ -337,6 +340,11 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
 const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen, onClose, onSave, onArchive }) => {
   const [formData, setFormData] = useState<Driver>(driver);
   const [showVehicleDetails, setShowVehicleDetails] = useState(!!driver.pendingNewVehicle);
+  const [documentViewer, setDocumentViewer] = useState<{ isOpen: boolean; url: string; name: string }>({ 
+    isOpen: false, 
+    url: '', 
+    name: '' 
+  });
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -379,6 +387,14 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
     setShowVehicleDetails(prev => !prev);
   };
 
+  const handleViewDocument = (url: string, name: string) => {
+    setDocumentViewer({ isOpen: true, url, name });
+  };
+
+  const handleCloseDocumentViewer = () => {
+    setDocumentViewer({ isOpen: false, url: '', name: '' });
+  };
+
   const isArchived = formData.status === 'Archived';
 
   return (
@@ -395,6 +411,7 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
                     formData={formData}
                     setFormData={setFormData as any}
                     showVehicleDetails={showVehicleDetails}
+                    onViewDocument={handleViewDocument}
                 />
                 <div className="mt-8 pt-6 border-t">
                     <Button type="button" variant="outline" onClick={handleToggleVehicleDetails}>
@@ -422,6 +439,12 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
                 </div>
             </footer>
         </form>
+        <DocumentViewerModal
+          isOpen={documentViewer.isOpen}
+          onClose={handleCloseDocumentViewer}
+          documentUrl={documentViewer.url}
+          documentName={documentViewer.name}
+        />
       </div>
     </div>
   );
