@@ -159,8 +159,8 @@ export const mockVehicles: Vehicle[] = [
 // --- STAFF DATA ---
 
 export const mockStaffList: StaffMember[] = [
-    { id: 'SM01', name: 'Alex Johnson', email: 'alex.j@example.com', title: 'Area Manager', avatarUrl: 'https://randomuser.me/api/portraits/men/75.jpg', officeHours: [], templateId: 't-admin', source: 'Manual', status: 'Active' },
-    { id: 'SM02', name: 'Ben Carter', email: 'ben.c@example.com', title: 'Dispatcher', avatarUrl: 'https://randomuser.me/api/portraits/men/76.jpg', officeHours: [], templateId: 't-dispatcher', source: 'Google Workspace', status: 'Active' },
+    { id: 'SM01', name: 'Alex Johnson', email: 'alex.j@example.com', title: 'Area Manager', avatarUrl: 'https://randomuser.me/api/portraits/men/75.jpg', officeHours: [], templateId: 't-admin', source: 'Manual', status: 'Active', siteIds: ['SITE01'] },
+    { id: 'SM02', name: 'Ben Carter', email: 'ben.c@example.com', title: 'Dispatcher', avatarUrl: 'https://randomuser.me/api/portraits/men/76.jpg', officeHours: [], templateId: 't-dispatcher', source: 'Google Workspace', status: 'Active', siteIds: ['SITE01', 'SITE02'] },
     { id: 'SM03', name: 'Chloe Davis', email: 'chloe.d@example.com', title: 'Accounts', avatarUrl: 'https://randomuser.me/api/portraits/women/75.jpg', officeHours: [], templateId: 't-accounts', source: 'Manual', status: 'Active' },
 ];
 

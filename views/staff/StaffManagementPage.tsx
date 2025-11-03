@@ -6,6 +6,7 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { mockStaffList, mockPermissionTemplates } from '../../lib/mockData';
+import { mockSiteDetails } from '../../lib/mockCompanyData';
 import { StaffMember, StaffStatus, StaffSource, PermissionTemplate } from '../../types';
 import StaffEditModal from '../../components/staff/StaffEditModal';
 import PermissionTemplateEditModal from '../../components/staff/PermissionTemplateEditModal';
@@ -209,6 +210,7 @@ const StaffManagementPage: React.FC = () => {
                     onClose={handleCloseStaffModal}
                     onSave={handleSaveStaff}
                     permissionTemplates={permissionTemplates}
+                    availableSites={mockSiteDetails}
                 />
             )}
 

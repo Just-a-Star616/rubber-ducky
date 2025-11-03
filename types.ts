@@ -274,7 +274,7 @@ export interface StaffMember {
     templateId: string;
     source: StaffSource;
     status: StaffStatus;
-    siteId?: string;
+    siteIds?: string[]; // Optional site assignments (empty/undefined = main company); enables site-specific messaging & permissions
 }
 
 export interface ShortcutLink {

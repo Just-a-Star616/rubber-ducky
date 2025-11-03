@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { StaffMember, StaffStatus, PermissionTemplate } from '../../types';
+import { StaffMember, StaffStatus, PermissionTemplate, SiteDetails } from '../../types';
 import { Button } from '../ui/button';
 import { XIcon } from '../icons/Icon';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Checkbox } from '../ui/checkbox';
 
 interface StaffEditModalProps {
   staff: StaffMember | null;
@@ -13,16 +14,24 @@ interface StaffEditModalProps {
   onClose: () => void;
   onSave: (staff: StaffMember) => void;
   permissionTemplates: PermissionTemplate[];
+  availableSites?: SiteDetails[];
 }
 
-const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose, onSave, permissionTemplates }) => {
+const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose, onSave, permissionTemplates, availableSites = [] }) => {
   const [formData, setFormData] = useState<Partial<StaffMember>>({});
+  const [selectedSiteIds, setSelectedSiteIds] = useState<Set<string>>(new Set());
   const isNew = !staff;
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => { if (event.key === 'Escape') onClose(); }, [onClose]);
 
   useEffect(() => {
-    setFormData(isNew ? { name: '', email: '', title: '', templateId: permissionTemplates.find(t => t.name === 'Login Only')?.id, status: 'Active' } : { ...staff });
+    if (isNew) {
+      setFormData({ name: '', email: '', title: '', templateId: permissionTemplates.find(t => t.name === 'Login Only')?.id, status: 'Active' });
+      setSelectedSiteIds(new Set());
+    } else {
+      setFormData({ ...staff });
+      setSelectedSiteIds(new Set(staff?.siteIds || []));
+    }
     if (isOpen) document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [staff, isOpen, isNew, permissionTemplates, handleKeyDown]);
@@ -38,12 +47,24 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
     setFormData(prev => ({...prev, [name]: value}));
   }
 
+  const handleSiteToggle = (siteId: string) => {
+    const newSiteIds = new Set(selectedSiteIds);
+    if (newSiteIds.has(siteId)) {
+      newSiteIds.delete(siteId);
+    } else {
+      newSiteIds.add(siteId);
+    }
+    setSelectedSiteIds(newSiteIds);
+  };
+
   const handleSave = () => {
     if (!formData.name || !formData.email) {
         alert("Name and email are required.");
         return;
     }
-    onSave(formData as StaffMember);
+    // Convert selected site IDs to array, undefined if empty (= main company)
+    const siteIds = selectedSiteIds.size > 0 ? Array.from(selectedSiteIds) : undefined;
+    onSave({ ...formData, siteIds } as StaffMember);
   };
 
   const statuses: StaffStatus[] = ['Active', 'Pending Permissions', 'Deactivated'];
@@ -96,6 +117,23 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
                 <div className="p-3 text-sm bg-orange-100/50 text-orange-800 dark:bg-orange-900/20 dark:text-orange-200 rounded-lg">
                     With this template, the user will be prompted to contact an administrator for full access.
                 </div>
+            )}
+            {availableSites.length > 0 && (
+              <div className="border-t pt-4">
+                <label className="block text-sm font-medium text-muted-foreground mb-3">Site Assignments</label>
+                <p className="text-xs text-muted-foreground mb-3">Select sites this staff member is assigned to (leave empty for main company only)</p>
+                <div className="space-y-2">
+                  {availableSites.map(site => (
+                    <label key={site.id} className="flex items-center space-x-2 cursor-pointer">
+                      <Checkbox 
+                        checked={selectedSiteIds.has(site.id)}
+                        onCheckedChange={() => handleSiteToggle(site.id)}
+                      />
+                      <span className="text-sm text-foreground">{site.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             )}
           </CardContent>
           <CardFooter className="flex justify-end items-center">
