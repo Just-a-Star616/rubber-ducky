@@ -11,7 +11,11 @@ import { saveBrandingConfig, updateBrandingSingleton, getBrandingConfig } from '
 
 const CompanyDetailsSection: React.FC = () => {
     const branding = getBrandingConfig();
-    const [details, setDetails] = useState<CompanyDetails>(mockCompanyDetails);
+    const [details, setDetails] = useState<CompanyDetails>({
+        ...mockCompanyDetails,
+        name: branding.companyName,
+        logoUrl: branding.companyLogoUrl
+    });
     const [isEditing, setIsEditing] = useState(false);
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
@@ -46,7 +50,11 @@ const CompanyDetailsSection: React.FC = () => {
     }
 
     const handleCancel = () => {
-        setDetails(mockCompanyDetails);
+        setDetails({
+            ...mockCompanyDetails,
+            name: branding.companyName,
+            logoUrl: branding.companyLogoUrl
+        });
         setLogoPreview(null);
         setIsEditing(false);
     }

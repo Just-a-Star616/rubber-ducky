@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { UserGroupIcon, ShieldExclamationIcon, UserPlusIcon, ClipboardDocumentCheckIcon } from '../components/icons/Icon';
-import { Input } from '../components/ui/input';
-import { getBrandingConfig } from '../lib/branding';
+import { Button } from './components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
+import { UserGroupIcon, ShieldExclamationIcon, UserPlusIcon, ClipboardDocumentCheckIcon } from './components/icons/Icon';
+import { Input } from './components/ui/input';
+import { getBrandingConfig } from './lib/branding';
 
 interface LoginProps {
   onLogin: (role: 'staff' | 'driver', email: string) => void;
@@ -15,6 +15,7 @@ interface LoginProps {
 type LoginRole = 'staff' | 'driver' | 'applicant';
 
 const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin }) => {
+  const branding = getBrandingConfig();
   const [view, setView] = useState<'selection' | 'login'>('selection');
   const [loginRole, setLoginRole] = useState<LoginRole | null>(null);
   const [email, setEmail] = useState('');
@@ -105,7 +106,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin 
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Project Rubber Ducky</CardTitle>
+          <CardTitle className="text-3xl font-bold">{branding.companyName}</CardTitle>
           <CardDescription>
             {view === 'selection' ? 'Reimagined Invoicing Platform' : roleTitles[loginRole!]}
           </CardDescription>
