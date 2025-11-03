@@ -95,6 +95,12 @@ const Stage1FieldSelector: React.FC<{
     onChange(updated);
   };
 
+  const handleUpdateAirportLocationType = (index: number, locationType: 'pickup' | 'destination') => {
+    const updated = [...rules];
+    updated[index] = { ...updated[index], airportLocationType: locationType };
+    onChange(updated);
+  };
+
   const groupedFields = AVAILABLE_BOOKING_FIELDS.reduce((acc, field) => {
     if (!acc[field.group]) acc[field.group] = [];
     acc[field.group].push(field);
@@ -138,8 +144,27 @@ const Stage1FieldSelector: React.FC<{
                     <div className="mt-2 ml-2 p-2 bg-muted rounded text-xs space-y-2">
                       {/* Airport Handling for airport-aware fields */}
                       {field.airportAware && (
-                        <div className="space-y-1 pb-2 border-b border-border">
+                        <div className="space-y-2 pb-2 border-b border-border">
                           <p className="font-medium text-muted-foreground">Airports: {UK_AIRPORTS.join(', ')}</p>
+                          
+                          {/* Select Pickup or Destination */}
+                          <div className="space-y-1">
+                            <label className="text-xs font-medium text-muted-foreground block">Check airport at:</label>
+                            {(['pickup', 'destination'] as const).map((locType) => (
+                              <label key={locType} className="flex items-center gap-2 cursor-pointer">
+                                <input
+                                  type="radio"
+                                  name={`location-type-${ruleIndex}`}
+                                  checked={rule?.airportLocationType === locType || (locType === 'pickup' && !rule?.airportLocationType)}
+                                  onChange={() => handleUpdateAirportLocationType(ruleIndex, locType)}
+                                  className="h-3 w-3"
+                                />
+                                <span className="capitalize">{locType}</span>
+                              </label>
+                            ))}
+                          </div>
+                          
+                          {/* Include/Exclude Options */}
                           <div className="space-y-1">
                             <label className="text-xs font-medium text-muted-foreground block">Include this field for:</label>
                             {(['all', 'airport_only', 'exclude_airport'] as const).map((option) => (
@@ -152,9 +177,9 @@ const Stage1FieldSelector: React.FC<{
                                   className="h-3 w-3"
                                 />
                                 <span>
-                                  {option === 'all' && 'All bookings (default)'}
-                                  {option === 'airport_only' && 'Airport runs only'}
-                                  {option === 'exclude_airport' && 'Non-airport runs only'}
+                                  {option === 'all' && 'All bookings'}
+                                  {option === 'airport_only' && 'Airport only'}
+                                  {option === 'exclude_airport' && 'Non-airport only'}
                                 </span>
                               </label>
                             ))}

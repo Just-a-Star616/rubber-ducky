@@ -133,6 +133,7 @@ export interface CommissionFieldRule {
   description?: string;
   condition?: string; // Optional conditional logic, e.g., "pickup_address.includes('Heathrow') || pickup_address.includes('Gatwick')"
   airportHandling?: 'all' | 'airport_only' | 'exclude_airport'; // How to handle airport-flagged fields
+  airportLocationType?: 'pickup' | 'destination'; // Whether airport check applies to pickup or destination
 }
 
 export interface CommissionOutputRule {

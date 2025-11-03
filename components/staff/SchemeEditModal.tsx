@@ -211,10 +211,50 @@ const SchemeEditModal: React.FC<SchemeEditModalProps> = ({ scheme, isOpen, onClo
 
           {/* Stage 1: Field Selection Tab */}
           {activeTab === 'stage1' && (
-            <Stage1FieldSelector
-              rules={stage1FieldRules}
-              onChange={setStage1FieldRules}
-            />
+            <div className="space-y-6">
+              <Stage1FieldSelector
+                rules={stage1FieldRules}
+                onChange={setStage1FieldRules}
+              />
+
+              {/* Example Rules Section */}
+              <Card className="border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-950/20">
+                <CardHeader>
+                  <CardTitle className="text-base">📋 Example Rules</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                  <div className="space-y-2">
+                    <p className="font-semibold text-foreground">Example 1: Add toll fee only for airport pickups</p>
+                    <div className="bg-card p-3 rounded border border-border text-xs">
+                      <p className="font-mono mb-2">✓ Select "toll_fee" field</p>
+                      <p className="font-mono mb-2">✓ Check airport at: <span className="text-primary">Pickup</span></p>
+                      <p className="font-mono">✓ Include for: <span className="text-primary">Airport only</span></p>
+                    </div>
+                    <p className="text-muted-foreground text-xs">Result: Toll fee is only included in commission calculations when the pickup location is an airport.</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="font-semibold text-foreground">Example 2: Exclude surge pricing for airport destinations</p>
+                    <div className="bg-card p-3 rounded border border-border text-xs">
+                      <p className="font-mono mb-2">✓ Select "surge_charge" field</p>
+                      <p className="font-mono mb-2">✓ Check airport at: <span className="text-primary">Destination</span></p>
+                      <p className="font-mono">✓ Include for: <span className="text-primary">Non-airport only</span></p>
+                    </div>
+                    <p className="text-muted-foreground text-xs">Result: Surge charges are included everywhere except when the destination is an airport.</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="font-semibold text-foreground">Example 3: Advanced - Custom pickup condition</p>
+                    <div className="bg-card p-3 rounded border border-border text-xs">
+                      <p className="font-mono mb-2">✓ Select any field</p>
+                      <p className="font-mono mb-2">✓ Click "+ Add condition (optional)"</p>
+                      <p className="font-mono mb-2">Sample: <code className="bg-muted px-1 rounded">pickup_address.includes('Heathrow') || pickup_address.includes('Gatwick')</code></p>
+                      <p className="font-mono">Result: Field only included for Heathrow or Gatwick pickups</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           )}
 
           {/* Stage 2: Formula Tab */}
