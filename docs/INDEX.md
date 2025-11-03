@@ -93,6 +93,7 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 - **[SCHEDULING_FEATURE_SUMMARY.md](./SCHEDULING_FEATURE_SUMMARY.md)** - Time-based scheduling
 
 ### 🛠️ Troubleshooting & Reference
+- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
 - **[BUILD_ERRORS_RESOLVED.md](./BUILD_ERRORS_RESOLVED.md)** - Build error solutions
 - **[SYNTAX_ERRORS_EXPLAINED.md](./SYNTAX_ERRORS_EXPLAINED.md)** - Syntax error reference
 - **[LOGGING_TRIGGERS_READINESS.md](./LOGGING_TRIGGERS_READINESS.md)** - Logging system readiness

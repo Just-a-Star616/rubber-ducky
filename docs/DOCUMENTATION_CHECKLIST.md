@@ -23,7 +23,7 @@
   - Added learning paths for different users
 
 - [x] **Verify all files in docs/**
-  - 29 total documentation files in `docs/`
+  - 30 total documentation files in `docs/`
   - All files accessible and linked
   - All cross-references working
 
@@ -34,7 +34,7 @@
 
 ---
 
-## 📂 Documentation Files (29 Total)
+## 📂 Documentation Files (30 Total)
 
 ### Getting Started (4)
 - [x] START_HERE.md
@@ -75,7 +75,8 @@
 - [x] SCHEDULING_FEATURE_SUMMARY.md
 - [x] LOGGING_TRIGGERS_READINESS.md
 
-### Troubleshooting & Reference (3)
+### Troubleshooting & Reference (4)
+- [x] TROUBLESHOOTING.md
 - [x] BUILD_ERRORS_RESOLVED.md
 - [x] SYNTAX_ERRORS_EXPLAINED.md
 - [x] LOGGING_SYSTEM.md
@@ -120,7 +121,7 @@
 - [x] All files organized in `docs/` folder
 - [x] README.md updated with links
 - [x] INDEX.md comprehensive and complete
-- [x] All 29 files accessible and linked
+- [x] All 30 files accessible and linked
 - [x] No broken links
 - [x] All cross-references working
 - [x] Git history preserved (moved files)
