@@ -92,6 +92,7 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 - **[DELIVERABLES_COMPLETE.md](./DELIVERABLES_COMPLETE.md)** - Complete feature list (NEW)
 - **[IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md)** - Implementation status
 - **[SCHEDULING_FEATURE_SUMMARY.md](./SCHEDULING_FEATURE_SUMMARY.md)** - Time-based scheduling
+- **[RELEASE_NOTES.md](./RELEASE_NOTES.md)** - Version 1.0 release notes (NEW)
 
 ### 🛠️ Troubleshooting & Reference
 - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
