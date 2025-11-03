@@ -1,6 +1,6 @@
 import {
     Invoice, Transaction, CommissionScheme, Booking, RewardScheme, Promotion, PartnerOffer,
-    PromotionParticipant, FAQItem, Notification, ActivityEvent, Automation, AutomationTrigger,
+    PromotionParticipant, CustomerPromotion, FAQItem, Notification, ActivityEvent, Automation, AutomationTrigger,
     AutomationAction, SystemAttribute, FinancialTransaction, HistoricInvoice, MessageTemplate,
     // FIX: Add missing type imports and correct the type for mockWebhookEvents.
     MessageEvent as AppMessageEvent,
@@ -78,6 +78,122 @@ export const mockPartnerOffers: PartnerOffer[] = [
 export const mockPromotionParticipants: PromotionParticipant[] = [
     { id: 'PP01', promotionId: 'RS01', driverId: 'D001', status: 'Active', progress: 35, joinDate: new Date().toISOString() },
     { id: 'PP02', promotionId: 'P01', driverId: 'D002', status: 'Active', progress: 0, joinDate: new Date().toISOString() },
+];
+
+// --- CUSTOMER PROMOTIONS (Loyalty & Promo Codes via Voucherify) ---
+
+export const mockCustomerPromotions: CustomerPromotion[] = [
+    {
+        id: 'CP01',
+        type: 'loyalty-scheme',
+        name: 'Loyalty Rewards Program',
+        description: 'Earn points on every ride. Redeem for discounts and free rides.',
+        status: 'Active',
+        voucherifyId: 'loyalty_prog_123',
+        voucherifyType: 'LOYALTY_PROGRAM',
+        loyaltyTier: 'standard',
+        pointsName: 'RidePoints',
+        tierBenefits: [
+            { tier: 'Bronze', pointsRequired: 0, rewardDescription: 'Base member', rewardValue: 1, rewardUnit: 'point-per-ride' },
+            { tier: 'Silver', pointsRequired: 500, rewardDescription: '5% discount', rewardValue: 5, rewardUnit: '%' },
+            { tier: 'Gold', pointsRequired: 1500, rewardDescription: '10% discount', rewardValue: 10, rewardUnit: '%' },
+            { tier: 'Platinum', pointsRequired: 3000, rewardDescription: 'Free ride', rewardValue: 1, rewardUnit: 'free-rides' }
+        ],
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        targetAudience: 'all',
+        applicableServices: ['rides', 'delivery'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'SM01',
+        voucherifyConfig: {
+            campaignType: 'LOYALTY_PROGRAM',
+            discountType: 'PERCENT',
+            discountEffect: 'APPLY_TO_ORDER',
+            loyaltyPoints: 1
+        }
+    },
+    {
+        id: 'CP02',
+        type: 'promo-code',
+        name: 'Black Friday Sale',
+        description: '20% off all rides this weekend. Use code BLACKFRI20',
+        status: 'Active',
+        voucherifyId: 'camp_blackfri_2024',
+        voucherifyType: 'PROMOTION',
+        discountType: 'percentage',
+        discountValue: 20,
+        maxRedemptions: 500,
+        redeemCount: 187,
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        targetAudience: 'all',
+        minimumOrderValue: 5,
+        maximumDiscountValue: 25,
+        applicableServices: ['rides'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'SM02',
+        voucherifyConfig: {
+            campaignType: 'PROMOTION',
+            discountType: 'PERCENT',
+            discountEffect: 'APPLY_TO_ORDER',
+            redeemableLimit: 500
+        }
+    },
+    {
+        id: 'CP03',
+        type: 'promo-code',
+        name: 'New Driver Welcome Bonus',
+        description: '£10 off your first 3 rides. Use code WELCOME10',
+        status: 'Active',
+        voucherifyId: 'camp_welcome_2024',
+        voucherifyType: 'PROMOTION',
+        discountType: 'fixed',
+        discountValue: 10,
+        maxRedemptions: 1000,
+        redeemCount: 432,
+        startsAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        endsAt: new Date(Date.now() + 330 * 24 * 60 * 60 * 1000).toISOString(),
+        targetAudience: 'new-drivers',
+        minimumOrderValue: 3,
+        applicableServices: ['rides'],
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'SM01',
+        voucherifyConfig: {
+            campaignType: 'PROMOTION',
+            discountType: 'FIXED',
+            discountEffect: 'APPLY_TO_ORDER',
+            redeemableLimit: 1000
+        }
+    },
+    {
+        id: 'CP04',
+        type: 'promo-code',
+        name: 'Inactive Driver Re-engagement',
+        description: '15% off to come back and take a ride. Use code COMEBACK15',
+        status: 'Active',
+        voucherifyId: 'camp_reeng_2024',
+        voucherifyType: 'PROMOTION',
+        discountType: 'percentage',
+        discountValue: 15,
+        maxRedemptions: 200,
+        redeemCount: 45,
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
+        targetAudience: 'inactive-drivers',
+        applicableServices: ['rides'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'SM02',
+        voucherifyConfig: {
+            campaignType: 'PROMOTION',
+            discountType: 'PERCENT',
+            discountEffect: 'APPLY_TO_ORDER',
+            redeemableLimit: 200
+        }
+    }
 ];
 
 

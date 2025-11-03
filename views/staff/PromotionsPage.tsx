@@ -1,13 +1,15 @@
 
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '../../components/ui/button';
-import { mockRewardSchemes, mockPromotions, mockPartnerOffers, mockPromotionParticipants, mockDrivers } from '../../lib/mockData';
-import { RewardScheme, Promotion, PartnerOffer, PromotionParticipant } from '../../types';
+import { mockRewardSchemes, mockPromotions, mockPartnerOffers, mockPromotionParticipants, mockCustomerPromotions, mockDrivers } from '../../lib/mockData';
+import { RewardScheme, Promotion, PartnerOffer, PromotionParticipant, CustomerPromotion } from '../../types';
 import RewardSchemeEditModal from '../../components/staff/RewardSchemeEditModal';
 import PromotionEditModal from '../../components/staff/PromotionEditModal';
 import PartnerOfferEditModal from '../../components/staff/PartnerOfferEditModal';
 import PromotionParticipantsModal from '../../components/staff/PromotionParticipantsModal';
+import CustomerPromotionEditModal from '../../components/staff/CustomerPromotionEditModal';
+import CustomerPromotionCard from '../../components/staff/CustomerPromotionCard';
 import { UserGroupIcon, CodeBracketIcon, PencilIcon } from '../../components/icons/Icon';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
 
@@ -17,6 +19,8 @@ const PromotionsPage: React.FC = () => {
     const [promotions, setPromotions] = useState<Promotion[]>(mockPromotions);
     const [partnerOffers, setPartnerOffers] = useState<PartnerOffer[]>(mockPartnerOffers);
     const [participants, setParticipants] = useState<PromotionParticipant[]>(mockPromotionParticipants);
+    const [customerPromotions, setCustomerPromotions] = useState<CustomerPromotion[]>(mockCustomerPromotions);
+    const [customerPromotionTab, setCustomerPromotionTab] = useState<'loyalty' | 'promo'>('loyalty');
 
     // State for modals
     const [editingRewardScheme, setEditingRewardScheme] = useState<RewardScheme | null>(null);
@@ -28,8 +32,18 @@ const PromotionsPage: React.FC = () => {
     const [editingPartnerOffer, setEditingPartnerOffer] = useState<PartnerOffer | null>(null);
     const [isPartnerOfferModalOpen, setIsPartnerOfferModalOpen] = useState(false);
 
+    const [editingCustomerPromotion, setEditingCustomerPromotion] = useState<CustomerPromotion | null>(null);
+    const [isCustomerPromotionModalOpen, setIsCustomerPromotionModalOpen] = useState(false);
+
     const [viewingParticipantsOf, setViewingParticipantsOf] = useState<{id: string, title: string} | null>(null);
     const [isParticipantModalOpen, setIsParticipantModalOpen] = useState(false);
+
+    // Memoized filtered customer promotions
+    const filteredCustomerPromotions = useMemo(() => {
+        return customerPromotions.filter(cp => 
+            customerPromotionTab === 'loyalty' ? cp.type === 'loyalty-scheme' : cp.type === 'promo-code'
+        );
+    }, [customerPromotions, customerPromotionTab]);
 
 
     // Handlers for Reward Schemes
@@ -104,6 +118,31 @@ const PromotionsPage: React.FC = () => {
         }
     };
 
+    // Handlers for Customer Promotions
+    const handleEditCustomerPromotion = (promo: CustomerPromotion) => {
+        setEditingCustomerPromotion(promo);
+        setIsCustomerPromotionModalOpen(true);
+    };
+    const handleAddCustomerPromotion = (type: 'loyalty' | 'promo') => {
+        setEditingCustomerPromotion(null);
+        setCustomerPromotionTab(type === 'loyalty' ? 'loyalty' : 'promo');
+        setIsCustomerPromotionModalOpen(true);
+    };
+    const handleSaveCustomerPromotion = (promo: CustomerPromotion) => {
+        if (promo.id && !promo.id.startsWith('CP-')) {
+            setCustomerPromotions(prev => prev.map(p => p.id === promo.id ? promo : p));
+        } else {
+            setCustomerPromotions(prev => [...prev, promo]);
+        }
+        setIsCustomerPromotionModalOpen(false);
+    };
+    const handleDeleteCustomerPromotion = (id: string) => {
+        if (window.confirm('Are you sure you want to delete this customer promotion?')) {
+            setCustomerPromotions(prev => prev.filter(p => p.id !== id));
+            setIsCustomerPromotionModalOpen(false);
+        }
+    };
+
     // Handlers for Participants Modal
     const handleViewParticipants = (promotion: {id: string, title: string}) => {
         setViewingParticipantsOf(promotion);
@@ -130,10 +169,16 @@ const PromotionsPage: React.FC = () => {
     return (
         <div className="p-4 sm:p-6 lg:p-8 space-y-6">
              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm -mt-4 sm:-mt-6 lg:-mt-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 border-b border-border">
-                <div className="flex justify-end gap-2">
-                    <Button onClick={handleAddRewardScheme}>Add Reward Scheme</Button>
-                    <Button onClick={handleAddPromotion}>Add Promotion</Button>
-                    <Button onClick={handleAddPartnerOffer}>Add Partner Offer</Button>
+                <div className="flex flex-col sm:flex-row gap-2 justify-end">
+                    <div className="flex gap-2">
+                        <Button onClick={handleAddRewardScheme} variant="outline">Add Reward Scheme</Button>
+                        <Button onClick={handleAddPromotion} variant="outline">Add Promotion</Button>
+                        <Button onClick={handleAddPartnerOffer} variant="outline">Add Partner Offer</Button>
+                    </div>
+                    <div className="flex gap-2 border-l border-border pl-2">
+                        <Button onClick={() => handleAddCustomerPromotion('loyalty')}>Add Loyalty Scheme</Button>
+                        <Button onClick={() => handleAddCustomerPromotion('promo')}>Add Promo Code</Button>
+                    </div>
                 </div>
             </div>
 
@@ -226,6 +271,62 @@ const PromotionsPage: React.FC = () => {
                         ))}
                     </div>
                 </section>
+
+                {/* Customer Promotions Section */}
+                <section className="mt-12 pt-8 border-t border-border">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-bold text-foreground">🎁 Customer Promotions</h3>
+                        <div className="flex gap-1 p-1 bg-muted rounded-lg">
+                            <button
+                                onClick={() => setCustomerPromotionTab('loyalty')}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                    customerPromotionTab === 'loyalty'
+                                        ? 'bg-background text-foreground shadow'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                            >
+                                Loyalty Schemes ({customerPromotions.filter(p => p.type === 'loyalty-scheme').length})
+                            </button>
+                            <button
+                                onClick={() => setCustomerPromotionTab('promo')}
+                                className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                                    customerPromotionTab === 'promo'
+                                        ? 'bg-background text-foreground shadow'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                            >
+                                Promo Codes ({customerPromotions.filter(p => p.type === 'promo-code').length})
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {filteredCustomerPromotions.length === 0 ? (
+                        <Card>
+                            <CardContent className="pt-6 text-center">
+                                <p className="text-muted-foreground">
+                                    No {customerPromotionTab === 'loyalty' ? 'loyalty schemes' : 'promo codes'} created yet.
+                                </p>
+                                <Button 
+                                    onClick={() => handleAddCustomerPromotion(customerPromotionTab)}
+                                    className="mt-4"
+                                >
+                                    Create {customerPromotionTab === 'loyalty' ? 'Loyalty Scheme' : 'Promo Code'}
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredCustomerPromotions.map(promo => (
+                                <CustomerPromotionCard
+                                    key={promo.id}
+                                    promotion={promo}
+                                    onEdit={handleEditCustomerPromotion}
+                                    onDelete={handleDeleteCustomerPromotion}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </section>
             </div>
 
             {isRewardModalOpen && (
@@ -253,6 +354,15 @@ const PromotionsPage: React.FC = () => {
                     onClose={() => setIsPartnerOfferModalOpen(false)}
                     onSave={handleSavePartnerOffer}
                     onDelete={handleDeletePartnerOffer}
+                />
+            )}
+            {isCustomerPromotionModalOpen && (
+                <CustomerPromotionEditModal
+                    promotion={editingCustomerPromotion}
+                    isOpen={isCustomerPromotionModalOpen}
+                    onClose={() => setIsCustomerPromotionModalOpen(false)}
+                    onSave={handleSaveCustomerPromotion}
+                    onDelete={handleDeleteCustomerPromotion}
                 />
             )}
             {isParticipantModalOpen && viewingParticipantsOf && (

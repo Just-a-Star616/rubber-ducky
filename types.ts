@@ -281,6 +281,64 @@ export interface PromotionParticipant {
     referredDriverId?: string; // Specific to referral promotions
 }
 
+// Customer Promotions (Loyalty Schemes & Promo Codes)
+export type CustomerPromotionType = 'loyalty-scheme' | 'promo-code';
+export type PromotionStatus = 'Draft' | 'Active' | 'Paused' | 'Expired' | 'Archived';
+
+export interface CustomerPromotion {
+    id: string;
+    type: CustomerPromotionType;
+    name: string;
+    description: string;
+    status: PromotionStatus;
+    voucherifyId?: string; // Campaign ID from Voucherify
+    voucherifyType?: 'LOYALTY_PROGRAM' | 'PROMOTION';
+    
+    // For Loyalty Schemes
+    loyaltyTier?: string;
+    pointsName?: string; // e.g., "Credits", "Points"
+    tierBenefits?: {
+        tier: string;
+        pointsRequired: number;
+        rewardDescription: string;
+        rewardValue: number;
+        rewardUnit: string; // "%" or "£" or "free-rides"
+    }[];
+    
+    // For Promo Codes
+    discountType?: 'percentage' | 'fixed' | 'free-ride' | 'double-points';
+    discountValue?: number; // e.g., 15 for 15% or 5 for £5
+    maxRedemptions?: number;
+    redeemCount?: number;
+    
+    // Common fields
+    startsAt: string; // ISO date
+    endsAt: string; // ISO date
+    targetAudience: 'all' | 'new-drivers' | 'inactive-drivers' | 'high-value-drivers';
+    minimumOrderValue?: number;
+    maximumDiscountValue?: number;
+    applicableServices?: string[]; // e.g., ["rides", "delivery"]
+    
+    // Voucherify integration
+    voucherifyConfig?: {
+        campaignType: 'LOYALTY_PROGRAM' | 'PROMOTION';
+        discountType: 'FIXED' | 'PERCENT' | 'UNIT';
+        discountEffect: 'ADD_NEW_ITEMS' | 'ADD_MISSING_ITEMS' | 'APPLY_TO_ORDER' | 'APPLY_TO_ITEMS';
+        redeemableLimit?: number;
+        loyaltyPoints?: number;
+    };
+    
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string; // Staff member ID
+}
+
+export interface VoucherifyConfig {
+    apiKey: string;
+    workspaceId: string;
+    clientId: string;
+    environment: 'production' | 'sandbox';
+}
 
 export type FaqCategory = 'General' | 'Payments' | 'Using the App' | 'Training Materials';
 
