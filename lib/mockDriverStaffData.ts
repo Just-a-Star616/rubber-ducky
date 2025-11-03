@@ -69,7 +69,7 @@ export const mockDrivers: Driver[] = [
         preferences: { maxJobDistance: 10, preferredAreas: ['L1', 'L2'], acceptsLongDistance: false, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] }
     },
-     {
+    {
         id: 'D003', vehicleRef: 'V003', avatarUrl: 'https://randomuser.me/api/portraits/men/46.jpg',
         firstName: 'Peter', lastName: 'Jones', devicePhone: '07345678901', mobileNumber: '07765432109',
         email: 'peter.jones@example.com', address: '789 Pine Rd, Manchester', niNumber: 'EF345678G',
@@ -85,9 +85,39 @@ export const mockDrivers: Driver[] = [
         preferences: { maxJobDistance: 20, preferredAreas: ['M1', 'M17', 'SK9'], acceptsLongDistance: true, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: true, documentExpiries: [{ document: 'Badge', expiryDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), daysUntilExpiry: -10 }] }
     },
-];
-
-export const mockDriverApplications: DriverApplication[] = [
+    {
+        id: 'D004', vehicleRef: 'V004', avatarUrl: 'https://randomuser.me/api/portraits/men/12.jpg',
+        firstName: 'Michael', lastName: 'Brown', devicePhone: '07456789012', mobileNumber: '07654321098',
+        email: 'michael.b@example.com', address: '321 Elm St, Salford', niNumber: 'GH456789I',
+        schemeCode: '1.50', gender: 'Male', badgeType: 'Private Hire', badgeIssuingCouncil: 'Salford City Council',
+        badgeNumber: 'PH99999', badgeExpiry: new Date(Date.now() + 200 * 24 * 60 * 60 * 1000).toISOString(),
+        drivingLicenseNumber: 'BROWN12345678JK', drivingLicenseExpiry: new Date(Date.now() + 365 * 1.5 * 24 * 60 * 60 * 1000).toISOString(),
+        schoolBadgeNumber: null, schoolBadgeExpiry: null,
+        dateOfBirth: '1992-03-15', emergencyContactName: 'Sarah Brown', emergencyContactNumber: '07888999000',
+        status: 'Active', lastStatementBalance: 225.50, commissionTotal: 2750.00, currentBalance: 500.00,
+        canWithdrawCredit: true, earnedCreditSinceInvoice: 150.00, attributes: ['Executive Saloon', 'Contactless Payment'], siteId: 'SITE01',
+        availability: { isOnline: true, shift: 'Split', lastSeen: new Date(Date.now() - 30 * 60 * 1000).toISOString() },
+        performance: { completionRate: 96, averageRating: 4.8, totalJobs: 620, monthlyEarnings: 6200 },
+        preferences: { maxJobDistance: 20, preferredAreas: ['M1', 'M60', 'M7'], acceptsLongDistance: true, acceptsAirportJobs: true },
+        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+    },
+    {
+        id: 'D005', vehicleRef: 'V005', avatarUrl: 'https://randomuser.me/api/portraits/women/32.jpg',
+        firstName: 'Rachel', lastName: 'Wilson', devicePhone: '07567890123', mobileNumber: '07765432987',
+        email: 'rachel.w@example.com', address: '555 Oak Lane, Trafford', niNumber: 'IJ567890K',
+        schemeCode: '2.25', gender: 'Female', badgeType: 'Hackney Carriage', badgeIssuingCouncil: 'Trafford MBC',
+        badgeNumber: 'HC55555', badgeExpiry: new Date(Date.now() + 150 * 24 * 60 * 60 * 1000).toISOString(),
+        drivingLicenseNumber: 'WILSON98765432LM', drivingLicenseExpiry: new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString(),
+        schoolBadgeNumber: 'SB654', schoolBadgeExpiry: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+        dateOfBirth: '1987-07-22', emergencyContactName: 'Tom Wilson', emergencyContactNumber: '07222111000',
+        status: 'Active', lastStatementBalance: 75.00, commissionTotal: 1875.50, currentBalance: 350.00,
+        canWithdrawCredit: true, earnedCreditSinceInvoice: 100.00, attributes: ['MPV (6-seater)', 'Pet Friendly', 'Child Seat Available'], siteId: 'SITE02',
+        availability: { isOnline: true, shift: 'Night', lastSeen: new Date().toISOString() },
+        performance: { completionRate: 97, averageRating: 4.85, totalJobs: 445, monthlyEarnings: 4200 },
+        preferences: { maxJobDistance: 12, preferredAreas: ['L1', 'L8', 'CH'], acceptsLongDistance: false, acceptsAirportJobs: true },
+        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+    },
+];export const mockDriverApplications: DriverApplication[] = [
     {
         id: 'APP-JEXAMPLE', applicationDate: '2025-01-01T12:00:00.000Z', firstName: 'J', lastName: 'Example',
         email: 'j@example.com', mobileNumber: '07000000000', area: 'Manchester', isLicensed: true,
@@ -115,7 +145,36 @@ export const mockDriverApplications: DriverApplication[] = [
         status: 'Submitted', notes: [], siteId: 'SITE02',
         tasks: [],
         pendingChanges: {},
-    }
+    },
+    {
+        id: 'APP-2025-001', applicationDate: '2025-10-01T09:30:00.000Z', firstName: 'David', lastName: 'Miller',
+        email: 'david.miller@example.com', mobileNumber: '07789012345', area: 'Manchester', isLicensed: true,
+        status: 'Approved', notes: [{ date: '2025-10-05T10:00:00.000Z', author: 'Alex Johnson', text: 'All documents verified. Ready to activate.' }], siteId: 'SITE01',
+        password: 'temppass123', badgeNumber: 'PH11223', badgeIssuingCouncil: 'Manchester City Council',
+        tasks: [],
+        pendingChanges: {},
+        vehicleMake: 'BMW',
+        vehicleModel: '3 Series',
+        vehicleRegistration: 'DM25 LER',
+        v5cDocumentUrl: '#',
+        insuranceDocumentUrl: '#',
+    },
+    {
+        id: 'APP-2025-002', applicationDate: '2025-10-10T14:15:00.000Z', firstName: 'Sophie', lastName: 'Taylor',
+        email: 'sophie.taylor@example.com', mobileNumber: '07890123456', area: 'Liverpool', isLicensed: false,
+        status: 'Under Review', notes: [{ date: '2025-10-12T11:00:00.000Z', author: 'Ben Carter', text: 'Waiting for DBS check results.' }], siteId: 'SITE02',
+        password: '', badgeNumber: '', badgeIssuingCouncil: 'Liverpool City Council',
+        tasks: [],
+        pendingChanges: {},
+    },
+    {
+        id: 'APP-2025-003', applicationDate: '2025-10-15T10:45:00.000Z', firstName: 'James', lastName: 'Anderson',
+        email: 'james.anderson@example.com', mobileNumber: '07901234567', area: 'Salford', isLicensed: true,
+        status: 'Rejected', notes: [{ date: '2025-10-20T15:30:00.000Z', author: 'Chloe Davis', text: 'Driving record shows too many recent violations.' }], siteId: 'SITE01',
+        password: '', badgeNumber: '', badgeIssuingCouncil: 'Salford City Council',
+        tasks: [],
+        pendingChanges: {},
+    },
 ];
 
 export const mockDriverTransactions: Transaction[] = [
@@ -153,7 +212,28 @@ export const mockVehicles: Vehicle[] = [
         plateNumber: 'P9012', plateExpiry: '2025-04-30T23:59:59Z', insuranceCertificateNumber: 'INS789',
         insuranceExpiry: '2025-03-31T23:59:59Z', motComplianceExpiry: '2025-03-09T23:59:59Z', roadTaxExpiry: '2025-04-30T23:59:59Z',
         attributes: [], ownershipType: 'Company', linkedDriverIds: ['D003'], siteId: 'SITE01'
-    }
+    },
+    {
+        id: 'V004', status: 'Active', registration: 'QR78 STU', make: 'Audi', model: 'A6', color: 'White',
+        firstRegistrationDate: '2023-06-20', plateType: 'Private Hire', plateIssuingCouncil: 'Manchester City Council',
+        plateNumber: 'P5678', plateExpiry: '2026-06-30T23:59:59Z', insuranceCertificateNumber: 'INS999',
+        insuranceExpiry: '2026-05-31T23:59:59Z', motComplianceExpiry: '2026-06-19T23:59:59Z', roadTaxExpiry: '2026-06-30T23:59:59Z',
+        attributes: ['Executive Saloon', 'Contactless Payment'], ownershipType: 'Company', linkedDriverIds: ['D004'], siteId: 'SITE01'
+    },
+    {
+        id: 'V005', status: 'Active', registration: 'VW12 XYZ', make: 'Volkswagen', model: 'Sharan', color: 'Blue',
+        firstRegistrationDate: '2022-11-05', plateType: 'Hackney Carriage', plateIssuingCouncil: 'Trafford MBC',
+        plateNumber: 'H9876', plateExpiry: '2025-11-30T23:59:59Z', insuranceCertificateNumber: 'INS555',
+        insuranceExpiry: '2025-10-31T23:59:59Z', motComplianceExpiry: '2025-11-04T23:59:59Z', roadTaxExpiry: '2025-11-30T23:59:59Z',
+        attributes: ['MPV (6-seater)', 'Pet Friendly', 'Child Seat Available'], ownershipType: 'Private', linkedDriverIds: ['D005'], siteId: 'SITE02'
+    },
+    {
+        id: 'V006', status: 'Active', registration: 'JK24 ABC', make: 'Jaguar', model: 'XE', color: 'Black',
+        firstRegistrationDate: '2024-01-10', plateType: 'Private Hire', plateIssuingCouncil: 'Manchester City Council',
+        plateNumber: 'P7890', plateExpiry: '2026-01-30T23:59:59Z', insuranceCertificateNumber: 'INS222',
+        insuranceExpiry: '2025-12-31T23:59:59Z', motComplianceExpiry: '2026-01-09T23:59:59Z', roadTaxExpiry: '2026-01-30T23:59:59Z',
+        attributes: ['Executive Saloon', 'Airport Specialist'], ownershipType: 'Company', linkedDriverIds: [], siteId: 'SITE01'
+    },
 ];
 
 // --- STAFF DATA ---
@@ -186,6 +266,33 @@ export const mockStaffList: StaffMember[] = [
         { day: 'Saturday', isOff: true, start: '00:00', end: '00:00' },
         { day: 'Sunday', isOff: true, start: '00:00', end: '00:00' },
     ], templateId: 't-accounts', source: 'Manual', status: 'Active' },
+    { id: 'SM04', name: 'Oliver Martinez', email: 'oliver.m@example.com', title: 'Support Officer', avatarUrl: 'https://randomuser.me/api/portraits/men/77.jpg', officeHours: [
+        { day: 'Monday', isOff: false, start: '08:30', end: '17:30' },
+        { day: 'Tuesday', isOff: false, start: '08:30', end: '17:30' },
+        { day: 'Wednesday', isOff: false, start: '08:30', end: '17:30' },
+        { day: 'Thursday', isOff: false, start: '08:30', end: '17:30' },
+        { day: 'Friday', isOff: false, start: '08:30', end: '16:00' },
+        { day: 'Saturday', isOff: true, start: '00:00', end: '00:00' },
+        { day: 'Sunday', isOff: true, start: '00:00', end: '00:00' },
+    ], templateId: 't-support', source: 'Manual', status: 'Active', siteIds: ['SITE02'] },
+    { id: 'SM05', name: 'Lucy Chen', email: 'lucy.c@example.com', title: 'Operations Manager', avatarUrl: 'https://randomuser.me/api/portraits/women/76.jpg', officeHours: [
+        { day: 'Monday', isOff: false, start: '07:00', end: '15:00' },
+        { day: 'Tuesday', isOff: false, start: '15:00', end: '23:00' },
+        { day: 'Wednesday', isOff: false, start: '07:00', end: '15:00' },
+        { day: 'Thursday', isOff: false, start: '15:00', end: '23:00' },
+        { day: 'Friday', isOff: false, start: '07:00', end: '15:00' },
+        { day: 'Saturday', isOff: true, start: '00:00', end: '00:00' },
+        { day: 'Sunday', isOff: true, start: '00:00', end: '00:00' },
+    ], templateId: 't-ops', source: 'Google Workspace', status: 'Active', siteIds: ['SITE01', 'SITE02'] },
+    { id: 'SM06', name: 'Henry Walsh', email: 'henry.w@example.com', title: 'Driver Support', avatarUrl: 'https://randomuser.me/api/portraits/men/78.jpg', officeHours: [
+        { day: 'Monday', isOff: false, start: '10:00', end: '22:00' },
+        { day: 'Tuesday', isOff: false, start: '10:00', end: '22:00' },
+        { day: 'Wednesday', isOff: true, start: '00:00', end: '00:00' },
+        { day: 'Thursday', isOff: false, start: '10:00', end: '22:00' },
+        { day: 'Friday', isOff: false, start: '10:00', end: '22:00' },
+        { day: 'Saturday', isOff: false, start: '12:00', end: '20:00' },
+        { day: 'Sunday', isOff: false, start: '12:00', end: '20:00' },
+    ], templateId: 't-support', source: 'Manual', status: 'Active', siteIds: ['SITE01'] },
 ];
 
 export const mockPermissionStructure: PermissionNode[] = [
