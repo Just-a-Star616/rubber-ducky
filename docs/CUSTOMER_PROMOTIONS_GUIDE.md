@@ -360,6 +360,192 @@ Min Order: £3
 
 ---
 
+## Time-Based Scheduling
+
+### Overview
+
+The system now supports advanced time-based scheduling for promotions. You can configure when each promotion is active:
+
+- **Day-of-Week Schedules**: Active on specific days (e.g., Mon/Wed/Fri)
+- **Multiple Time Periods**: Different availability in morning, afternoon, evening
+- **Specific Dates**: Set exact dates with custom times
+- **Blackout Dates**: Exclude holidays or special events
+- **Timezone Support**: Set promotions for different time zones
+
+### Schedule Types
+
+#### 1. Always On
+The promotion is active 24/7 with no time restrictions.
+
+```
+Example: "Free ride for all drivers" - Valid every day, all day
+```
+
+#### 2. Specific Days and Times
+
+The promotion is active on selected days during specified time periods.
+
+**Example: Midweek Momentum**
+```
+10% off on Monday, Wednesday, Friday
+10:00 AM - 1:00 PM
+Timezone: Europe/London
+```
+
+**Example: Rush Hour Boost**
+```
+Double points Monday - Friday
+7:00 AM - 10:00 AM (morning)
+5:00 PM - 8:00 PM (evening)
+Timezone: Europe/London
+```
+
+#### 3. Specific Dates
+
+The promotion is only active on specific calendar dates.
+
+**Example: Anniversary Special**
+```
+£5 off on June 15, 2025
+10:00 AM - 11:59 PM
+```
+
+#### 4. Blackout Dates
+
+The promotion is active everywhere except on specific dates (holidays, maintenance, etc.).
+
+**Example: Daily Campaign (except holidays)**
+```
+Active: Every day 8:00 AM - 10:00 PM
+Except: Dec 25, Jan 1, Dec 31
+```
+
+### Quick Presets
+
+The schedule builder includes pre-configured templates:
+
+1. **Weekdays 9am-5pm**: Office workers and business customers
+2. **Mon/Wed/Fri 10am-1pm**: Mid-day promotions  
+3. **Weekend Nights**: Fri-Sun after 8 PM
+4. **Rush Hours**: Mon-Fri 7-10am & 5-8pm
+5. **Late Night**: Every day 8 PM - 2 AM
+6. **Always On**: 24/7 availability
+
+### Timezone Support
+
+Supported timezones:
+- **Europe/London** - GMT/BST
+- **Europe/Paris** - CET/CEST
+- **Europe/Berlin** - CET/CEST
+- **America/New_York** - EST/EDT
+- **America/Los_Angeles** - PST/PDT
+- **Asia/Tokyo** - JST
+- **Australia/Sydney** - AEDT/AEST
+
+### Creating a Scheduled Promotion
+
+1. **Create/Edit Promotion**
+   - Go to Staff Dashboard → Promotions → Customer Promotions
+   - Click "Add Promotion" or edit existing one
+
+2. **Configure Schedule**
+   - In the edit modal, scroll to "Schedule" section
+   - Select schedule type from tabs
+   - Configure days and times
+   - Choose timezone
+   - Review coverage % indicator
+
+3. **Save and Verify**
+   - Check "Currently active" indicator on promotion card
+   - Verify schedule displays correctly
+   - Promotion syncs to Voucherify
+
+### How Time-Based Promotions Work
+
+**Availability Checking**:
+- Real-time status checks current time against schedule
+- "Currently active" badge shows if promotion is available now
+- Schedule respects configured timezone
+- Handles overnight periods (e.g., 10 PM - 2 AM)
+
+**Customer View**:
+- Customers see active promotions in their app
+- Schedule shown with readable format
+- Inactive promotions hidden until they become active
+- Timezone converted to customer's local time
+
+**Analytics**:
+- Track which time periods drive most redemptions
+- Optimize scheduling based on usage patterns
+- A/B test different time slots
+
+### Advanced Scheduling Examples
+
+**Example 1: Peak Hours Boost**
+```
+Type: Specific Days and Times
+Active: Mon-Fri (5 days)
+Times: 7am-10am, 5pm-8pm (2 periods)
+Coverage: 30% of day
+Use: Target commute times
+```
+
+**Example 2: Weekend Exclusive**
+```
+Type: Specific Days and Times
+Active: Fri-Sun (3 days)
+Times: 8pm-2am (overnight)
+Coverage: 15% of day
+Use: Weekend nightlife promotion
+```
+
+**Example 3: VIP Access Window**
+```
+Type: Specific Dates
+Dates: Dec 26, 2025 (specific day)
+Times: 12pm-3pm (3 hours)
+Target Audience: High-value drivers
+Use: Post-holiday exclusive sale
+```
+
+**Example 4: Around-the-Clock (with breaks)**
+```
+Type: Specific Days and Times
+Active: Every day
+Times: 6am-11pm (closed midnight-6am)
+Coverage: 62.5% of day
+Use: Service hours alignment
+```
+
+### Best Practices
+
+1. **Align with Business Hours**
+   - Schedule promotions when drivers are most active
+   - Consider peak demand times
+   - Account for timezone differences if multi-regional
+
+2. **Test Before Launch**
+   - Use specific date schedule to test limited time
+   - Verify "Currently active" shows correct status
+   - Check timezone conversion if needed
+
+3. **Monitor Performance**
+   - Track redemptions by time period
+   - Identify peak engagement windows
+   - Adjust schedule based on data
+
+4. **Communicate Clearly**
+   - Use simple, readable schedule descriptions
+   - Avoid complex overlapping periods
+   - Include timezone info if international
+
+5. **Handle Edge Cases**
+   - Use blackout dates for holidays
+   - Set maintenance windows in advance
+   - Consider daylight saving time transitions
+
+---
+
 ## Reference
 
 ### Discount Types
@@ -394,5 +580,5 @@ For issues with:
 ---
 
 **Last Updated**: November 3, 2025  
-**Version**: 1.0  
+**Version**: 1.1 - Added time-based scheduling  
 **Status**: Documented & Ready for Use
