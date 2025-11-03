@@ -165,23 +165,214 @@ export const mockStaffList: StaffMember[] = [
 ];
 
 export const mockPermissionStructure: PermissionNode[] = [
-    { id: 'home', name: 'Home' },
-    { id: 'operations', name: 'Operations', children: [
-        { id: 'drivers', name: 'Drivers' },
-        { id: 'vehicles', name: 'Vehicles' },
-        { id: 'bookings', name: 'Bookings' },
-        { id: 'accounts', name: 'Accounts' }
+    { id: 'home', name: 'Home', children: [
+        { id: 'dashboard', name: 'Dashboard View' },
+        { id: 'dashboard-customize', name: 'Customize Dashboard' }
     ]},
-    { id: 'finance', name: 'Finance' },
-    { id: 'admin', name: 'Admin' },
+    { id: 'operations', name: 'Operations', children: [
+        { id: 'drivers', name: 'Drivers', children: [
+            { id: 'drivers-list', name: 'View & Manage List' },
+            { id: 'drivers-applications', name: 'Review Applications' },
+            { id: 'drivers-promotions', name: 'Manage Promotions' },
+            { id: 'drivers-invoicing', name: 'Process Invoices' },
+            { id: 'drivers-historic', name: 'Historic Invoices' }
+        ]},
+        { id: 'vehicles', name: 'Vehicles' },
+        { id: 'bookings', name: 'Bookings', children: [
+            { id: 'bookings-list', name: 'View & Manage' },
+            { id: 'bookings-customers', name: 'Manage Customers' }
+        ]},
+        { id: 'accounts', name: 'Accounts', children: [
+            { id: 'accounts-list', name: 'View & Manage' },
+            { id: 'accounts-invoicing', name: 'Process Invoices' },
+            { id: 'accounts-historic', name: 'Historic Invoices' }
+        ]}
+    ]},
+    { id: 'finance', name: 'Finance', children: [
+        { id: 'schemes', name: 'Commission Schemes' },
+        { id: 'accounting', name: 'Accounting Defaults' }
+    ]},
+    { id: 'admin', name: 'Administration', children: [
+        { id: 'admin-company', name: 'Company Details' },
+        { id: 'admin-staff', name: 'Staff Management' },
+        { id: 'admin-driver', name: 'Driver Configuration' },
+        { id: 'admin-payments', name: 'Payment Settings' },
+        { id: 'admin-messaging', name: 'Messaging & Notifications' },
+        { id: 'admin-messaging-groups', name: 'Assignment Groups' },
+        { id: 'admin-attributes', name: 'Attributes & Extras' },
+        { id: 'admin-automations', name: 'Workflow Automations' },
+        { id: 'admin-connectors', name: 'Connectors & Webhooks' },
+        { id: 'admin-system', name: 'System Settings' }
+    ]},
+    { id: 'settings', name: 'Settings', children: [
+        { id: 'profile', name: 'Profile & Personal Settings' }
+    ]}
 ];
 
 export const mockPermissionTemplates: PermissionTemplate[] = [
-    { id: 't-admin', name: 'Administrator', permissions: { home: 'edit', operations: 'edit', drivers: 'edit', vehicles: 'edit', bookings: 'edit', accounts: 'edit', finance: 'edit', admin: 'edit' } },
-    { id: 't-dispatcher', name: 'Dispatcher', permissions: { home: 'view', operations: 'edit', drivers: 'view', vehicles: 'view', bookings: 'edit', accounts: 'view' } },
-    { id: 't-accounts', name: 'Accounts', permissions: { home: 'view', finance: 'edit', accounts: 'edit' } },
-    { id: 't-readonly', name: 'Read Only', permissions: { home: 'view', operations: 'view', drivers: 'view', vehicles: 'view', bookings: 'view', accounts: 'view', finance: 'view', admin: 'view' } },
-    { id: 't-loginonly', name: 'Login Only', permissions: {} },
+    { 
+        id: 't-admin', 
+        name: 'Administrator', 
+        permissions: { 
+            home: 'edit', 
+            dashboard: 'edit',
+            'dashboard-customize': 'edit',
+            operations: 'edit', 
+            drivers: 'edit',
+            'drivers-list': 'edit',
+            'drivers-applications': 'edit',
+            'drivers-promotions': 'edit',
+            'drivers-invoicing': 'edit',
+            'drivers-historic': 'edit',
+            vehicles: 'edit', 
+            bookings: 'edit',
+            'bookings-list': 'edit',
+            'bookings-customers': 'edit',
+            accounts: 'edit',
+            'accounts-list': 'edit',
+            'accounts-invoicing': 'edit',
+            'accounts-historic': 'edit',
+            finance: 'edit',
+            schemes: 'edit',
+            accounting: 'edit',
+            admin: 'edit',
+            'admin-company': 'edit',
+            'admin-staff': 'edit',
+            'admin-driver': 'edit',
+            'admin-payments': 'edit',
+            'admin-messaging': 'edit',
+            'admin-messaging-groups': 'edit',
+            'admin-attributes': 'edit',
+            'admin-automations': 'edit',
+            'admin-connectors': 'edit',
+            'admin-system': 'edit',
+            settings: 'edit',
+            profile: 'edit'
+        } 
+    },
+    { 
+        id: 't-dispatcher', 
+        name: 'Dispatcher', 
+        permissions: { 
+            home: 'view', 
+            dashboard: 'view',
+            'dashboard-customize': 'hidden',
+            operations: 'edit', 
+            drivers: 'view',
+            'drivers-list': 'view',
+            'drivers-applications': 'hidden',
+            'drivers-promotions': 'hidden',
+            'drivers-invoicing': 'hidden',
+            'drivers-historic': 'hidden',
+            vehicles: 'view', 
+            bookings: 'edit',
+            'bookings-list': 'edit',
+            'bookings-customers': 'view',
+            accounts: 'view',
+            'accounts-list': 'view',
+            'accounts-invoicing': 'hidden',
+            'accounts-historic': 'hidden',
+            finance: 'hidden',
+            schemes: 'hidden',
+            accounting: 'hidden',
+            admin: 'hidden',
+            settings: 'view',
+            profile: 'edit'
+        } 
+    },
+    { 
+        id: 't-accounts', 
+        name: 'Accounts', 
+        permissions: { 
+            home: 'view', 
+            dashboard: 'view',
+            'dashboard-customize': 'view',
+            operations: 'hidden',
+            finance: 'edit',
+            schemes: 'hidden',
+            accounting: 'view',
+            accounts: 'edit',
+            'accounts-list': 'edit',
+            'accounts-invoicing': 'edit',
+            'accounts-historic': 'view',
+            admin: 'hidden',
+            settings: 'view',
+            profile: 'edit'
+        } 
+    },
+    { 
+        id: 't-finance', 
+        name: 'Finance', 
+        permissions: { 
+            home: 'view', 
+            dashboard: 'view',
+            'dashboard-customize': 'view',
+            operations: 'view',
+            drivers: 'view',
+            'drivers-list': 'view',
+            'drivers-invoicing': 'view',
+            'drivers-historic': 'view',
+            vehicles: 'hidden',
+            bookings: 'view',
+            'bookings-list': 'view',
+            'bookings-customers': 'hidden',
+            accounts: 'view',
+            'accounts-list': 'view',
+            'accounts-invoicing': 'view',
+            'accounts-historic': 'view',
+            finance: 'edit',
+            schemes: 'view',
+            accounting: 'edit',
+            admin: 'hidden',
+            settings: 'view',
+            profile: 'edit'
+        } 
+    },
+    { 
+        id: 't-readonly', 
+        name: 'Read Only', 
+        permissions: { 
+            home: 'view', 
+            dashboard: 'view',
+            'dashboard-customize': 'hidden',
+            operations: 'view', 
+            drivers: 'view',
+            'drivers-list': 'view',
+            'drivers-applications': 'view',
+            'drivers-promotions': 'view',
+            'drivers-invoicing': 'view',
+            'drivers-historic': 'view',
+            vehicles: 'view', 
+            bookings: 'view',
+            'bookings-list': 'view',
+            'bookings-customers': 'view',
+            accounts: 'view',
+            'accounts-list': 'view',
+            'accounts-invoicing': 'view',
+            'accounts-historic': 'view',
+            finance: 'view',
+            schemes: 'view',
+            accounting: 'view',
+            admin: 'view',
+            'admin-company': 'view',
+            'admin-staff': 'view',
+            'admin-driver': 'view',
+            'admin-payments': 'view',
+            'admin-messaging': 'view',
+            'admin-messaging-groups': 'view',
+            'admin-attributes': 'view',
+            'admin-automations': 'view',
+            'admin-connectors': 'view',
+            'admin-system': 'view',
+            settings: 'view',
+            profile: 'view'
+        } 
+    },
+    { 
+        id: 't-loginonly', 
+        name: 'Login Only', 
+        permissions: {} 
+    },
 ];
 
 export const mockStaffNotices: StaffNotice[] = [
