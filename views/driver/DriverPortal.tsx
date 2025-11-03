@@ -62,7 +62,7 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
       case 'dashboard':
         return <DriverDashboard driver={driver} onNavigate={setCurrentPage} onViewInvoice={handleViewInvoice} onOpenWithdrawModal={() => setIsWithdrawModalOpen(true)} />;
       case 'invoices':
-        return <InvoicesHistory onViewInvoice={handleViewInvoice} />;
+        return <InvoicesHistory driver={driver} onViewInvoice={handleViewInvoice} />;
       case 'rewards':
         return <Rewards driver={driver} />;
       case 'faq':

@@ -305,43 +305,6 @@ export const mockDrivers: Driver[] = [
     },
 ];
 
-export const mockDriverTransactions: Transaction[] = [
-    // Last 7 days transactions (this week)
-    { id: 'TR001', datetime: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 35.50 },
-    { id: 'TR002', datetime: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 28.00 },
-    { id: 'TR003', datetime: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 20.00 },
-    { id: 'TR004', datetime: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 15.50 },
-    { id: 'TR005', datetime: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(), type: 'Account', amount: 45.00 },
-    { id: 'TR006', datetime: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 15.75 },
-    { id: 'TR007', datetime: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 22.25 },
-    { id: 'TR008', datetime: new Date(Date.now() - 4 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 65.00 },
-    { id: 'TR009', datetime: new Date(Date.now() - 4 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 38.50 },
-    { id: 'TR010', datetime: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(), type: 'Account', amount: 80.20 },
-    { id: 'TR011', datetime: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 42.00 },
-    { id: 'TR012', datetime: new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 12.00 },
-    { id: 'TR013', datetime: new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 48.75 },
-    { id: 'TR014', datetime: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 35.00 },
-    { id: 'TR015', datetime: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 55.25 },
-    
-    // Previous week transactions
-    { id: 'TR016', datetime: new Date(Date.now() - 8 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 42.00 },
-    { id: 'TR017', datetime: new Date(Date.now() - 9 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 28.50 },
-    { id: 'TR018', datetime: new Date(Date.now() - 10 * 24 * 3600 * 1000).toISOString(), type: 'Account', amount: 65.75 },
-    { id: 'TR019', datetime: new Date(Date.now() - 11 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 38.00 },
-    { id: 'TR020', datetime: new Date(Date.now() - 12 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 52.50 },
-    { id: 'TR021', datetime: new Date(Date.now() - 13 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 25.00 },
-    { id: 'TR022', datetime: new Date(Date.now() - 14 * 24 * 3600 * 1000).toISOString(), type: 'Account', amount: 48.00 },
-    
-    // Two weeks ago transactions
-    { id: 'TR023', datetime: new Date(Date.now() - 15 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 45.50 },
-    { id: 'TR024', datetime: new Date(Date.now() - 16 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 32.00 },
-    { id: 'TR025', datetime: new Date(Date.now() - 17 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 68.75 },
-    { id: 'TR026', datetime: new Date(Date.now() - 18 * 24 * 3600 * 1000).toISOString(), type: 'Account', amount: 55.00 },
-    { id: 'TR027', datetime: new Date(Date.now() - 19 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 41.25 },
-    { id: 'TR028', datetime: new Date(Date.now() - 20 * 24 * 3600 * 1000).toISOString(), type: 'Cash', amount: 28.50 },
-    { id: 'TR029', datetime: new Date(Date.now() - 21 * 24 * 3600 * 1000).toISOString(), type: 'Card', amount: 58.00 },
-];
-
 // --- VEHICLE DATA ---
 
 export const mockVehicleAttributes: string[] = ['Wheelchair Accessible', 'Pet Friendly', 'Executive Saloon', 'MPV (6-seater)', 'Airport Specialist', 'Contactless Payment', 'Child Seat Available'];

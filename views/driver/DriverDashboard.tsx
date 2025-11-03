@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { ResponsiveContainer, BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Driver, Transaction, Invoice } from '../../types';
 import { Button } from '../../components/ui/button';
-import { mockDriverTransactions, mockInvoices } from '../../lib/mockData';
+import { getInvoicesForDriver, getTransactionsForDriver } from '../../lib/mockFinancialData';
 import { ArrowUpRightIcon, CurrencyPoundIcon, FilterIcon, CalendarIcon, DocumentDownloadIcon } from '../../components/icons/Icon';
 import { DriverPage } from './DriverPortal';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
@@ -66,6 +66,10 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
     const [viewType, setViewType] = useState<ViewType>('daily');
     const [paymentType, setPaymentType] = useState<PaymentType>('All');
     
+    // Get driver-specific financial data
+    const driverInvoices = useMemo(() => getInvoicesForDriver(driver.id), [driver.id]);
+    const driverTransactions = useMemo(() => getTransactionsForDriver(driver.id), [driver.id]);
+    
     const chartData = useMemo(() => {
         const now = new Date();
         let startDate = new Date();
@@ -80,7 +84,7 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
             startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         }
 
-        const filtered = mockDriverTransactions.filter(t => {
+        const filtered = driverTransactions.filter(t => {
             const tDate = new Date(t.datetime);
             const paymentMatch = paymentType === 'All' || t.type === paymentType;
             return paymentMatch && tDate >= startDate;
@@ -133,7 +137,7 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
                 earnings: parseFloat(earnings.toFixed(2)),
             }));
         }
-    }, [period, viewType, paymentType]);
+    }, [period, viewType, paymentType, driverTransactions]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
@@ -146,7 +150,7 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
         </CardHeader>
         <CardContent>
             <ul className="divide-y divide-border">
-                {mockInvoices.slice(0, 3).map(invoice => (
+                {driverInvoices.slice(0, 3).map(invoice => (
                     <li key={invoice.id} className="py-3 flex justify-between items-center">
                         <div>
                             <p className="text-sm font-semibold text-foreground">Week Ending: {invoice.weekEnding}</p>
@@ -182,7 +186,9 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
                  <div className="flex items-center gap-2 flex-wrap">
                     <FilterIcon className="w-5 h-5 text-muted-foreground" />
                     {(['All', 'Cash', 'Card', 'Account'] as PaymentType[]).map(type => (
-                        <FilterButton key={type} onClick={() => setPaymentType(type)} isActive={paymentType === type}>{type}</FilterButton>
+                        <div key={type}>
+                            <FilterButton onClick={() => setPaymentType(type)} isActive={paymentType === type}>{type}</FilterButton>
+                        </div>
                     ))}
                 </div>
             </div>
