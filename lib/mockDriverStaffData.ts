@@ -23,6 +23,15 @@ export const mockDrivers: Driver[] = [
         badgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
         drivingLicenseDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
         schoolBadgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
+        pendingChanges: {
+            badgeUpdate: {
+                number: 'PH-DEMO-2025',
+                expiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+                issuingCouncil: 'Manchester City Council',
+                fileName: 'Updated_Private_Hire_Badge_Nov_2025.pdf',
+                fileUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+            }
+        },
         bankAccounts: [
             {
                 id: 'bank_d_demo_1',
@@ -69,6 +78,8 @@ export const mockDrivers: Driver[] = [
         performance: { completionRate: 100, averageRating: 5.0, totalJobs: 100, monthlyEarnings: 5000 },
         preferences: { maxJobDistance: 25, preferredAreas: ['M1'], acceptsLongDistance: true, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        badgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        drivingLicenseDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
         bankAccounts: []
     },
     {
@@ -86,6 +97,9 @@ export const mockDrivers: Driver[] = [
         performance: { completionRate: 98, averageRating: 4.9, totalJobs: 543, monthlyEarnings: 4500 },
         preferences: { maxJobDistance: 15, preferredAreas: ['M1', 'M2'], acceptsLongDistance: true, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        badgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        drivingLicenseDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        schoolBadgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
         bankAccounts: [
             {
                 id: 'bank_d001_1',
@@ -117,6 +131,8 @@ export const mockDrivers: Driver[] = [
         performance: { completionRate: 95, averageRating: 4.7, totalJobs: 412, monthlyEarnings: 3800 },
         preferences: { maxJobDistance: 10, preferredAreas: ['L1', 'L2'], acceptsLongDistance: false, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        badgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        drivingLicenseDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
         bankAccounts: [
             {
                 id: 'bank_d002_1',
@@ -165,6 +181,8 @@ export const mockDrivers: Driver[] = [
         performance: { completionRate: 96, averageRating: 4.8, totalJobs: 620, monthlyEarnings: 6200 },
         preferences: { maxJobDistance: 20, preferredAreas: ['M1', 'M60', 'M7'], acceptsLongDistance: true, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        badgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        drivingLicenseDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
         bankAccounts: [
             {
                 id: 'bank_d004_1',
@@ -208,6 +226,9 @@ export const mockDrivers: Driver[] = [
         performance: { completionRate: 97, averageRating: 4.85, totalJobs: 445, monthlyEarnings: 4200 },
         preferences: { maxJobDistance: 12, preferredAreas: ['L1', 'L8', 'CH'], acceptsLongDistance: false, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        badgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        drivingLicenseDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        schoolBadgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
         bankAccounts: [
             {
                 id: 'bank_d005_1',
