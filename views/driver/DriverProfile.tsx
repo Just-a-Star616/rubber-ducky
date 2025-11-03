@@ -62,7 +62,12 @@ const DocumentSection = ({ isEditing, docType, docName, driver, formData, handle
     const currentNumber = driver[`${docType}Number` as const];
     const currentExpiry = driver[`${docType}Expiry` as const];
     const currentCouncil = driver.badgeIssuingCouncil;
-    const currentDocumentUrl = driver[`${docType}DocumentUrl` as const];
+    
+    // Map docType to the actual Driver property names
+    const documentUrlKey = docType === 'badge' ? 'badgeDocumentUrl' 
+        : docType === 'drivingLicense' ? 'drivingLicenseDocumentUrl'
+        : 'schoolBadgeDocumentUrl';
+    const currentDocumentUrl = driver[documentUrlKey as keyof Driver] as string | undefined;
     
     const pendingUpdate = driver.pendingChanges?.[`${docType}Update` as const];
 
