@@ -43,9 +43,8 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 ## 📋 Complete Documentation List
 
 ### 🎯 Getting Started
-- **[START_HERE.md](./START_HERE.md)** - Primary entry point with project overview
-- **[QUICK_START.md](./QUICK_START.md)** - 5-minute local development setup
-- **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - Command and troubleshooting reference
+- **[PRODUCT_REQUIREMENTS.md](./PRODUCT_REQUIREMENTS.md)** - Feature specifications
+- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Pre-deployment validation
 
 ### �� System Documentation
 - **[PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md)** - Complete project architecture
@@ -54,15 +53,12 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 - **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Implementation status
 
 ### 🎨 Branding & Logo
-- **[BRANDING_LOGO_IMPLEMENTATION.md](./BRANDING_LOGO_IMPLEMENTATION.md)** - Logo upload and display
-- **[LOGO_QUICK_START.md](./LOGO_QUICK_START.md)** - Quick logo setup (3 min)
-- **[LOGO_PLACEMENT_GUIDE.md](./LOGO_PLACEMENT_GUIDE.md)** - Where logos appear
-- **[COMPANY_LOGO_GUIDE.md](./COMPANY_LOGO_GUIDE.md)** - Complete branding guide
+- **[BRANDING_LOGO_IMPLEMENTATION.md](./BRANDING_LOGO_IMPLEMENTATION.md)** - Complete branding guide with logo setup
 
 ### 📊 Core Features
 
 #### Commission System
-- **[COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md)** - 3-stage commission engine
+- **[COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md)** - Complete 3-stage commission engine with auto-population
 
 #### Dispatch & Booking
 - **[DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md)** - Modern dispatch interface
@@ -74,9 +70,8 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 - **[LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md)** - Comprehensive audit logging
 
 #### Webhooks & Automations
-- **[WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md)** - Event-driven automations
-- **[RULE_BUILDER_GUIDE.md](./RULE_BUILDER_GUIDE.md)** - Unified rule builder system (NEW)
-- **[RULE_BUILDER_MIGRATION.md](./RULE_BUILDER_MIGRATION.md)** - Migration status and progress (NEW)
+- **[WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md)** - Event-driven automations and webhooks
+- **[RULE_BUILDER_GUIDE.md](./RULE_BUILDER_GUIDE.md)** - Unified rule builder system
 
 ### 👥 User Management
 
@@ -93,51 +88,28 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 - **[ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md)** - iCabbi TMS integration (NEW)
 
 ### ✅ Implementation Guides
-- **[DELIVERABLES.md](./DELIVERABLES.md)** - Project deliverables checklist
-- **[DELIVERABLES_COMPLETE.md](./DELIVERABLES_COMPLETE.md)** - Complete feature list (NEW)
-- **[IMPLEMENTATION_COMPLETE.md](./IMPLEMENTATION_COMPLETE.md)** - Implementation status
-- **[SCHEDULING_FEATURE_SUMMARY.md](./SCHEDULING_FEATURE_SUMMARY.md)** - Time-based scheduling
-- **[RELEASE_NOTES.md](./RELEASE_NOTES.md)** - Version 1.0 release notes (NEW)
+- **[RELEASE_NOTES.md](./RELEASE_NOTES.md)** - Version 1.0 release notes and feature list
+- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
+- **[QA_TESTING_CHECKLIST.md](./QA_TESTING_CHECKLIST.md)** - Feature testing procedures
 
 ### 🛠️ Troubleshooting & Reference
-- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
-- **[QA_TESTING_CHECKLIST.md](./QA_TESTING_CHECKLIST.md)** - Feature testing checklist (NEW)
-- **[BUILD_ERRORS_RESOLVED.md](./BUILD_ERRORS_RESOLVED.md)** - Build error solutions
-- **[SYNTAX_ERRORS_EXPLAINED.md](./SYNTAX_ERRORS_EXPLAINED.md)** - Syntax error reference
-- **[LOGGING_TRIGGERS_READINESS.md](./LOGGING_TRIGGERS_READINESS.md)** - Logging system readiness
+- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common issues and solutions
+- **[QA_TESTING_CHECKLIST.md](./QA_TESTING_CHECKLIST.md)** - Testing procedures
 
 ---
 
 ## 📈 Recent Updates
 
 ### November 3, 2025 (Latest)
-- ✅ **iCabbi TMS Integration Framework** - NEW!
-  - Production-ready adapter layer (icabbiAdapter.ts)
-  - React context for dependency injection (dataSourceContext.tsx)
-  - 4x custom hooks for data access (useDrivers, useBookings, useCustomers, useVehicles)
-  - Switch between mock (dev) and real (prod) with no code changes
-  - Comprehensive configuration guide
+- ✅ **iCabbi TMS Integration Framework** - Production-ready adapter layer
+  - `icabbiAdapter.ts`: RealIcabbiConnector + MockIcabbiConnector
+  - `dataSourceContext.tsx`: React context + 5 custom hooks
+  - Seamless mock/production switching
   - See: [ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md)
 
-### November 3, 2025 (Prior)
-- ✅ **Unified Rule Builder System**
-  - Single component for all rule types (webhooks, automations, attributes, etc.)
-  - AutomationEditModal and WebhookEditModal migrated
-  - Consistent UI/UX across the project
-  - Full TypeScript support
-  - See: [RULE_BUILDER_GUIDE.md](./RULE_BUILDER_GUIDE.md)
-
 ### November 3, 2025 (Earlier)
-- ✅ **Time-Based Scheduling for Promotions**
-  - Day-of-week scheduling
-  - Specific time periods (including overnight)
-  - Timezone support (7 timezones)
-  - Quick presets for common schedules
-
-### November 2, 2025
-- ✅ Logo and Branding System
-- ✅ Customer Promotions with Voucherify
-- ✅ Complete Documentation
+- ✅ **Unified Rule Builder System** - Single component for all rule types
+- ✅ **Time-Based Promotion Scheduling** - Day-of-week + time periods + timezones
 
 ---
 
