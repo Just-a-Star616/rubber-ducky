@@ -152,16 +152,16 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4" onClick={onClose}>
-      <Card className="w-full max-w-lg" onClick={e => e.stopPropagation()}>
-        <CardHeader className="flex flex-row items-center justify-between">
+      <Card className="w-full max-w-2xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+        <CardHeader className="flex flex-row items-center justify-between flex-shrink-0">
           <CardTitle>{isNew ? 'Add New Staff Member' : `Edit: ${staff?.name}`}</CardTitle>
           <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full h-8 w-8 -mt-1 -mr-2">
             <XIcon className="w-5 h-5" />
           </Button>
         </CardHeader>
 
-        <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
-          <CardContent className="space-y-4">
+        <form onSubmit={(e) => { e.preventDefault(); handleSave(); }} className="flex-grow flex flex-col overflow-hidden">
+          <CardContent className="flex-grow overflow-y-auto space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">Full Name</label>
@@ -219,7 +219,7 @@ const StaffEditModal: React.FC<StaffEditModalProps> = ({ staff, isOpen, onClose,
               <OfficeHoursEditor hours={formData.officeHours || []} onHoursChange={handleOfficeHoursChange} />
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end items-center">
+          <CardFooter className="flex-shrink-0 flex justify-end items-center">
             <div className="space-x-3">
               <Button type="button" onClick={onClose} variant="outline">Cancel</Button>
               <Button type="submit">Save Changes</Button>
