@@ -435,8 +435,8 @@ export const mockAutomationActions: AutomationAction[] = [
 ];
 export const mockAutomations: Automation[] = [
     { id: 'AUTO01', name: 'Notify VIP Booking', description: 'Sends a message when a VIP customer makes a booking.', isActive: true, triggerId: 'TRG01', conditions: 'customer.priorityLevel === "VIP"', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL03'}}] },
-    { id: 'AUTO02', name: 'Send Driver Arrived Alert', description: 'Notifies customer when driver arrives at pickup.', isActive: true, triggerId: 'TRG04', conditions: '', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL02'}}] },
-    { id: 'AUTO03', name: 'Invoice Payment Reminder', description: 'Sends reminder when invoice is generated.', isActive: true, triggerId: 'TRG07', conditions: 'invoice.amount > 500', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL01'}}] },
+    { id: 'AUTO02', name: 'Alert Staff on VIP Booking Delays', description: 'Alerts staff and managers when a driver is running late for a VIP customer booking.', isActive: true, triggerId: 'TRG04', conditions: 'customer.account_type === "VIP" && estimated_arrival_delay > 10', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL02'}}] },
+    { id: 'AUTO03', name: 'Driver Multi-Rejection Alert', description: 'Notifies driver manager when a driver rejects 3 jobs in a row.', isActive: true, triggerId: 'TRG09', conditions: 'driver.consecutive_rejections >= 3', actions: [{actionId: 'ACT01', parameters: {templateId: 'TPL06'}}] },
 ];
 
 export const mockAccountingDefaults = {
