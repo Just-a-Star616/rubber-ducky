@@ -429,6 +429,35 @@ export type VatApplication = 'nothing' | 'serviceCharge' | 'serviceChargeAndPric
 export type PaymentType = 'Cash' | 'Card' | 'Account';
 export type ValidationType = 'None' | 'PIN' | 'Password' | 'Purchase Order';
 
+// Invoice Template System
+export type InvoiceColumnType = 
+  | 'date' 
+  | 'time' 
+  | 'pickup' 
+  | 'destination' 
+  | 'distance' 
+  | 'duration' 
+  | 'fare' 
+  | 'charges' 
+  | 'tips' 
+  | 'reference';
+
+export type SummaryMethod = 'detailed' | 'summarized'; // detailed = line per journey, summarized = grouped by contract
+export type SummaryTotalType = 'subtotal' | 'serviceCharge' | 'tax' | 'total' | 'payment';
+
+export interface InvoiceTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  columns: InvoiceColumnType[];
+  summaryMethod: SummaryMethod;
+  summaryTotals: SummaryTotalType[];
+  vatApplication: VatApplication;
+  includeNotes: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Account {
     id: string;
     name: string;
