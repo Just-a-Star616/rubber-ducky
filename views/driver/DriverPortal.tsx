@@ -47,8 +47,12 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
     setViewingInvoice(invoice);
   };
 
-  const handleConfirmWithdrawal = (amount: number) => {
-      alert(`Withdrawal of £${amount.toFixed(2)} has been requested.`);
+  const handleConfirmWithdrawal = (amount: number, accountId?: string) => {
+      const bankAccount = driver.bankAccounts?.find(ba => ba.id === accountId);
+      const accountInfo = bankAccount 
+        ? ` from ${bankAccount.bankName} (${bankAccount.accountHolderName})` 
+        : '';
+      alert(`Withdrawal of £${amount.toFixed(2)} has been requested${accountInfo}.`);
       // In a real app, you'd update the driver's balance here after an API call
       setIsWithdrawModalOpen(false);
   };
@@ -131,6 +135,7 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
             onClose={() => setIsWithdrawModalOpen(false)}
             onConfirm={handleConfirmWithdrawal}
             withdrawableBalance={driver.currentBalance > 0 ? driver.currentBalance : 0}
+            bankAccounts={driver.bankAccounts}
         />
     </div>
   );
