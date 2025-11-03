@@ -126,7 +126,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSignUpClick, onApplicantLogin 
           )}
           <CardTitle className="text-3xl font-bold">{branding.companyName}</CardTitle>
           <CardDescription>
-            {view === 'selection' ? 'Reimagined Invoicing Platform' : roleTitles[loginRole!]}
+            {view === 'selection' ? 'Reimagined DMS Platform' : roleTitles[loginRole!]}
           </CardDescription>
         </CardHeader>
         <CardContent>

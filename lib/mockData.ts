@@ -23,6 +23,13 @@ export const mockInvoices: Invoice[] = [
     ]},
     { id: 'INV002', weekEnding: new Date(Date.now() - 14 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1100.00, commission: 220.00, netEarnings: 880.00, statementUrl: '#', items: [] },
     { id: 'INV003', weekEnding: new Date(Date.now() - 21 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1350.25, commission: 270.05, netEarnings: 1080.20, statementUrl: '#', items: [] },
+    { id: 'INV004', weekEnding: new Date(Date.now() - 28 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1425.75, commission: 285.15, netEarnings: 1140.60, statementUrl: '#', items: [] },
+    { id: 'INV005', weekEnding: new Date(Date.now() - 35 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1180.00, commission: 236.00, netEarnings: 944.00, statementUrl: '#', items: [] },
+    { id: 'INV006', weekEnding: new Date(Date.now() - 42 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1520.50, commission: 304.10, netEarnings: 1216.40, statementUrl: '#', items: [] },
+    { id: 'INV007', weekEnding: new Date(Date.now() - 49 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 995.25, commission: 199.05, netEarnings: 796.20, statementUrl: '#', items: [] },
+    { id: 'INV008', weekEnding: new Date(Date.now() - 56 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1275.00, commission: 255.00, netEarnings: 1020.00, statementUrl: '#', items: [] },
+    { id: 'INV009', weekEnding: new Date(Date.now() - 63 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1380.75, commission: 276.15, netEarnings: 1104.60, statementUrl: '#', items: [] },
+    { id: 'INV010', weekEnding: new Date(Date.now() - 70 * 24 * 3600 * 1000).toLocaleDateString(), grossEarnings: 1150.50, commission: 230.10, netEarnings: 920.40, statementUrl: '#', items: [] },
 ];
 
 export const mockFinancialTransactions: FinancialTransaction[] = [
