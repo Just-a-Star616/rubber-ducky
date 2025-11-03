@@ -75,6 +75,8 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 
 #### Webhooks & Automations
 - **[WEBHOOKS_AND_AUTOMATIONS_GUIDE.md](./WEBHOOKS_AND_AUTOMATIONS_GUIDE.md)** - Event-driven automations
+- **[RULE_BUILDER_GUIDE.md](./RULE_BUILDER_GUIDE.md)** - Unified rule builder system (NEW)
+- **[RULE_BUILDER_MIGRATION.md](./RULE_BUILDER_MIGRATION.md)** - Migration status and progress (NEW)
 
 ### 👥 User Management
 
@@ -106,6 +108,14 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 ---
 
 ## 📈 Recent Updates
+
+### November 3, 2025 (Latest)
+- ✅ **Unified Rule Builder System** - NEW!
+  - Single component for all rule types (webhooks, automations, attributes, etc.)
+  - AutomationEditModal and WebhookEditModal migrated
+  - Consistent UI/UX across the project
+  - Full TypeScript support
+  - See: [RULE_BUILDER_GUIDE.md](./RULE_BUILDER_GUIDE.md)
 
 ### November 3, 2025
 - ✅ **Time-Based Scheduling for Promotions** - NEW!
