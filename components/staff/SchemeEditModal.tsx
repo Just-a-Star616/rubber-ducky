@@ -290,6 +290,8 @@ const SchemeEditModal: React.FC<SchemeEditModalProps> = ({ scheme, isOpen, onClo
             <Stage2FormulaEditor
               formula={stage2CommissionFormula}
               onChange={setStage2CommissionFormula}
+              tiers={formData.tiers}
+              schemeType={formData.type}
             />
           )}
 

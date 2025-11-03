@@ -225,9 +225,87 @@ const Stage1FieldSelector: React.FC<{
 const Stage2FormulaEditor: React.FC<{
   formula?: string;
   onChange: (formula: string) => void;
-}> = ({ formula = '', onChange }) => {
+  tiers?: Array<{ rate: number; upTo: number }>;
+  schemeType?: string;
+}> = ({ formula = '', onChange, tiers = [], schemeType }) => {
+  const generateTieredFormula = () => {
+    if (!tiers || tiers.length === 0) {
+      return 'sum * commissionRate / 100';
+    }
+
+    // Generate tiered formula based on tier configuration
+    const sortedTiers = [...tiers].sort((a, b) => a.upTo - b.upTo);
+    let formulaParts: string[] = [];
+
+    sortedTiers.forEach((tier, index) => {
+      const isLast = index === sortedTiers.length - 1;
+      const nextThreshold = index < sortedTiers.length - 1 ? sortedTiers[index + 1].upTo : 999999;
+      const rate = tier.rate / 100; // Convert percentage to decimal
+
+      if (isLast || tier.upTo >= 999999) {
+        // Last tier or infinite tier
+        formulaParts.push(`sum >= ${tier.upTo} ? sum * ${rate} : ...`);
+      } else {
+        // Regular tier with upper bound
+        formulaParts.push(`sum <= ${tier.upTo} ? sum * ${rate}`);
+      }
+    });
+
+    // Build the complete nested ternary expression
+    let completeFormula = '';
+    sortedTiers.forEach((tier, index) => {
+      const rate = tier.rate / 100;
+      const isFirst = index === 0;
+      const isLast = index === sortedTiers.length - 1;
+
+      if (isFirst) {
+        if (isLast) {
+          completeFormula = `sum * ${rate}`;
+        } else {
+          completeFormula = `sum <= ${tier.upTo} ? sum * ${rate} : `;
+        }
+      } else if (isLast) {
+        completeFormula += `sum * ${rate}`;
+      } else {
+        completeFormula += `(sum <= ${tier.upTo} ? sum * ${rate} : `;
+      }
+    });
+
+    // Close remaining parentheses
+    for (let i = 1; i < sortedTiers.length - 1; i++) {
+      completeFormula += ')';
+    }
+
+    return completeFormula || 'sum * commissionRate / 100';
+  };
+
+  const handleAutoPopulate = () => {
+    const generatedFormula = generateTieredFormula();
+    onChange(generatedFormula);
+  };
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h4 className="font-semibold text-blue-900 dark:text-blue-100 text-sm mb-1">💡 Auto-Populate from Tiers</h4>
+            <p className="text-xs text-blue-800 dark:text-blue-200">
+              {tiers && tiers.length > 0
+                ? `${tiers.length} tier(s) configured. Click "Auto-Populate" to generate the formula below.`
+                : 'Configure tiers in Basic Info to enable auto-population.'}
+            </p>
+          </div>
+          <button
+            onClick={handleAutoPopulate}
+            disabled={!tiers || tiers.length === 0}
+            className="ml-4 px-3 py-1 bg-blue-600 dark:bg-blue-700 text-white text-sm rounded hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+          >
+            Auto-Populate
+          </button>
+        </div>
+      </div>
+
       <div>
         <label className="block text-sm font-medium text-muted-foreground mb-2">Commission Formula</label>
         <p className="text-xs text-muted-foreground mb-2">
@@ -249,6 +327,15 @@ sum > 500 ? sum * 0.15 : sum * 0.20"
         <p>• <code>Math.min(sum * 0.20, 100)</code> - Capped at £100</p>
         <p>• Tiered logic using conditional operators</p>
       </div>
+
+      {formula && (
+        <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-3">
+          <p className="text-xs font-semibold text-green-900 dark:text-green-100 mb-1">Current Formula:</p>
+          <code className="text-xs bg-green-100 dark:bg-green-900/50 p-2 rounded block overflow-auto text-green-800 dark:text-green-100">
+            {formula}
+          </code>
+        </div>
+      )}
     </div>
   );
 };
