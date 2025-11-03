@@ -32,8 +32,9 @@ import NotificationCenterPanel from '../../components/staff/NotificationCenterPa
 import AutomationsAdminPage from './AutomationsAdminPage';
 import ConnectorsPage from './ConnectorsPage';
 import ApplicationsPage from './ApplicationsPage';
+import AuditLogsPage from './AuditLogsPage';
 
-export type StaffPage = 'home' | 'schemes' | 'drivers/list' | 'drivers/applications' | 'drivers/promotions' | 'drivers/invoicing' | 'drivers/historic-invoices' | 'vehicles' | 'bookings/list' | 'bookings/customers' | 'accounts/list' | 'accounts/invoicing' | 'accounts/historic-invoices' | 'admin/company' | 'admin/staff' | 'admin/driver' | 'admin/payments' | 'admin/messaging' | 'admin/attributes' | 'admin/automations' | 'admin/connectors' | 'admin/system' | 'settings/accounting' | 'profile';
+export type StaffPage = 'home' | 'schemes' | 'drivers/list' | 'drivers/applications' | 'drivers/promotions' | 'drivers/invoicing' | 'drivers/historic-invoices' | 'vehicles' | 'bookings/list' | 'bookings/customers' | 'accounts/list' | 'accounts/invoicing' | 'accounts/historic-invoices' | 'admin/company' | 'admin/staff' | 'admin/driver' | 'admin/payments' | 'admin/messaging' | 'admin/attributes' | 'admin/automations' | 'admin/connectors' | 'admin/system' | 'audit/logs' | 'settings/accounting' | 'profile';
 
 interface StaffDashboardProps {
   isDarkMode: boolean;
@@ -66,6 +67,7 @@ const PAGE_METADATA: Record<StaffPage, { title: string; description: string }> =
     'admin/automations': { title: 'Workflow Automations', description: "Create rules to automate tasks based on system events." },
     'admin/connectors': { title: 'Connectors', description: "Manage external system integrations, API endpoints, and webhooks." },
     'admin/system': { title: 'System Settings', description: "Global configuration options for the application." },
+    'audit/logs': { title: 'Activity Audit Logs', description: "Search, filter, and investigate system activity logs and changes for compliance, dispute resolution, and auditing." },
     'settings/accounting': { title: 'Accounting Defaults', description: "Set the system-wide default accounting and invoicing settings. These can be overridden on a per-account basis." },
     'profile': { title: 'Profile & Settings', description: "Manage your personal information, office hours, and application appearance." },
 };
@@ -179,6 +181,8 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ isDarkMode, toggleDarkM
         return <AttributesAdminPage />;
       case 'admin/automations':
         return <AutomationsAdminPage />;
+      case 'audit/logs':
+        return <AuditLogsPage />;
       case 'settings/accounting':
         return <AccountingSettingsPage />;
       case 'profile':

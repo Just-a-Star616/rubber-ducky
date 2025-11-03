@@ -74,6 +74,14 @@ const navigationData: PrimaryNavItem[] = [
             { name: 'System Settings', href: 'admin/system', icon: CogIcon },
         ],
     },
+    {
+        id: 'audit',
+        name: 'Audit & Compliance',
+        icon: ClipboardListIcon,
+        children: [
+            { name: 'Activity Logs', href: 'audit/logs', icon: ArchiveIcon },
+        ],
+    },
 ];
 
 const userNavigationData: PrimaryNavItem[] = [
