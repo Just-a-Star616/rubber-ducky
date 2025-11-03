@@ -325,6 +325,10 @@ export const mockVehicles: Vehicle[] = [
         firstRegistrationDate: '2023-01-20', plateType: 'Private Hire', plateIssuingCouncil: 'Manchester City Council',
         plateNumber: 'PDEMO', plateExpiry: '2026-01-30T23:59:59Z', insuranceCertificateNumber: 'DEMO123',
         insuranceExpiry: '2025-12-31T23:59:59Z', motComplianceExpiry: '2026-01-19T23:59:59Z', roadTaxExpiry: '2026-01-30T23:59:59Z',
+        v5cDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        plateDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        insuranceDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
+        motComplianceCertificateUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
         attributes: ['Executive Saloon', 'Pet Friendly', 'Contactless Payment'], ownershipType: 'Company', linkedDriverIds: ['D-DEMO'], siteId: 'SITE01'
     },
     {
@@ -332,6 +336,10 @@ export const mockVehicles: Vehicle[] = [
         firstRegistrationDate: '2022-01-15', plateType: 'Private Hire', plateIssuingCouncil: 'Manchester City Council',
         plateNumber: 'P1234', plateExpiry: '2025-06-30T23:59:59Z', insuranceCertificateNumber: 'INS123',
         insuranceExpiry: '2025-05-31T23:59:59Z', motComplianceExpiry: '2025-01-14T23:59:59Z', roadTaxExpiry: '2025-07-31T23:59:59Z',
+        v5cDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        plateDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        insuranceDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
+        motComplianceCertificateUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
         attributes: ['Executive Saloon', 'Airport Specialist'], ownershipType: 'Company', linkedDriverIds: ['D001'], siteId: 'SITE01'
     },
     {
@@ -339,6 +347,10 @@ export const mockVehicles: Vehicle[] = [
         firstRegistrationDate: '2021-08-20', plateType: 'Hackney Carriage', plateIssuingCouncil: 'Liverpool City Council',
         plateNumber: 'H5678', plateExpiry: '2025-09-30T23:59:59Z', insuranceCertificateNumber: 'INS456',
         insuranceExpiry: '2025-08-31T23:59:59Z', motComplianceExpiry: '2025-08-19T23:59:59Z', roadTaxExpiry: '2025-09-30T23:59:59Z',
+        v5cDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        plateDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        insuranceDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
+        motComplianceCertificateUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
         attributes: ['MPV (6-seater)', 'Pet Friendly'], ownershipType: 'Private', linkedDriverIds: ['D002'], siteId: 'SITE02'
     },
     {
@@ -353,6 +365,10 @@ export const mockVehicles: Vehicle[] = [
         firstRegistrationDate: '2023-06-20', plateType: 'Private Hire', plateIssuingCouncil: 'Manchester City Council',
         plateNumber: 'P5678', plateExpiry: '2026-06-30T23:59:59Z', insuranceCertificateNumber: 'INS999',
         insuranceExpiry: '2026-05-31T23:59:59Z', motComplianceExpiry: '2026-06-19T23:59:59Z', roadTaxExpiry: '2026-06-30T23:59:59Z',
+        v5cDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        plateDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        insuranceDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
+        motComplianceCertificateUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
         attributes: ['Executive Saloon', 'Contactless Payment'], ownershipType: 'Company', linkedDriverIds: ['D004'], siteId: 'SITE01'
     },
     {
@@ -360,6 +376,10 @@ export const mockVehicles: Vehicle[] = [
         firstRegistrationDate: '2022-11-05', plateType: 'Hackney Carriage', plateIssuingCouncil: 'Trafford MBC',
         plateNumber: 'H9876', plateExpiry: '2025-11-30T23:59:59Z', insuranceCertificateNumber: 'INS555',
         insuranceExpiry: '2025-10-31T23:59:59Z', motComplianceExpiry: '2025-11-04T23:59:59Z', roadTaxExpiry: '2025-11-30T23:59:59Z',
+        v5cDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        plateDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        insuranceDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
+        motComplianceCertificateUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
         attributes: ['MPV (6-seater)', 'Pet Friendly', 'Child Seat Available'], ownershipType: 'Private', linkedDriverIds: ['D005'], siteId: 'SITE02'
     },
     {

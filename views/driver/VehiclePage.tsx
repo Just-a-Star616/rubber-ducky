@@ -271,6 +271,113 @@ const VehiclePage: React.FC<VehiclePageProps> = ({ driver, setDriver, vehicles, 
                 <Button onClick={() => setIsAddModalOpen(true)}>Add a New Vehicle</Button>
             </div>
 
+            {currentVehicle && !isEditing && (
+                <Card>
+                    <CardHeader><CardTitle>Vehicle Documents</CardTitle></CardHeader>
+                    <CardContent className="space-y-4">
+                        {/* V5C Registration Document */}
+                        <div className="border-b pb-4 last:border-b-0 last:pb-0">
+                            <h4 className="font-semibold mb-3">V5C Registration Document</h4>
+                            {currentVehicle.v5cDocumentUrl ? (
+                                <div className="p-4 rounded-lg border border-border bg-card/50 hover:bg-card/75 transition-colors">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <p className="text-sm font-semibold text-foreground">Current Document</p>
+                                        <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium">✓ Verified</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1">
+                                            <p className="text-xs text-muted-foreground truncate">Document verified</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <a href={currentVehicle.v5cDocumentUrl} target="_blank" rel="noopener noreferrer" download className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></a>
+                                            <a href={currentVehicle.v5cDocumentUrl} target="_blank" rel="noopener noreferrer" className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-lg border border-dashed border-border bg-card/25"><p className="text-sm text-muted-foreground">No document uploaded yet</p></div>
+                            )}
+                        </div>
+
+                        {/* Plate Document */}
+                        <div className="border-b pb-4 last:border-b-0 last:pb-0">
+                            <h4 className="font-semibold mb-3">Plate Document</h4>
+                            {currentVehicle.plateDocumentUrl ? (
+                                <div className="p-4 rounded-lg border border-border bg-card/50 hover:bg-card/75 transition-colors">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <p className="text-sm font-semibold text-foreground">Current Document</p>
+                                        <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium">✓ Verified</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1">
+                                            <p className="text-xs text-muted-foreground truncate">Document verified</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <a href={currentVehicle.plateDocumentUrl} target="_blank" rel="noopener noreferrer" download className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></a>
+                                            <a href={currentVehicle.plateDocumentUrl} target="_blank" rel="noopener noreferrer" className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-lg border border-dashed border-border bg-card/25"><p className="text-sm text-muted-foreground">No document uploaded yet</p></div>
+                            )}
+                        </div>
+
+                        {/* Insurance Document */}
+                        <div className="border-b pb-4 last:border-b-0 last:pb-0">
+                            <h4 className="font-semibold mb-3">Insurance Certificate</h4>
+                            {currentVehicle.insuranceDocumentUrl ? (
+                                <div className="p-4 rounded-lg border border-border bg-card/50 hover:bg-card/75 transition-colors">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <p className="text-sm font-semibold text-foreground">Current Document</p>
+                                        <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium">✓ Verified</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1">
+                                            <p className="text-xs text-muted-foreground truncate">Document verified</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <a href={currentVehicle.insuranceDocumentUrl} target="_blank" rel="noopener noreferrer" download className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></a>
+                                            <a href={currentVehicle.insuranceDocumentUrl} target="_blank" rel="noopener noreferrer" className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-lg border border-dashed border-border bg-card/25"><p className="text-sm text-muted-foreground">No document uploaded yet</p></div>
+                            )}
+                        </div>
+
+                        {/* MOT Compliance Certificate */}
+                        <div>
+                            <h4 className="font-semibold mb-3">MOT/Compliance Certificate</h4>
+                            {currentVehicle.motComplianceCertificateUrl ? (
+                                <div className="p-4 rounded-lg border border-border bg-card/50 hover:bg-card/75 transition-colors">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <p className="text-sm font-semibold text-foreground">Current Document</p>
+                                        <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium">✓ Verified</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex-1">
+                                            <p className="text-xs text-muted-foreground truncate">Document verified</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <a href={currentVehicle.motComplianceCertificateUrl} target="_blank" rel="noopener noreferrer" download className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg></a>
+                                            <a href={currentVehicle.motComplianceCertificateUrl} target="_blank" rel="noopener noreferrer" className="p-2 rounded-md text-primary hover:bg-primary/10"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-lg border border-dashed border-border bg-card/25"><p className="text-sm text-muted-foreground">No document uploaded yet</p></div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            <div className="flex justify-end pt-4 border-t border-border">
+                <Button onClick={() => setIsAddModalOpen(true)}>Add a New Vehicle</Button>
+            </div>
+
             {isAddModalOpen && (
                 <AddVehicleModal
                     isOpen={isAddModalOpen}
