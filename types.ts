@@ -281,6 +281,42 @@ export interface PromotionParticipant {
     referredDriverId?: string; // Specific to referral promotions
 }
 
+// Promotion Scheduling
+export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+export type ScheduleType = 'always-on' | 'specific-days-and-times' | 'specific-dates' | 'blackout-dates';
+
+export interface TimePeriod {
+    startTime: string; // "HH:mm" format (24-hour)
+    endTime: string;   // "HH:mm" format (24-hour)
+}
+
+export interface DaySchedule {
+    day: DayOfWeek;
+    enabled: boolean;
+    timePeriods: TimePeriod[]; // Multiple periods per day (e.g., morning rush + evening)
+}
+
+export interface DateRange {
+    date: string; // ISO date (YYYY-MM-DD)
+    timePeriods: TimePeriod[]; // Specific times for that date
+}
+
+export interface PromotionSchedule {
+    type: ScheduleType;
+    
+    // For 'specific-days-and-times' type
+    daysOfWeek?: DaySchedule[]; // One entry per weekday
+    
+    // For 'specific-dates' type (e.g., holiday sales)
+    specificDates?: DateRange[];
+    
+    // Blackout dates (when promotion is not available)
+    blackoutDates?: string[]; // ISO dates when promotion is disabled
+    
+    // Timezone support
+    timezone?: string; // e.g., "Europe/London", "America/New_York"
+}
+
 // Customer Promotions (Loyalty Schemes & Promo Codes)
 export type CustomerPromotionType = 'loyalty-scheme' | 'promo-code';
 export type PromotionStatus = 'Draft' | 'Active' | 'Paused' | 'Expired' | 'Archived';
@@ -318,6 +354,9 @@ export interface CustomerPromotion {
     minimumOrderValue?: number;
     maximumDiscountValue?: number;
     applicableServices?: string[]; // e.g., ["rides", "delivery"]
+    
+    // Schedule: Optional time-based availability
+    schedule?: PromotionSchedule;
     
     // Voucherify integration
     voucherifyConfig?: {

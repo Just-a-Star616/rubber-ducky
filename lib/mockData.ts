@@ -193,6 +193,139 @@ export const mockCustomerPromotions: CustomerPromotion[] = [
             discountEffect: 'APPLY_TO_ORDER',
             redeemableLimit: 200
         }
+    },
+    {
+        id: 'CP05',
+        type: 'promo-code',
+        name: 'Midweek Momentum',
+        description: '10% off on Mon, Wed, Fri between 10am-1pm. Use code XX10',
+        status: 'Active',
+        voucherifyId: 'camp_midweek_2024',
+        voucherifyType: 'PROMOTION',
+        discountType: 'percentage',
+        discountValue: 10,
+        maxRedemptions: 1000,
+        redeemCount: 342,
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        targetAudience: 'all',
+        applicableServices: ['rides'],
+        schedule: {
+            type: 'specific-days-and-times',
+            timezone: 'Europe/London',
+            daysOfWeek: [
+                { day: 'Monday', enabled: true, timePeriods: [{ startTime: '10:00', endTime: '13:00' }] },
+                { day: 'Tuesday', enabled: false, timePeriods: [] },
+                { day: 'Wednesday', enabled: true, timePeriods: [{ startTime: '10:00', endTime: '13:00' }] },
+                { day: 'Thursday', enabled: false, timePeriods: [] },
+                { day: 'Friday', enabled: true, timePeriods: [{ startTime: '10:00', endTime: '13:00' }] },
+                { day: 'Saturday', enabled: false, timePeriods: [] },
+                { day: 'Sunday', enabled: false, timePeriods: [] },
+            ],
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'SM01',
+        voucherifyConfig: {
+            campaignType: 'PROMOTION',
+            discountType: 'PERCENT',
+            discountEffect: 'APPLY_TO_ORDER',
+            redeemableLimit: 1000
+        }
+    },
+    {
+        id: 'CP06',
+        type: 'promo-code',
+        name: 'Rush Hour Boost',
+        description: 'Double points during peak hours: Mon-Fri 7-10am & 5-8pm',
+        status: 'Active',
+        voucherifyId: 'camp_rush_2024',
+        voucherifyType: 'PROMOTION',
+        discountType: 'double-points',
+        maxRedemptions: 5000,
+        redeemCount: 1823,
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        targetAudience: 'all',
+        applicableServices: ['rides'],
+        schedule: {
+            type: 'specific-days-and-times',
+            timezone: 'Europe/London',
+            daysOfWeek: [
+                { day: 'Monday', enabled: true, timePeriods: [
+                    { startTime: '07:00', endTime: '10:00' },
+                    { startTime: '17:00', endTime: '20:00' }
+                ]},
+                { day: 'Tuesday', enabled: true, timePeriods: [
+                    { startTime: '07:00', endTime: '10:00' },
+                    { startTime: '17:00', endTime: '20:00' }
+                ]},
+                { day: 'Wednesday', enabled: true, timePeriods: [
+                    { startTime: '07:00', endTime: '10:00' },
+                    { startTime: '17:00', endTime: '20:00' }
+                ]},
+                { day: 'Thursday', enabled: true, timePeriods: [
+                    { startTime: '07:00', endTime: '10:00' },
+                    { startTime: '17:00', endTime: '20:00' }
+                ]},
+                { day: 'Friday', enabled: true, timePeriods: [
+                    { startTime: '07:00', endTime: '10:00' },
+                    { startTime: '17:00', endTime: '20:00' }
+                ]},
+                { day: 'Saturday', enabled: false, timePeriods: [] },
+                { day: 'Sunday', enabled: false, timePeriods: [] },
+            ],
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'SM02',
+        voucherifyConfig: {
+            campaignType: 'PROMOTION',
+            discountType: 'UNIT',
+            discountEffect: 'APPLY_TO_ORDER',
+            redeemableLimit: 5000,
+            loyaltyPoints: 2
+        }
+    },
+    {
+        id: 'CP07',
+        type: 'promo-code',
+        name: 'Weekend Nights Bonanza',
+        description: '£5 off Friday-Sunday after 8pm. Use code NITE5',
+        status: 'Active',
+        voucherifyId: 'camp_weekend_2024',
+        voucherifyType: 'PROMOTION',
+        discountType: 'fixed',
+        discountValue: 5,
+        maxRedemptions: 800,
+        redeemCount: 567,
+        startsAt: new Date().toISOString(),
+        endsAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toISOString(),
+        targetAudience: 'all',
+        minimumOrderValue: 8,
+        applicableServices: ['rides'],
+        schedule: {
+            type: 'specific-days-and-times',
+            timezone: 'Europe/London',
+            daysOfWeek: [
+                { day: 'Monday', enabled: false, timePeriods: [] },
+                { day: 'Tuesday', enabled: false, timePeriods: [] },
+                { day: 'Wednesday', enabled: false, timePeriods: [] },
+                { day: 'Thursday', enabled: false, timePeriods: [] },
+                { day: 'Friday', enabled: true, timePeriods: [{ startTime: '20:00', endTime: '23:59' }] },
+                { day: 'Saturday', enabled: true, timePeriods: [{ startTime: '00:00', endTime: '23:59' }] },
+                { day: 'Sunday', enabled: true, timePeriods: [{ startTime: '00:00', endTime: '23:59' }] },
+            ],
+        },
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: 'SM01',
+        voucherifyConfig: {
+            campaignType: 'PROMOTION',
+            discountType: 'FIXED',
+            discountEffect: 'APPLY_TO_ORDER',
+            redeemableLimit: 800
+        }
     }
 ];
 

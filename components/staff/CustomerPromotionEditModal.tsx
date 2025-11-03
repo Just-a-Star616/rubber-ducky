@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { CustomerPromotion, CustomerPromotionType, PromotionStatus } from '../../types';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import PromotionScheduleBuilder from './PromotionScheduleBuilder';
+import { validateSchedule } from '../../lib/promotionScheduling';
 
 interface CustomerPromotionEditModalProps {
   promotion: CustomerPromotion | null;
@@ -32,6 +34,8 @@ const CustomerPromotionEditModal: React.FC<CustomerPromotionEditModalProps> = ({
     }
   );
 
+  const [error, setError] = useState<string>('');
+
   const isLoyaltyScheme = formData.type === 'loyalty-scheme';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -43,6 +47,15 @@ const CustomerPromotionEditModal: React.FC<CustomerPromotionEditModalProps> = ({
   };
 
   const handleSave = () => {
+    // Validate schedule if present
+    if (formData.schedule) {
+      const scheduleError = validateSchedule(formData.schedule);
+      if (scheduleError) {
+        setError(scheduleError);
+        return;
+      }
+    }
+
     if (!formData.id) {
       formData.id = `CP-${Date.now()}`;
       formData.createdAt = new Date().toISOString();
@@ -50,6 +63,7 @@ const CustomerPromotionEditModal: React.FC<CustomerPromotionEditModalProps> = ({
     }
     
     formData.updatedAt = new Date().toISOString();
+    setError(''); // Clear any previous errors
     onSave(formData as CustomerPromotion);
   };
 
@@ -66,6 +80,12 @@ const CustomerPromotionEditModal: React.FC<CustomerPromotionEditModalProps> = ({
           </CardHeader>
 
           <CardContent className="space-y-4">
+            {error && (
+              <div className="p-3 rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 text-sm">
+                {error}
+              </div>
+            )}
+
             {/* Type Selection */}
             <div>
               <label className="block text-sm font-medium mb-2">Promotion Type</label>
@@ -243,6 +263,17 @@ const CustomerPromotionEditModal: React.FC<CustomerPromotionEditModalProps> = ({
                 <option value="inactive-drivers">Inactive Drivers</option>
                 <option value="high-value-drivers">High-Value Drivers</option>
               </select>
+            </div>
+
+            {/* Promotion Schedule */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <PromotionScheduleBuilder
+                schedule={formData.schedule}
+                onChange={(schedule) => setFormData(prev => ({
+                  ...prev,
+                  schedule
+                }))}
+              />
             </div>
 
             {/* Services */}

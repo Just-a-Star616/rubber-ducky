@@ -3,6 +3,7 @@ import { CustomerPromotion } from '../../types';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { PencilIcon, TrashIcon } from '../icons/Icon';
+import { getScheduleDescription, isPromotionActiveNow } from '../../lib/promotionScheduling';
 
 interface CustomerPromotionCardProps {
   promotion: CustomerPromotion;
@@ -100,6 +101,28 @@ const CustomerPromotionCard: React.FC<CustomerPromotionCardProps> = ({
               <p className="text-xs font-medium capitalize">
                 {promotion.targetAudience.replace(/-/g, ' ')}
               </p>
+            </div>
+          )}
+
+          {promotion.schedule && (
+            <div className="flex items-start justify-between">
+              <p className="text-xs text-muted-foreground">Schedule:</p>
+              <p className="text-xs font-medium text-right">
+                {getScheduleDescription(promotion.schedule)}
+              </p>
+            </div>
+          )}
+
+          {promotion.schedule && (
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">Status:</p>
+              <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+                isPromotionActiveNow(promotion.schedule)
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                  : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'
+              }`}>
+                {isPromotionActiveNow(promotion.schedule) ? '✓ Active Now' : '⏱ Scheduled'}
+              </span>
             </div>
           )}
         </div>
