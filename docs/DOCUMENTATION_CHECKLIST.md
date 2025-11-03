@@ -23,7 +23,7 @@
   - Added learning paths for different users
 
 - [x] **Verify all files in docs/**
-  - 33 total documentation files in `docs/`
+  - 34 total documentation files in `docs/`
   - All files accessible and linked
   - All cross-references working
 
@@ -34,7 +34,7 @@
 
 ---
 
-## 📂 Documentation Files (33 Total)
+## 📂 Documentation Files (34 Total)
 
 ### Getting Started (4)
 - [x] START_HERE.md
@@ -66,8 +66,10 @@
 - [x] DRIVER_SIGNUP_DEPLOYMENT.md
 - [x] STAFF_DASHBOARD_SETUP.md
 
-### Backend & Deployment (1)
+### Backend & Deployment (3)
 - [x] BACKEND_SETUP.md
+- [x] DEPLOYMENT_CHECKLIST.md
+- [x] SIGN_OFF_DOCUMENT.md
 
 ### Implementation & Status (6)
 - [x] IMPLEMENTATION_COMPLETE.md
@@ -124,7 +126,7 @@
 - [x] All files organized in `docs/` folder
 - [x] README.md updated with links
 - [x] INDEX.md comprehensive and complete
-- [x] All 33 files accessible and linked
+- [x] All 34 files accessible and linked
 - [x] No broken links
 - [x] All cross-references working
 - [x] Git history preserved (moved files)

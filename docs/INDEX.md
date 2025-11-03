@@ -86,6 +86,8 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 
 ### 🔧 Deployment & Backend
 - **[BACKEND_SETUP.md](./BACKEND_SETUP.md)** - Backend server configuration
+- **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Production deployment guide
+- **[SIGN_OFF_DOCUMENT.md](./SIGN_OFF_DOCUMENT.md)** - Team sign-off for deployment (NEW)
 
 ### ✅ Implementation Guides
 - **[DELIVERABLES.md](./DELIVERABLES.md)** - Project deliverables checklist
