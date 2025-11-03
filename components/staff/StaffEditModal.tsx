@@ -47,8 +47,14 @@ const OfficeHoursEditor = ({ hours, onHoursChange }: { hours: OfficeHours[], onH
                         </div>
                     </div>
                     <div className="mt-2 grid grid-cols-2 gap-2">
-                        <Input type="time" value={h.start} onChange={e => handleHourChange(h.day, 'start', e.target.value)} disabled={h.isOff} className="disabled:opacity-50" />
-                        <Input type="time" value={h.end} onChange={e => handleHourChange(h.day, 'end', e.target.value)} disabled={h.isOff} className="disabled:opacity-50" />
+                        <div>
+                            <label className="text-xs text-muted-foreground block mb-1">Start Time</label>
+                            <Input type="time" value={h.start} onChange={e => handleHourChange(h.day, 'start', e.target.value)} disabled={h.isOff} />
+                        </div>
+                        <div>
+                            <label className="text-xs text-muted-foreground block mb-1">End Time</label>
+                            <Input type="time" value={h.end} onChange={e => handleHourChange(h.day, 'end', e.target.value)} disabled={h.isOff} />
+                        </div>
                     </div>
                 </div>
             ))}
