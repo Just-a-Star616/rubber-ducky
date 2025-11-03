@@ -62,6 +62,23 @@ export interface DocumentUpdateRequest {
     issuingCouncil?: string;
 }
 
+export interface BankAccount {
+    id: string; // Unique identifier for this bank account
+    accountHolderName: string;
+    bankName: string;
+    accountNumber: string; // Masked in UI except when adding
+    sortCode: string; // Masked in UI except when adding
+    iban?: string; // Optional IBAN for international
+    isDefault: boolean; // Primary account for withdrawals
+    verified: boolean;
+    verificationCode?: string; // Code sent to user
+    verificationMethod: 'Email' | 'SMS';
+    verificationSentAt?: string; // ISO string
+    verificationConfirmedAt?: string; // ISO string when verified
+    createdAt: string; // ISO string
+    updatedAt: string; // ISO string
+}
+
 export interface PendingChanges {
     firstName?: string;
 
@@ -146,6 +163,7 @@ export interface Driver {
       daysUntilExpiry: number;
     }>;
   };
+  bankAccounts: BankAccount[]; // Multiple bank accounts for withdrawals
 }
 
 

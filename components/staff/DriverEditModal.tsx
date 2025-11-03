@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { Driver, Vehicle } from '../../types';
+import { Driver, Vehicle, BankAccount } from '../../types';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -9,6 +9,8 @@ import { XIcon, UploadIcon, LinkIcon, ArchiveIcon, ArrowUturnLeftIcon } from '..
 import { mockLicensingCouncils, mockSiteDetails, mockDriverAttributes, mockVehicles } from '../../lib/mockData';
 import { Checkbox } from '../ui/checkbox';
 import DocumentViewerModal from './DocumentViewerModal';
+import BankAccountManager from './BankAccountManager';
+import BankAccountVerificationModal from './BankAccountVerificationModal';
 
 interface DriverEditModalProps {
   driver: Driver;
@@ -99,9 +101,10 @@ interface DriverFormProps {
   setFormData: React.Dispatch<React.SetStateAction<Partial<Driver>>>;
   showVehicleDetails: boolean;
   onViewDocument?: (url: string, name: string) => void;
+  onBankAccountVerificationRequired?: (account: BankAccount) => void;
 }
 
-export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, showVehicleDetails, onViewDocument }) => {
+export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, showVehicleDetails, onViewDocument, onBankAccountVerificationRequired }) => {
     
     const [vehicleSearchTerm, setVehicleSearchTerm] = useState(formData.vehicleRef || '');
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -197,6 +200,40 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
         }
     };
 
+    const handleBankAccountAdd = (account: BankAccount) => {
+        // Trigger verification modal - handled by parent
+        const updatedAccounts = [...(formData.bankAccounts || []), account];
+        setFormData(prev => ({
+            ...prev,
+            bankAccounts: updatedAccounts
+        }));
+    };
+
+    const handleBankAccountEdit = (account: BankAccount) => {
+        const updatedAccounts = (formData.bankAccounts || []).map(b => b.id === account.id ? account : b);
+        setFormData(prev => ({
+            ...prev,
+            bankAccounts: updatedAccounts
+        }));
+    };
+
+    const handleBankAccountDelete = (accountId: string) => {
+        setFormData(prev => ({
+            ...prev,
+            bankAccounts: (prev.bankAccounts || []).filter(b => b.id !== accountId)
+        }));
+    };
+
+    const handleBankAccountSetDefault = (accountId: string) => {
+        setFormData(prev => ({
+            ...prev,
+            bankAccounts: (prev.bankAccounts || []).map(b => ({
+                ...b,
+                isDefault: b.id === accountId
+            }))
+        }));
+    };
+
     return (
          <div className="space-y-8">
             <fieldset>
@@ -280,6 +317,21 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
             </fieldset>
 
             <fieldset>
+                <legend className="text-lg font-semibold text-foreground md:col-span-2 border-b pb-2 mb-4">Bank Accounts for Withdrawals</legend>
+                <div className="bg-background p-4 rounded-lg">
+                    <BankAccountManager
+                        bankAccounts={formData.bankAccounts || []}
+                        onAdd={handleBankAccountAdd}
+                        onEdit={handleBankAccountEdit}
+                        onDelete={handleBankAccountDelete}
+                        onSetDefault={handleBankAccountSetDefault}
+                        onVerificationRequired={onBankAccountVerificationRequired}
+                        isAdmin={true}
+                    />
+                </div>
+            </fieldset>
+
+            <fieldset>
                 <legend className="text-lg font-semibold text-foreground md:col-span-2 border-b pb-2 mb-4">Licensing & Documents</legend>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <DocumentSection title="Badge" numberName="badgeNumber" expiryName="badgeExpiry" numberValue={formData.badgeNumber} expiryValue={formData.badgeExpiry} onInputChange={handleInputChange} onExpiryChange={handleExpiryChange} documentUrl={formData.badgeDocumentUrl} isDriverEditable onViewDocument={onViewDocument}>
@@ -345,6 +397,8 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
     url: '', 
     name: '' 
   });
+  const [verificationModalOpen, setVerificationModalOpen] = useState(false);
+  const [pendingBankAccount, setPendingBankAccount] = useState<BankAccount | null>(null);
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -395,6 +449,42 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
     setDocumentViewer({ isOpen: false, url: '', name: '' });
   };
 
+  const handleBankAccountVerificationRequired = (account: BankAccount) => {
+    setPendingBankAccount(account);
+    setVerificationModalOpen(true);
+  };
+
+  const handleVerificationConfirm = (verificationCode: string) => {
+    if (pendingBankAccount) {
+      const updatedAccount = {
+        ...pendingBankAccount,
+        verified: true,
+        verificationCode: verificationCode,
+        verificationConfirmedAt: new Date().toISOString()
+      };
+
+      setFormData(prev => {
+        const existingAccounts = prev.bankAccounts || [];
+        const accountExists = existingAccounts.some(b => b.id === updatedAccount.id);
+        
+        if (accountExists) {
+          return {
+            ...prev,
+            bankAccounts: existingAccounts.map(b => b.id === updatedAccount.id ? updatedAccount : b)
+          };
+        } else {
+          return {
+            ...prev,
+            bankAccounts: [...existingAccounts, updatedAccount]
+          };
+        }
+      });
+
+      setVerificationModalOpen(false);
+      setPendingBankAccount(null);
+    }
+  };
+
   const isArchived = formData.status === 'Archived';
 
   return (
@@ -412,6 +502,7 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
                     setFormData={setFormData as any}
                     showVehicleDetails={showVehicleDetails}
                     onViewDocument={handleViewDocument}
+                    onBankAccountVerificationRequired={handleBankAccountVerificationRequired}
                 />
                 <div className="mt-8 pt-6 border-t">
                     <Button type="button" variant="outline" onClick={handleToggleVehicleDetails}>
@@ -444,6 +535,15 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
           onClose={handleCloseDocumentViewer}
           documentUrl={documentViewer.url}
           documentName={documentViewer.name}
+        />
+        <BankAccountVerificationModal
+          isOpen={verificationModalOpen}
+          onClose={() => {
+            setVerificationModalOpen(false);
+            setPendingBankAccount(null);
+          }}
+          onConfirm={handleVerificationConfirm}
+          bankAccount={pendingBankAccount}
         />
       </div>
     </div>

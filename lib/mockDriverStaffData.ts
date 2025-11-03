@@ -19,7 +19,22 @@ export const mockDrivers: Driver[] = [
         availability: { isOnline: true, shift: 'Day', lastSeen: new Date().toISOString() },
         performance: { completionRate: 100, averageRating: 5.0, totalJobs: 250, monthlyEarnings: 8000 },
         preferences: { maxJobDistance: 30, preferredAreas: ['M1', 'M2', 'M3'], acceptsLongDistance: true, acceptsAirportJobs: true },
-        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+        complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        bankAccounts: [
+            {
+                id: 'bank_d_demo_1',
+                accountHolderName: 'Demo Driver',
+                bankName: 'Starling Bank',
+                accountNumber: '12345678',
+                sortCode: '04-00-04',
+                isDefault: true,
+                verified: true,
+                verificationMethod: 'Email',
+                verificationConfirmedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }
+        ]
     },
     {
         id: 'D-JEXAMPLE', vehicleRef: 'V001', avatarUrl: 'https://randomuser.me/api/portraits/lego/1.jpg',
@@ -35,7 +50,8 @@ export const mockDrivers: Driver[] = [
         availability: { isOnline: true, shift: 'Day', lastSeen: new Date().toISOString() },
         performance: { completionRate: 100, averageRating: 5.0, totalJobs: 100, monthlyEarnings: 5000 },
         preferences: { maxJobDistance: 25, preferredAreas: ['M1'], acceptsLongDistance: true, acceptsAirportJobs: true },
-        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+        complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        bankAccounts: []
     },
     {
         id: 'D001', vehicleRef: 'V001', avatarUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
@@ -51,7 +67,22 @@ export const mockDrivers: Driver[] = [
         availability: { isOnline: true, shift: 'Day', lastSeen: new Date().toISOString() },
         performance: { completionRate: 98, averageRating: 4.9, totalJobs: 543, monthlyEarnings: 4500 },
         preferences: { maxJobDistance: 15, preferredAreas: ['M1', 'M2'], acceptsLongDistance: true, acceptsAirportJobs: true },
-        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+        complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        bankAccounts: [
+            {
+                id: 'bank_d001_1',
+                accountHolderName: 'John Doe',
+                bankName: 'Barclays',
+                accountNumber: '87654321',
+                sortCode: '20-00-00',
+                isDefault: true,
+                verified: true,
+                verificationMethod: 'Email',
+                verificationConfirmedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }
+        ]
     },
     {
         id: 'D002', vehicleRef: 'V002', avatarUrl: 'https://randomuser.me/api/portraits/women/44.jpg',
@@ -67,7 +98,22 @@ export const mockDrivers: Driver[] = [
         availability: { isOnline: false, shift: 'Night', lastSeen: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
         performance: { completionRate: 95, averageRating: 4.7, totalJobs: 412, monthlyEarnings: 3800 },
         preferences: { maxJobDistance: 10, preferredAreas: ['L1', 'L2'], acceptsLongDistance: false, acceptsAirportJobs: true },
-        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+        complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        bankAccounts: [
+            {
+                id: 'bank_d002_1',
+                accountHolderName: 'Jane Smith',
+                bankName: 'HSBC',
+                accountNumber: '13579135',
+                sortCode: '40-00-00',
+                isDefault: true,
+                verified: true,
+                verificationMethod: 'SMS',
+                verificationConfirmedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }
+        ]
     },
     {
         id: 'D003', vehicleRef: 'V003', avatarUrl: 'https://randomuser.me/api/portraits/men/46.jpg',
@@ -83,7 +129,8 @@ export const mockDrivers: Driver[] = [
         availability: { isOnline: false, shift: 'On-Demand', lastSeen: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
         performance: { completionRate: 99, averageRating: 4.95, totalJobs: 890, monthlyEarnings: 5200 },
         preferences: { maxJobDistance: 20, preferredAreas: ['M1', 'M17', 'SK9'], acceptsLongDistance: true, acceptsAirportJobs: true },
-        complianceStatus: { dueForTraining: true, documentExpiries: [{ document: 'Badge', expiryDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), daysUntilExpiry: -10 }] }
+        complianceStatus: { dueForTraining: true, documentExpiries: [{ document: 'Badge', expiryDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), daysUntilExpiry: -10 }] },
+        bankAccounts: []
     },
     {
         id: 'D004', vehicleRef: 'V004', avatarUrl: 'https://randomuser.me/api/portraits/men/12.jpg',
@@ -99,7 +146,34 @@ export const mockDrivers: Driver[] = [
         availability: { isOnline: true, shift: 'Split', lastSeen: new Date(Date.now() - 30 * 60 * 1000).toISOString() },
         performance: { completionRate: 96, averageRating: 4.8, totalJobs: 620, monthlyEarnings: 6200 },
         preferences: { maxJobDistance: 20, preferredAreas: ['M1', 'M60', 'M7'], acceptsLongDistance: true, acceptsAirportJobs: true },
-        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+        complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        bankAccounts: [
+            {
+                id: 'bank_d004_1',
+                accountHolderName: 'Michael Brown',
+                bankName: 'Lloyds Banking Group',
+                accountNumber: '24680246',
+                sortCode: '30-66-66',
+                isDefault: true,
+                verified: true,
+                verificationMethod: 'Email',
+                verificationConfirmedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            },
+            {
+                id: 'bank_d004_2',
+                accountHolderName: 'Michael Brown',
+                bankName: 'NatWest',
+                accountNumber: '13579246',
+                sortCode: '56-00-29',
+                isDefault: false,
+                verified: false,
+                verificationMethod: 'SMS',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }
+        ]
     },
     {
         id: 'D005', vehicleRef: 'V005', avatarUrl: 'https://randomuser.me/api/portraits/women/32.jpg',
@@ -115,7 +189,22 @@ export const mockDrivers: Driver[] = [
         availability: { isOnline: true, shift: 'Night', lastSeen: new Date().toISOString() },
         performance: { completionRate: 97, averageRating: 4.85, totalJobs: 445, monthlyEarnings: 4200 },
         preferences: { maxJobDistance: 12, preferredAreas: ['L1', 'L8', 'CH'], acceptsLongDistance: false, acceptsAirportJobs: true },
-        complianceStatus: { dueForTraining: false, documentExpiries: [] }
+        complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        bankAccounts: [
+            {
+                id: 'bank_d005_1',
+                accountHolderName: 'Rachel Wilson',
+                bankName: 'Santander',
+                accountNumber: '02468024',
+                sortCode: '09-01-29',
+                isDefault: true,
+                verified: true,
+                verificationMethod: 'Email',
+                verificationConfirmedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            }
+        ]
     },
 ];export const mockDriverApplications: DriverApplication[] = [
     {

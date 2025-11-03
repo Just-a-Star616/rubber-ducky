@@ -205,6 +205,7 @@ export function transformIcabbiDriver(icabbiDriver: IcabbiDriver): Driver {
         },
       ],
     },
+    bankAccounts: [],
   };
 }
 
