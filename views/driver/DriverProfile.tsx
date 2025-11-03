@@ -116,38 +116,119 @@ const DocumentSection = ({ isEditing, docType, docName, driver, formData, handle
 
     return (
         <div className="sm:col-span-2 border-t border-border pt-4 mt-4">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-4">
               <h4 className="text-base font-medium text-foreground">{docName}</h4>
-              {currentDocumentUrl && (
-                  <a href={currentDocumentUrl} target="_blank" rel="noopener noreferrer" title="View current document" className="text-sm font-medium text-primary hover:underline flex items-center gap-1 p-1 rounded-md hover:bg-primary/10">
-                      <DocumentDownloadIcon className="w-4 h-4" />
-                      <span>View Current</span>
-                  </a>
-              )}
             </div>
-            <dl className="mt-2 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                <ProfileField label="Number" value={currentNumber} pendingValue={pendingUpdate?.number} />
-                <ProfileField label="Expiry Date" value={formatDateForDisplay(currentExpiry)} pendingValue={pendingUpdate ? formatDateForDisplay(pendingUpdate.expiry) : null} />
-                {docType === 'badge' && <ProfileField label="Issuing Council" value={currentCouncil} pendingValue={pendingUpdate?.issuingCouncil} />}
-                {pendingUpdate?.fileName && (
-                    <div className="sm:col-span-2">
-                        <dt className="text-sm font-medium text-muted-foreground">New Document Upload</dt>
-                        <dd className="mt-1">
-                             <div className="flex items-center gap-2 text-xs text-yellow-800 dark:text-yellow-300">
-                                <div className="flex items-center gap-2 bg-yellow-100 dark:bg-yellow-900/50 rounded-full px-2.5 py-1">
-                                    <ClockIcon className="w-4 h-4 flex-shrink-0" />
-                                    <span className="truncate">Pending: <strong>{pendingUpdate.fileName}</strong></span>
-                                </div>
-                                {pendingUpdate.fileUrl && (
-                                    <a href={pendingUpdate.fileUrl} target="_blank" rel="noopener noreferrer" title="View pending document" className="p-1 rounded-full text-primary hover:bg-primary/10">
-                                      <DocumentDownloadIcon className="w-5 h-5" />
-                                    </a>
-                                )}
+            <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
+                    <div>
+                        <p className="text-xs text-muted-foreground">Number</p>
+                        <p className="text-sm font-medium">{currentNumber || 'N/A'}</p>
+                        {pendingUpdate?.number && (
+                            <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+                                Pending: {pendingUpdate.number}
+                            </p>
+                        )}
+                    </div>
+                    <div>
+                        <p className="text-xs text-muted-foreground">Expiry Date</p>
+                        <p className="text-sm font-medium">{formatDateForDisplay(currentExpiry)}</p>
+                        {pendingUpdate?.expiry && (
+                            <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+                                Pending: {formatDateForDisplay(pendingUpdate.expiry)}
+                            </p>
+                        )}
+                    </div>
+                    {docType === 'badge' && (
+                        <div>
+                            <p className="text-xs text-muted-foreground">Issuing Council</p>
+                            <p className="text-sm font-medium">{currentCouncil || 'N/A'}</p>
+                            {pendingUpdate?.issuingCouncil && (
+                                <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+                                    Pending: {pendingUpdate.issuingCouncil}
+                                </p>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Document Display Card */}
+                {currentDocumentUrl ? (
+                    <div className="mt-4 p-4 rounded-lg border border-border bg-card/50 hover:bg-card/75 transition-colors">
+                        <div className="flex items-center justify-between mb-3">
+                            <p className="text-sm font-semibold text-foreground">Current Document</p>
+                            <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium">
+                                ✓ Verified
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="flex-1">
+                                <p className="text-xs text-muted-foreground truncate">Document uploaded and verified</p>
                             </div>
-                        </dd>
+                            <div className="flex gap-2">
+                                <a
+                                    href={currentDocumentUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    download
+                                    title="Download document"
+                                    className="p-2 rounded-md text-primary hover:bg-primary/10 transition-colors"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                </a>
+                                <a
+                                    href={currentDocumentUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title="View document"
+                                    className="p-2 rounded-md text-primary hover:bg-primary/10 transition-colors"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="mt-4 p-4 rounded-lg border border-dashed border-border bg-card/25">
+                        <p className="text-sm text-muted-foreground">No document uploaded yet</p>
                     </div>
                 )}
-            </dl>
+
+                {/* Pending Document Upload */}
+                {pendingUpdate?.fileName && (
+                    <div className="mt-3 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20">
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm font-semibold text-yellow-900 dark:text-yellow-200">Pending Verification</p>
+                            <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 text-xs rounded font-medium">
+                                ⏳ Awaiting Approval
+                            </span>
+                        </div>
+                        <p className="text-xs text-yellow-800 dark:text-yellow-300 mb-3">{pendingUpdate.fileName}</p>
+                        {pendingUpdate.fileUrl && (
+                            <div className="flex gap-2">
+                                <a
+                                    href={pendingUpdate.fileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title="View pending document"
+                                    className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-yellow-700 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-900 rounded hover:bg-yellow-200 dark:hover:bg-yellow-800 transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    View Pending
+                                </a>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

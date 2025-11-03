@@ -20,6 +20,9 @@ export const mockDrivers: Driver[] = [
         performance: { completionRate: 100, averageRating: 5.0, totalJobs: 250, monthlyEarnings: 8000 },
         preferences: { maxJobDistance: 30, preferredAreas: ['M1', 'M2', 'M3', 'M4'], acceptsLongDistance: true, acceptsAirportJobs: true },
         complianceStatus: { dueForTraining: false, documentExpiries: [] },
+        badgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Exacme_sample_document_01.png/1024px-Exacme_sample_document_01.png',
+        drivingLicenseDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/1024px-Camponotus_flavomarginatus_ant.jpg',
+        schoolBadgeDocumentUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1024px-Cat03.jpg',
         bankAccounts: [
             {
                 id: 'bank_d_demo_1',
