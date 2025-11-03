@@ -78,11 +78,7 @@ const navigationData: PrimaryNavItem[] = [
     },
 ];
 
-const userNavigationData: PrimaryNavItem[] = [
-    { id: 'profile', name: 'Profile', href: 'profile', icon: UserCircleIcon },
-];
-
-const allPrimaryNavItems = [...navigationData, ...userNavigationData];
+const allPrimaryNavItems = [...navigationData];
 
 interface SidebarProps {
     currentPage: StaffPage;
@@ -203,23 +199,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
                             >
                                 <item.icon className="h-6 w-6" />
                                 <span className="mt-1 truncate">{item.name}</span>
-                            </button>
-                        ))}
-                    </div>
-                    <div className="space-y-2">
-                         {userNavigationData.map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => handlePrimaryNavClick(item)}
-                                className={`w-16 h-16 flex flex-col items-center justify-center rounded-lg text-xs font-medium transition-colors
-                                ${activePrimaryNavId === item.id 
-                                    ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' 
-                                    : 'text-sidebar-foreground/70 hover:bg-black/10 dark:hover:bg-white/5'
-                                }`}
-                                title={item.name}
-                            >
-                                <item.icon className="h-6 w-6" />
-                                <span className="mt-1">{item.name}</span>
                             </button>
                         ))}
                     </div>
