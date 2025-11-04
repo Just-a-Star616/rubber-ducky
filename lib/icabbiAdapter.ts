@@ -264,12 +264,13 @@ export function transformIcabbiDriver(icabbiDriver: IcabbiDriver): Driver {
     devicePhone: icabbiDriver.phone,
     address: icabbiDriver.address,
 
-    // License & Badge
-    drivingLicenseNumber: icabbiDriver.licence === "NOT KNOWN" ? '' : icabbiDriver.licence,
-    drivingLicenseExpiry: icabbiDriver.licence_expiry,
-    badgeNumber: icabbiDriver.psv,
-    badgeExpiry: icabbiDriver.psv_expiry,
-    badgeType: icabbiDriver.badge_type || 'Private Hire',
+  // License & Badge
+  drivingLicenseNumber: icabbiDriver.licence === "NOT KNOWN" ? '' : icabbiDriver.licence,
+  drivingLicenseExpiry: icabbiDriver.licence_expiry,
+  badgeNumber: icabbiDriver.psv,
+  badgeExpiry: icabbiDriver.psv_expiry,
+  // Normalize badge type to our union type
+  badgeType: (icabbiDriver.badge_type === 'Hackney Carriage' ? 'Hackney Carriage' : 'Private Hire'),
     badgeIssuingCouncil: '', // Not provided by iCabbi
 
     // School Badge (optional)

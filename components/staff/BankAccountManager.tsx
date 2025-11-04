@@ -138,18 +138,18 @@ const BankAccountManager: React.FC<BankAccountManagerProps> = ({
             ) : (
                 <div className="grid gap-3">
                     {bankAccounts.map((account) => (
-                        <Card key={account.id} className={account.isDefault ? 'border-green-600 border-2' : ''}>
+                        <Card key={account.id} className={`w-full ${account.isDefault ? 'border-green-600 border-2' : ''}`}>
                             <CardContent className="pt-4">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <h4 className="font-semibold">{account.accountHolderName}</h4>
+                                <div className="flex items-start justify-between min-w-0">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-2 min-w-0">
+                                            <h4 className="font-semibold truncate max-w-full">{account.accountHolderName}</h4>
                                             {account.isDefault && (
-                                                <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium">
+                                                <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded font-medium flex-shrink-0">
                                                     Default
                                                 </span>
                                             )}
-                                            <span className={`px-2 py-1 text-xs rounded font-medium ${
+                                            <span className={`px-2 py-1 text-xs rounded font-medium flex-shrink-0 ${
                                                 account.verified
                                                     ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                                                     : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300'
@@ -157,25 +157,25 @@ const BankAccountManager: React.FC<BankAccountManagerProps> = ({
                                                 {account.verified ? '✓ Verified' : 'Pending Verification'}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-muted-foreground mb-1">{account.bankName}</p>
-                                        <div className="flex gap-4 text-sm">
-                                            <div>
+                                        <p className="text-sm text-muted-foreground mb-1 truncate">{account.bankName}</p>
+                                        <div className="flex gap-4 text-sm flex-wrap">
+                                            <div className="min-w-0">
                                                 <p className="text-xs text-muted-foreground">Account Number</p>
-                                                <p className="font-mono">{maskAccountNumber(account.accountNumber)}</p>
+                                                <p className="font-mono truncate">{maskAccountNumber(account.accountNumber)}</p>
                                             </div>
-                                            <div>
+                                            <div className="min-w-0">
                                                 <p className="text-xs text-muted-foreground">Sort Code</p>
-                                                <p className="font-mono">{maskSortCode(account.sortCode)}</p>
+                                                <p className="font-mono truncate">{maskSortCode(account.sortCode)}</p>
                                             </div>
                                         </div>
                                         {account.iban && (
                                             <div className="mt-2 text-sm">
                                                 <p className="text-xs text-muted-foreground">IBAN</p>
-                                                <p className="font-mono text-xs">{account.iban.slice(0, 4)}...{account.iban.slice(-4)}</p>
+                                                <p className="font-mono text-xs truncate">{account.iban.slice(0, 4)}...{account.iban.slice(-4)}</p>
                                             </div>
                                         )}
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 flex-shrink-0 flex-col sm:flex-row">
                                         {!account.isDefault && (
                                             <Button
                                                 variant="outline"
