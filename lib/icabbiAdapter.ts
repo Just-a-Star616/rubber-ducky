@@ -14,24 +14,63 @@ import {
 } from '../types';
 
 // ==================== ICABBI DATA TYPES ====================
+// Based on real iCabbi API responses - see docs/REAL_ICABBI_FIELD_MAPPING.md
 
 export interface IcabbiDriver {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  licenseNumber: string;
-  licenseExpiry: string;
-  badgeNumber: string;
-  badgeExpiry: string;
-  status: 'Active' | 'Inactive' | 'Suspended';
-  rating?: number;
-  totalJobs?: number;
-  accountBalance?: number;
-  vehicleId?: string;
-  attributes?: string[];
-  customFields?: Record<string, any>;
+  // Immutable System Fields
+  id: number;                          // System ID (1, 2, 3...)
+  ix: string;                          // UUID (e.g., "11EA062AC2A96677B30A0A5A23E1E9BE")
+  ref: string;                         // Call sign (e.g., "AV999") - immutable, what users see
+
+  // Status Fields (STRING, not boolean!)
+  active: "0" | "1";                   // "1" = Active, "0" = Inactive
+  deleted: "0" | "1";                  // "1" = Deleted, "0" = Not deleted
+
+  // Personal Information
+  name: string;                        // Full name (computed from first+last)
+  first_name: string;
+  last_name: string;
+  a_k_a: string;                       // Alias/nickname
+
+  // Contact Information
+  mobile: string;                      // E.164 format (e.g., "00441143503195")
+  phone: string;                       // Primary phone
+  phone_1: string;                     // Secondary phone
+  email: string;                       // May be empty string
+  address: string;                     // Full address as single string
+
+  // Badge/License Information
+  psv: string;                         // Badge/PSV number
+  psv_expiry: string;                  // ISO 8601 datetime
+  badge_type: string;                  // "PRIVATE HIRE", "HACKNEY", etc.
+  licence: string;                     // Driving license number (may be "NOT KNOWN")
+  licence_expiry: string;              // ISO 8601 datetime
+  school_badge_expiry: string | null;  // ISO 8601 datetime or null
+
+  // Financial
+  invoice_commission: number;          // Commission rate (e.g., 1.54)
+  frequency: string;                   // "WEEKLY", "MONTHLY", etc.
+  last_payment_date: string | null;    // ISO 8601 datetime or null
+
+  // Additional Information
+  photo: string;                       // S3 URL or default image
+  ni_number: string;                   // May be "N/A"
+  start_date: string;                  // Unix timestamp as string
+
+  // Location (may be null if offline)
+  lat: number | null;
+  lng: number | null;
+  lat_lng_last_updated: string | null; // ISO 8601 datetime or null
+
+  // Vehicle (nested object)
+  vehicle: IcabbiVehicle | null;
+
+  // System Fields (not typically used)
+  imei: string;                        // Device IMEI
+  si_id: string;                       // System integration ID
+  is_transporter: boolean;             // iCabbi-specific flag
+  password?: string;                   // DO NOT sync - security risk
+  exclusions?: Record<string, any>;    // iCabbi workflow settings
 }
 
 export interface IcabbiBooking {
@@ -52,13 +91,48 @@ export interface IcabbiBooking {
 }
 
 export interface IcabbiVehicle {
-  id: string;
-  registration: string;
-  make: string;
-  model: string;
-  year: number;
-  seats: number;
-  status: 'Active' | 'Inactive';
+  // Immutable System Fields
+  id: string;                          // Vehicle ID as string
+  ix: string;                          // UUID
+  ref: string;                         // Vehicle call sign (e.g., "9999")
+
+  // Status
+  active: boolean;                     // BOOLEAN for vehicles (unlike drivers!)
+  a_k_a: string;                       // Vehicle alias/nickname
+
+  // Basic Information
+  year: number;                        // Manufacturing year
+  reg: string;                         // UK registration (e.g., "GSW 7")
+  make: string;                        // e.g., "Mercedes", "VOLKSWAGEN"
+  model: string;                       // e.g., "S-Class AMG", "TOURAN"
+  colour: string;                      // e.g., "BLACK", "SILVER"
+
+  // License & Compliance
+  plate: string;                       // Plate number
+  plate_expiry: string;                // ISO 8601 datetime
+  hire_expiry: string;                 // Private hire license expiry
+  council_compliance_expiry: string;   // Council compliance certificate
+
+  // Insurance
+  insurer: string;                     // Insurance company name
+  insurance: string;                   // Policy/certificate number
+  insurance_expiry: string;            // ISO 8601 datetime
+
+  // MOT & Tax
+  nct: string;                         // MOT certificate number
+  nct_expiry: string;                  // MOT expiry
+  road_tax_expiry: string;             // Road tax expiry
+
+  // Additional Information
+  vehicle_phone: string;               // Phone number in vehicle
+  co2_emission: string;                // CO2 emission value
+
+  // Site Assignment
+  sites: number[];                     // Array of site IDs
+  primary_site_id: number;             // Primary site assignment
+
+  // Owner (usually empty/null)
+  vehicle_owner: Record<string, any> | null;
 }
 
 export interface IcabbiCustomer {
@@ -135,77 +209,196 @@ export interface BookingFilter {
 
 /**
  * Transform iCabbi Driver to App Driver
+ * Maps real iCabbi API structure to our application model
+ * See docs/REAL_ICABBI_FIELD_MAPPING.md for complete field mapping
  */
 export function transformIcabbiDriver(icabbiDriver: IcabbiDriver): Driver {
+  // Convert iCabbi string status to our enum
+  const status: 'Active' | 'Inactive' | 'Archived' =
+    icabbiDriver.deleted === "1" ? 'Archived' :
+    icabbiDriver.active === "1" ? 'Active' : 'Inactive';
+
+  // Calculate document expiries
+  const calculateDaysUntilExpiry = (expiryDate: string | null): number => {
+    if (!expiryDate) return -1;
+    try {
+      return Math.floor((new Date(expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    } catch {
+      return -1;
+    }
+  };
+
+  const documentExpiries = [
+    {
+      document: 'Driving License',
+      expiryDate: icabbiDriver.licence_expiry,
+      daysUntilExpiry: calculateDaysUntilExpiry(icabbiDriver.licence_expiry),
+    },
+    {
+      document: 'Badge',
+      expiryDate: icabbiDriver.psv_expiry,
+      daysUntilExpiry: calculateDaysUntilExpiry(icabbiDriver.psv_expiry),
+    },
+  ];
+
+  // Add school badge if present
+  if (icabbiDriver.school_badge_expiry) {
+    documentExpiries.push({
+      document: 'School Badge',
+      expiryDate: icabbiDriver.school_badge_expiry,
+      daysUntilExpiry: calculateDaysUntilExpiry(icabbiDriver.school_badge_expiry),
+    });
+  }
+
   return {
-    id: icabbiDriver.id,
-    firstName: icabbiDriver.firstName,
-    lastName: icabbiDriver.lastName,
-    email: icabbiDriver.email,
-    mobileNumber: icabbiDriver.phone,
+    // IMPORTANT: Use driver ref (call sign) as display ID, not integer id
+    id: icabbiDriver.ref,                    // "AV999" - what users see
+
+    // Personal Information
+    firstName: icabbiDriver.first_name,
+    lastName: icabbiDriver.last_name,
+    email: icabbiDriver.email || '',
+
+    // Contact Information
+    mobileNumber: icabbiDriver.mobile,
     devicePhone: icabbiDriver.phone,
-    drivingLicenseNumber: icabbiDriver.licenseNumber,
-    drivingLicenseExpiry: icabbiDriver.licenseExpiry,
-    badgeNumber: icabbiDriver.badgeNumber,
-    badgeExpiry: icabbiDriver.badgeExpiry,
-    badgeIssuingCouncil: '', // Map from customFields if available
-    badgeType: 'Private Hire',
-    status: icabbiDriver.status === 'Active' ? 'Active' : 'Inactive',
-    vehicleRef: icabbiDriver.vehicleId || '',
-    avatarUrl: '',
-    address: '',
-    niNumber: '',
-    schemeCode: '',
-    gender: 'Other',
-    dateOfBirth: '',
-    emergencyContactName: '',
-    emergencyContactNumber: '',
-    lastStatementBalance: icabbiDriver.accountBalance || 0,
-    currentBalance: icabbiDriver.accountBalance || 0,
-    commissionTotal: 0,
-    canWithdrawCredit: false,
-    earnedCreditSinceInvoice: 0,
-    attributes: icabbiDriver.attributes || [],
-    siteId: '',
-    schoolBadgeNumber: null,
-    schoolBadgeExpiry: null,
+    address: icabbiDriver.address,
+
+    // License & Badge
+    drivingLicenseNumber: icabbiDriver.licence === "NOT KNOWN" ? '' : icabbiDriver.licence,
+    drivingLicenseExpiry: icabbiDriver.licence_expiry,
+    badgeNumber: icabbiDriver.psv,
+    badgeExpiry: icabbiDriver.psv_expiry,
+    badgeType: icabbiDriver.badge_type || 'Private Hire',
+    badgeIssuingCouncil: '', // Not provided by iCabbi
+
+    // School Badge (optional)
+    schoolBadgeNumber: icabbiDriver.psv, // Usually same as main badge
+    schoolBadgeExpiry: icabbiDriver.school_badge_expiry,
+
+    // National Insurance
+    niNumber: icabbiDriver.ni_number === "N/A" ? '' : icabbiDriver.ni_number,
+
+    // Status
+    status,
+
+    // Vehicle - Extract from nested object
+    vehicleRef: icabbiDriver.vehicle?.ref || icabbiDriver.vehicle?.reg || '',
+
+    // Profile
+    avatarUrl: icabbiDriver.photo || '',
+
+    // Fields not in iCabbi - must be stored in local extensions
+    schemeCode: '',                          // Our commission system
+    gender: 'Other',                         // Not in iCabbi
+    dateOfBirth: '',                         // Not in iCabbi
+    emergencyContactName: '',                // Not in iCabbi
+    emergencyContactNumber: '',              // Not in iCabbi
+    lastStatementBalance: 0,                 // Calculated by us
+    currentBalance: 0,                       // Calculated by us
+    commissionTotal: 0,                      // Calculated by us
+    canWithdrawCredit: false,                // Our business rule
+    earnedCreditSinceInvoice: 0,             // Calculated by us
+    attributes: [],                          // Our tagging system
+    siteId: '',                              // Could map from vehicle.primary_site_id
+
+    // Availability - computed from location data
     availability: {
-      isOnline: icabbiDriver.status === 'Active',
+      isOnline: icabbiDriver.active === "1" && icabbiDriver.lat !== null && icabbiDriver.lng !== null,
       shift: 'On-Demand',
-      lastSeen: new Date().toISOString(),
+      lastSeen: icabbiDriver.lat_lng_last_updated || new Date().toISOString(),
     },
+
+    // Performance - not provided by iCabbi, must be calculated
     performance: {
-      completionRate: 0.95,
-      averageRating: icabbiDriver.rating || 4.5,
-      totalJobs: icabbiDriver.totalJobs || 0,
-      monthlyEarnings: 0,
+      completionRate: 0.95,                  // Calculate from booking history
+      averageRating: 4.5,                    // Calculate from booking ratings
+      totalJobs: 0,                          // Calculate from booking count
+      monthlyEarnings: 0,                    // Calculate from financial data
     },
+
+    // Preferences - stored in local extensions
     preferences: {
       maxJobDistance: 50,
       preferredAreas: [],
       acceptsLongDistance: true,
       acceptsAirportJobs: true,
     },
+
+    // Compliance Status - computed from document expiries
     complianceStatus: {
-      dueForTraining: false,
-      documentExpiries: [
-        {
-          document: 'Driving License',
-          expiryDate: icabbiDriver.licenseExpiry,
-          daysUntilExpiry: Math.floor(
-            (new Date(icabbiDriver.licenseExpiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-          ),
-        },
-        {
-          document: 'Badge',
-          expiryDate: icabbiDriver.badgeExpiry,
-          daysUntilExpiry: Math.floor(
-            (new Date(icabbiDriver.badgeExpiry).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-          ),
-        },
-      ],
+      dueForTraining: false,                 // Our business rule
+      documentExpiries,
     },
+
+    // Bank Accounts - our payment system
     bankAccounts: [],
+  };
+}
+
+/**
+ * Transform App Driver back to iCabbi format (for updates)
+ * Note: Only updates editable fields - immutable fields (id, ix, ref) are excluded
+ */
+export function transformDriverToIcabbi(driver: Driver): Partial<IcabbiDriver> {
+  return {
+    // Personal Information (editable)
+    first_name: driver.firstName,
+    last_name: driver.lastName,
+    email: driver.email,
+
+    // Contact Information (editable)
+    mobile: driver.mobileNumber,
+    phone: driver.devicePhone,
+    address: driver.address,
+
+    // License & Badge (editable)
+    licence: driver.drivingLicenseNumber || "NOT KNOWN",
+    licence_expiry: driver.drivingLicenseExpiry,
+    psv: driver.badgeNumber,
+    psv_expiry: driver.badgeExpiry,
+    badge_type: driver.badgeType,
+    school_badge_expiry: driver.schoolBadgeExpiry,
+
+    // National Insurance (editable)
+    ni_number: driver.niNumber || "N/A",
+
+    // Status (editable)
+    active: driver.status === 'Active' ? "1" : "0",
+    deleted: driver.status === 'Archived' ? "1" : "0",
+
+    // Photo (editable)
+    photo: driver.avatarUrl,
+
+    // NOTE: Do not include immutable fields (id, ix, ref)
+    // NOTE: Do not include local-only fields (schemeCode, gender, dateOfBirth, etc.)
+  };
+}
+
+/**
+ * Transform iCabbi Vehicle to App Vehicle
+ */
+export function transformIcabbiVehicle(icabbiVehicle: IcabbiVehicle): Vehicle {
+  return {
+    id: icabbiVehicle.ref || icabbiVehicle.id,   // Use ref as ID for consistency
+    registration: icabbiVehicle.reg,
+    make: icabbiVehicle.make,
+    model: icabbiVehicle.model,
+    color: icabbiVehicle.colour,
+    firstRegistrationDate: icabbiVehicle.year ? `${icabbiVehicle.year}-01-01` : '',
+    plateType: 'Private Hire',
+    plateIssuingCouncil: '',                      // Not in iCabbi
+    plateNumber: icabbiVehicle.plate,
+    plateExpiry: icabbiVehicle.plate_expiry,
+    insuranceCertificateNumber: icabbiVehicle.insurance,
+    insuranceExpiry: icabbiVehicle.insurance_expiry,
+    motComplianceExpiry: icabbiVehicle.nct_expiry,
+    roadTaxExpiry: icabbiVehicle.road_tax_expiry,
+    status: icabbiVehicle.active ? 'Active' : 'Inactive',
+    attributes: [],
+    ownershipType: 'Company',                     // Default, not in iCabbi
+    linkedDriverIds: [],                          // Must be computed from driver data
+    siteId: icabbiVehicle.primary_site_id?.toString() || '',
   };
 }
 
@@ -276,6 +469,10 @@ export class RealIcabbiConnector implements IcabbiConnector {
     }
   }
 
+  /**
+   * Get driver by ID or ref
+   * @param id - Can be either numeric ID or driver ref (call sign like "AV999")
+   */
   async getDriver(id: string): Promise<Driver> {
     const response = await this.fetch<IcabbiApiResponse<IcabbiDriver>>(
       'GET',
@@ -300,11 +497,20 @@ export class RealIcabbiConnector implements IcabbiConnector {
     return response.data.map(transformIcabbiDriver);
   }
 
+  /**
+   * Update driver in iCabbi
+   * Note: Automatically converts app format to iCabbi format
+   * @param id - Driver ref (call sign like "AV999")
+   * @param data - Partial driver data in app format
+   */
   async updateDriver(id: string, data: Partial<Driver>): Promise<Driver> {
+    // Convert app format to iCabbi format for update
+    const icabbiData = transformDriverToIcabbi(data as Driver);
+
     const response = await this.fetch<IcabbiApiResponse<IcabbiDriver>>(
       'PUT',
       `drivers/${id}`,
-      data
+      icabbiData
     );
     if (!response.data) throw new Error('Failed to update driver');
     return transformIcabbiDriver(response.data);
@@ -363,27 +569,7 @@ export class RealIcabbiConnector implements IcabbiConnector {
       `vehicles/${id}`
     );
     if (!response.data) throw new Error('Vehicle not found');
-    return {
-      id: response.data.id,
-      registration: response.data.registration,
-      make: response.data.make,
-      model: response.data.model,
-      color: '',
-      firstRegistrationDate: new Date().toISOString(),
-      plateType: 'Private Hire',
-      plateIssuingCouncil: '',
-      plateNumber: '',
-      plateExpiry: new Date().toISOString(),
-      insuranceCertificateNumber: '',
-      insuranceExpiry: new Date().toISOString(),
-      motComplianceExpiry: new Date().toISOString(),
-      roadTaxExpiry: new Date().toISOString(),
-      status: response.data.status,
-      attributes: [],
-      ownershipType: 'Company',
-      linkedDriverIds: [],
-      siteId: '',
-    };
+    return transformIcabbiVehicle(response.data);
   }
 
   async listVehicles(): Promise<Vehicle[]> {
@@ -392,27 +578,7 @@ export class RealIcabbiConnector implements IcabbiConnector {
       'vehicles'
     );
     if (!response.data) return [];
-    return response.data.map((v) => ({
-      id: v.id,
-      registration: v.registration,
-      make: v.make,
-      model: v.model,
-      color: '',
-      firstRegistrationDate: new Date().toISOString(),
-      plateType: 'Private Hire',
-      plateIssuingCouncil: '',
-      plateNumber: '',
-      plateExpiry: new Date().toISOString(),
-      insuranceCertificateNumber: '',
-      insuranceExpiry: new Date().toISOString(),
-      motComplianceExpiry: new Date().toISOString(),
-      roadTaxExpiry: new Date().toISOString(),
-      status: v.status,
-      attributes: [],
-      ownershipType: 'Company',
-      linkedDriverIds: [],
-      siteId: '',
-    }));
+    return response.data.map(transformIcabbiVehicle);
   }
 
   async getCustomer(id: string): Promise<Customer> {
@@ -625,11 +791,14 @@ export class MockIcabbiConnector implements IcabbiConnector {
     return [];
   }
 
-  async getInvoices(): Promise<Invoice[]> {
+  async getInvoices(driverId: string): Promise<Invoice[]> {
+    // Mock returns invoices from in-memory bookings/invoices if available
+    // For now return empty list to satisfy interface during tests
     return [];
   }
 
-  async getTransactions(): Promise<FinancialTransaction[]> {
+  async getTransactions(driverId: string): Promise<FinancialTransaction[]> {
+    // Mock returns transactions for a driver; not implemented yet
     return [];
   }
 
