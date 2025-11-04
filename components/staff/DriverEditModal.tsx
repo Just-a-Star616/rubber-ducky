@@ -97,14 +97,16 @@ const DocumentSection: React.FC<{
 
 
 interface DriverFormProps {
-  formData: Partial<Driver>;
-  setFormData: React.Dispatch<React.SetStateAction<Partial<Driver>>>;
-  showVehicleDetails: boolean;
-  onViewDocument?: (url: string, name: string) => void;
-  onBankAccountVerificationRequired?: (account: BankAccount) => void;
+    formData: Partial<Driver>;
+    setFormData: React.Dispatch<React.SetStateAction<Partial<Driver>>>;
+    showVehicleDetails: boolean;
+    onViewDocument?: (url: string, name: string) => void;
+    onBankAccountVerificationRequired?: (account: BankAccount) => void;
+    // Only show bank accounts when true. Staff edit modal should keep this false so only drivers manage their own accounts.
+    showBankAccounts?: boolean;
 }
 
-export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, showVehicleDetails, onViewDocument, onBankAccountVerificationRequired }) => {
+export const DriverForm: React.FC<DriverFormProps & { isNew?: boolean }> = ({ formData, setFormData, showVehicleDetails, onViewDocument, onBankAccountVerificationRequired, showBankAccounts = false, isNew = false }) => {
     
     const [vehicleSearchTerm, setVehicleSearchTerm] = useState(formData.vehicleRef || '');
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -290,7 +292,16 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
             
             <fieldset className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <legend className="text-lg font-semibold text-foreground md:col-span-3 border-b pb-2 mb-2">Admin & Scheme</legend>
-                    <FormField id="id" name="id" label="Driver Ref" value={formData.id || ''} onChange={handleInputChange} />
+                    <FormField
+                        id="id"
+                        name="id"
+                        label="Driver Ref (System ID - Read Only)"
+                        value={formData.id || ''}
+                        onChange={handleInputChange}
+                        disabled={!isNew}
+                        className={!isNew ? 'opacity-60 cursor-not-allowed' : ''}
+                        title={!isNew ? 'Driver ID cannot be changed after creation' : ''}
+                    />
                     <FormField id="niNumber" name="niNumber" label="NI Number" value={formData.niNumber || ''} onChange={handleInputChange} />
                     <FormField id="schemeCode" name="schemeCode" label="Scheme Code" type="number" step="0.01" value={formData.schemeCode || ''} onChange={handleInputChange} />
                     <SelectField id="status" label="Status" value={formData.status || ''} onValueChange={(v) => setFormData(p => ({...p, status: v as any}))}>
@@ -316,20 +327,22 @@ export const DriverForm: React.FC<DriverFormProps> = ({ formData, setFormData, s
                 </div>
             </fieldset>
 
-            <fieldset>
-                <legend className="text-lg font-semibold text-foreground md:col-span-2 border-b pb-2 mb-4">Bank Accounts for Withdrawals</legend>
-                <div className="bg-background p-4 rounded-lg">
-                    <BankAccountManager
-                        bankAccounts={formData.bankAccounts || []}
-                        onAdd={handleBankAccountAdd}
-                        onEdit={handleBankAccountEdit}
-                        onDelete={handleBankAccountDelete}
-                        onSetDefault={handleBankAccountSetDefault}
-                        onVerificationRequired={onBankAccountVerificationRequired}
-                        isAdmin={true}
-                    />
-                </div>
-            </fieldset>
+            {showBankAccounts && (
+                <fieldset>
+                    <legend className="text-lg font-semibold text-foreground md:col-span-2 border-b pb-2 mb-4">Bank Accounts for Withdrawals</legend>
+                    <div className="bg-background p-4 rounded-lg">
+                        <BankAccountManager
+                            bankAccounts={formData.bankAccounts || []}
+                            onAdd={handleBankAccountAdd}
+                            onEdit={handleBankAccountEdit}
+                            onDelete={handleBankAccountDelete}
+                            onSetDefault={handleBankAccountSetDefault}
+                            onVerificationRequired={onBankAccountVerificationRequired}
+                            // isAdmin should be false here because this component is shown only when the driver is editing their own profile
+                        />
+                    </div>
+                </fieldset>
+            )}
 
             <fieldset>
                 <legend className="text-lg font-semibold text-foreground md:col-span-2 border-b pb-2 mb-4">Licensing & Documents</legend>
@@ -406,16 +419,23 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
     }
   }, [onClose]);
 
+  // Only reset formData when modal opens or driver ID changes
   useEffect(() => {
-    setFormData(driver);
-    setShowVehicleDetails(!!driver.pendingNewVehicle);
-    if(isOpen) {
-        document.addEventListener('keydown', handleKeyDown);
+    if (isOpen) {
+      setFormData(driver);
+      setShowVehicleDetails(!!driver.pendingNewVehicle);
+    }
+  }, [driver.id, isOpen]); // Only reset when driver ID or modal open state changes
+
+  // Separate effect for keyboard listener
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
     }
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [driver, isOpen, handleKeyDown]);
+  }, [isOpen, handleKeyDown]);
 
   if (!isOpen) return null;
 
@@ -503,6 +523,7 @@ const DriverEditModal: React.FC<DriverEditModalProps> = ({ driver, isNew, isOpen
                     showVehicleDetails={showVehicleDetails}
                     onViewDocument={handleViewDocument}
                     onBankAccountVerificationRequired={handleBankAccountVerificationRequired}
+                    isNew={isNew}
                 />
                 <div className="mt-8 pt-6 border-t">
                     <Button type="button" variant="outline" onClick={handleToggleVehicleDetails}>

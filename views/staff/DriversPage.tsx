@@ -1,13 +1,15 @@
 
 
 import React, { useState, useMemo } from 'react';
-import { mockDrivers, mockCommissionSchemes, mockSiteDetails } from '../../lib/mockData';
+import { mockCommissionSchemes, mockSiteDetails } from '../../lib/mockData';
 import { Driver, SortConfig, FilterDefinition, ActiveFilter } from '../../types';
 import DriverEditModal from '../../components/staff/DriverEditModal';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import FilterBar from '../../components/staff/FilterBar';
 import { ChevronUpDownIcon } from '../../components/icons/Icon';
+import { useMockDrivers, useAddDriver } from '../../lib/useDatabase';
+import { db, COLLECTIONS } from '../../lib/db';
 
 const statusStyles: { [key in Driver['status']]: string } = {
   Active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -50,7 +52,8 @@ const getNextExpiry = (driver: Driver): { name: string, date: string } => {
 };
 
 const DriversPage: React.FC = () => {
-  const [drivers, setDrivers] = useState<Driver[]>(mockDrivers);
+  const { data: drivers, loading, refetch } = useMockDrivers();
+  const { mutate: saveDriver } = useAddDriver(refetch);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
   const [isNewDriver, setIsNewDriver] = useState(false);
@@ -83,8 +86,9 @@ const DriversPage: React.FC = () => {
         badgeExpiry: '',
         drivingLicenseNumber: '',
         drivingLicenseExpiry: '',
-        schoolBadgeNumber: null,
-        schoolBadgeExpiry: null,
+    schoolBadgeNumber: null,
+    schoolBadgeExpiry: null,
+    bankAccounts: [],
         dateOfBirth: '',
         emergencyContactName: '',
         emergencyContactNumber: '',
@@ -113,29 +117,49 @@ const DriversPage: React.FC = () => {
     setIsNewDriver(false);
   };
 
-  const handleSaveDriver = (updatedDriver: Driver) => {
-    if (isNewDriver) {
-        setDrivers(prev => [{...updatedDriver, id: `D${Math.floor(100 + Math.random() * 900)}`}, ...prev]);
-    } else {
-        setDrivers(prev => prev.map(d => (d.id === selectedDriver?.id ? updatedDriver : d)));
+  const handleSaveDriver = async (updatedDriver: Driver) => {
+    try {
+      if (isNewDriver) {
+        // Assign a proper ID for new drivers
+        const driverWithId = { ...updatedDriver, id: `D${Date.now()}` };
+        await saveDriver(driverWithId);
+      } else {
+        // Update existing driver
+        await saveDriver(updatedDriver);
+      }
+      handleCloseModal();
+    } catch (error) {
+      console.error('Failed to save driver:', error);
+      alert('Failed to save driver. Please try again.');
     }
-    handleCloseModal();
   };
-  
-  const handleToggleArchiveDriver = (driverId: string) => {
+
+  const handleToggleArchiveDriver = async (driverId: string) => {
     const driver = drivers.find(d => d.id === driverId);
     if (!driver) return;
 
     if (driver.status === 'Archived') {
-        if (window.confirm('Are you sure you want to restore this driver? Their status will be set to Inactive.')) {
-            setDrivers(prev => prev.map(d => d.id === driverId ? { ...d, status: 'Inactive' } : d));
-            handleCloseModal();
+      if (window.confirm('Are you sure you want to restore this driver? Their status will be set to Inactive.')) {
+        try {
+          await db.update(COLLECTIONS.MOCK_DRIVERS, { ...driver, status: 'Inactive' });
+          await refetch();
+          handleCloseModal();
+        } catch (error) {
+          console.error('Failed to restore driver:', error);
+          alert('Failed to restore driver. Please try again.');
         }
+      }
     } else {
-        if (window.confirm('Are you sure you want to archive this driver?')) {
-            setDrivers(prev => prev.map(d => d.id === driverId ? { ...d, status: 'Archived' } : d));
-            handleCloseModal();
+      if (window.confirm('Are you sure you want to archive this driver?')) {
+        try {
+          await db.update(COLLECTIONS.MOCK_DRIVERS, { ...driver, status: 'Archived' });
+          await refetch();
+          handleCloseModal();
+        } catch (error) {
+          console.error('Failed to archive driver:', error);
+          alert('Failed to archive driver. Please try again.');
         }
+      }
     }
   };
   
@@ -147,6 +171,7 @@ const DriversPage: React.FC = () => {
   };
 
   const filteredAndSortedDrivers = useMemo(() => {
+    if (!drivers || drivers.length === 0) return [];
     let filtered = [...drivers];
 
     // Search
@@ -191,6 +216,17 @@ const DriversPage: React.FC = () => {
         </div>
     </th>
   );
+
+  if (loading) {
+    return (
+      <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading drivers...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6">
