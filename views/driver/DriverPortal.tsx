@@ -151,7 +151,7 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
   return (
     <div className="flex flex-col min-h-screen">
       <header className="bg-card shadow-md sticky top-0 z-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 min-w-0">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center gap-4">
               <img className="h-10 w-10 rounded-full" src={driver.avatarUrl} alt={`${driver.firstName} ${driver.lastName}`} />
@@ -173,7 +173,7 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
       </header>
 
       <main className="flex-1 pb-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 min-w-0">
             {renderContent()}
         </div>
       </main>
