@@ -35,6 +35,58 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
     setDriver(loggedInDriver);
   }, [loggedInDriver]);
 
+  // Dev-only helper: on small screens, detect any full-screen fixed overlays
+  // that might be covering the UI (useful to debug the "black" profile on mobile).
+  useEffect(() => {
+    try {
+      if (typeof window === 'undefined') return;
+      const isSmall = window.innerWidth <= 640; // mobile breakpoint
+      if (!isSmall) return;
+
+      const styleId = 'debug-overlay-outline-style';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.innerHTML = `.debug-overlay-outline { outline: 3px solid rgba(255,0,0,0.85) !important; }`;
+        document.head.appendChild(style);
+      }
+
+      const checkOverlays = () => {
+        const els = Array.from(document.querySelectorAll('*')) as HTMLElement[];
+        const fixedEls = els.filter(el => {
+          try {
+            const cs = window.getComputedStyle(el);
+            return (cs.position === 'fixed' || cs.position === 'sticky') && (parseFloat(cs.zIndex || '0') >= 20);
+          } catch (e) {
+            return false;
+          }
+        });
+
+        console.groupCollapsed('[debug] fixed/sticky elements (mobile)');
+        fixedEls.forEach(el => {
+          const cs = window.getComputedStyle(el);
+          console.log('fixed element:', el.tagName, el.className, { top: cs.top, left: cs.left, right: cs.right, bottom: cs.bottom, zIndex: cs.zIndex, bg: cs.backgroundColor, display: cs.display });
+          // mark element with visible outline so developer can see it on the page
+          el.classList.add('debug-overlay-outline');
+        });
+        console.groupEnd();
+      };
+
+      // run once and also on resize
+      checkOverlays();
+      window.addEventListener('resize', checkOverlays);
+      return () => {
+        window.removeEventListener('resize', checkOverlays);
+        try {
+          const els = Array.from(document.querySelectorAll('.debug-overlay-outline')) as HTMLElement[];
+          els.forEach(el => el.classList.remove('debug-overlay-outline'));
+        } catch (e) {}
+      };
+    } catch (e) {
+      // swallow errors in production
+    }
+  }, []);
+
   const navItems = [
     { name: 'Dashboard', page: 'dashboard', icon: HomeIcon },
     { name: 'Rewards', page: 'rewards', icon: GiftIcon },
