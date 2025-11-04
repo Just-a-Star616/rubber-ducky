@@ -193,7 +193,7 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
                 </div>
             </div>
 
-            <div className="mt-6 h-72 -ml-4">
+            <div className="mt-6 h-72 -ml-4 min-h-0 min-w-0">
                 <ResponsiveContainer width="100%" height="100%">
                      {viewType === 'daily' ? (
                         <AreaChart data={chartData}>
