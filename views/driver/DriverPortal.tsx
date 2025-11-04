@@ -53,10 +53,11 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
 
       const checkOverlays = () => {
         const els = Array.from(document.querySelectorAll('*')) as HTMLElement[];
+        // Broaden the detection: include any fixed/sticky elements (regardless of z-index)
         const fixedEls = els.filter(el => {
           try {
             const cs = window.getComputedStyle(el);
-            return (cs.position === 'fixed' || cs.position === 'sticky') && (parseFloat(cs.zIndex || '0') >= 20);
+            return cs && (cs.position === 'fixed' || cs.position === 'sticky');
           } catch (e) {
             return false;
           }
@@ -64,11 +65,30 @@ const DriverPortal: React.FC<DriverPortalProps> = ({ driver: loggedInDriver, isD
 
         console.groupCollapsed('[debug] fixed/sticky elements (mobile)');
         fixedEls.forEach(el => {
-          const cs = window.getComputedStyle(el);
-          console.log('fixed element:', el.tagName, el.className, { top: cs.top, left: cs.left, right: cs.right, bottom: cs.bottom, zIndex: cs.zIndex, bg: cs.backgroundColor, display: cs.display });
-          // mark element with visible outline so developer can see it on the page
-          el.classList.add('debug-overlay-outline');
+          try {
+            const cs = window.getComputedStyle(el);
+            console.log('fixed element:', el.tagName, el.className, { top: cs.top, left: cs.left, right: cs.right, bottom: cs.bottom, zIndex: cs.zIndex, bg: cs.backgroundColor, display: cs.display, opacity: cs.opacity });
+            // mark element with visible outline so developer can see it on the page
+            el.classList.add('debug-overlay-outline');
+          } catch (e) {}
         });
+
+        // Also log which element is at the center of the viewport — useful to see what's covering the main content
+        try {
+          const cx = Math.floor(window.innerWidth / 2);
+          const cy = Math.floor(window.innerHeight / 2);
+          const centerEl = document.elementFromPoint(cx, cy) as HTMLElement | null;
+          if (centerEl) {
+            const cs = window.getComputedStyle(centerEl);
+            console.log('[debug] elementAtCenter:', centerEl.tagName, centerEl.className, { zIndex: cs.zIndex, bg: cs.backgroundColor, display: cs.display, opacity: cs.opacity });
+            centerEl.classList.add('debug-overlay-outline');
+          } else {
+            console.log('[debug] elementAtCenter: <none>');
+          }
+        } catch (e) {
+          // ignore
+        }
+
         console.groupEnd();
       };
 
