@@ -194,7 +194,8 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
             </div>
 
             <div className="mt-6 h-72 -ml-4 min-h-0 min-w-0">
-                <ResponsiveContainer width="100%" height="100%">
+                {/* Parent has h-72 (18rem = 288px). Use an explicit pixel height so Recharts can measure reliably. */}
+                <ResponsiveContainer width="100%" height={288}>
                      {viewType === 'daily' ? (
                         <AreaChart data={chartData}>
                             <defs>
