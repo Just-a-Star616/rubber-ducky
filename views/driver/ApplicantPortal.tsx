@@ -23,7 +23,8 @@ const timelineDescriptions: Record<ApplicationStatus, string> = {
     Rejected: "Unfortunately, we are not moving forward with your application at this time."
 };
 
-const TimelineStep = ({ title, description, isCompleted, isCurrent }: { title: string, description: string, isCompleted: boolean, isCurrent: boolean }) => {
+type TimelineStepProps = { title: string; description: string; isCompleted: boolean; isCurrent: boolean };
+const TimelineStep: React.FC<TimelineStepProps> = ({ title, description, isCompleted, isCurrent }) => {
     return (
         <li className="relative flex items-start pb-8">
             <div className="absolute top-1 left-3 -ml-px mt-0.5 h-full w-0.5 bg-border" />
@@ -118,6 +119,67 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
         setApplication(updatedApplication);
         setIsEditing(false);
         alert("Your changes have been submitted for approval.");
+    };
+
+    // Client-side submission to the serverless /api/google endpoint.
+    const handleSubmitToPortal = async () => {
+        try {
+            // Build applicant payload from current application state
+            const applicant = {
+                firstName: application.firstName,
+                lastName: application.lastName,
+                email: application.email,
+                phone: application.mobileNumber,
+                area: application.area,
+                isLicensed: application.isLicensed,
+            };
+
+            // Convert selected files to base64
+            const attachments: Array<{ name: string; mimeType?: string; dataBase64: string }> = [];
+            const fileKeys = Object.keys(files) as string[];
+            for (const k of fileKeys) {
+                const f = files[k];
+                if (!f) continue;
+                const dataBase64 = await new Promise<string>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const result = reader.result as string;
+                        const comma = result.indexOf(',');
+                        resolve(comma >= 0 ? result.slice(comma + 1) : result);
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    reader.readAsDataURL(f);
+                });
+                attachments.push({ name: f.name, mimeType: f.type || 'application/octet-stream', dataBase64 });
+            }
+
+            const apiKey = (import.meta as any).env?.VITE_PUBLIC_API_KEY || '';
+
+            const resp = await fetch('/api/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(apiKey ? { 'x-api-key': apiKey } : {})
+                },
+                body: JSON.stringify({ applicant, attachments })
+            });
+
+            if (!resp.ok) {
+                const txt = await resp.text();
+                throw new Error(`Server error: ${resp.status} ${txt}`);
+            }
+
+            const json = await resp.json();
+            alert('Application submitted successfully.');
+            // Optionally update UI or pending state
+            if (json && json.success) {
+                // mark submitted status locally
+                setApplication(prev => ({ ...prev, status: 'Submitted' } as any));
+            }
+        } catch (err: any) {
+            console.error('Submit failed', err);
+            alert('Failed to submit application: ' + (err?.message || String(err)));
+        }
     };
 
     const statuses: ApplicationStatus[] = ['Submitted', 'Under Review', 'Contacted', 'Meeting Scheduled', 'Approved'];
