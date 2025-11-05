@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import stream from 'stream';
 
 // Vercel serverless handler to accept driver application submissions,
 // upload attachments to Google Drive and append a row to Google Sheets.
@@ -34,8 +35,21 @@ export default async function handler(req: any, res: any) {
   try {
     const body = req.body;
     // Expecting JSON body: { applicant: { firstName, lastName, email, phone, area, isLicensed }, attachments: [{ name, mimeType, dataBase64 }] }
+    if (!body || typeof body !== 'object') return res.status(400).json({ error: 'Invalid request body' });
     const applicant = body.applicant || {};
-    const attachments: Array<{ name: string; mimeType?: string; dataBase64: string }> = body.attachments || [];
+    const attachments: Array<{ name: string; mimeType?: string; dataBase64: string }> = Array.isArray(body.attachments) ? body.attachments : [];
+
+    // Basic applicant validation
+    if (!applicant.firstName || !applicant.lastName || !applicant.email) {
+      return res.status(400).json({ error: 'Applicant must include firstName, lastName and email' });
+    }
+
+    // Attachment limits
+    const MAX_ATTACHMENT_COUNT = 8;
+    const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024; // 10 MB per file
+    if (attachments.length > MAX_ATTACHMENT_COUNT) {
+      return res.status(400).json({ error: `Too many attachments (max ${MAX_ATTACHMENT_COUNT})` });
+    }
 
     const sa = getServiceAccount();
     const jwt = new google.auth.JWT({
@@ -53,8 +67,25 @@ export default async function handler(req: any, res: any) {
     // Upload attachments to Drive (if any)
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
     for (const f of attachments) {
-      if (!f.dataBase64) continue;
+      if (!f || !f.dataBase64) continue;
+
+      // Validate base64 size without decoding to guard memory usage
+      let sizeBytes = 0;
+      try {
+        sizeBytes = Buffer.byteLength(f.dataBase64, 'base64');
+      } catch (err) {
+        return res.status(400).json({ error: 'Invalid attachment base64 data' });
+      }
+      if (sizeBytes > MAX_ATTACHMENT_BYTES) {
+        return res.status(400).json({ error: `Attachment ${f.name} is too large (${Math.round(sizeBytes / 1024)} KB). Max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB` });
+      }
+
+      // Convert to buffer safely
       const buffer = Buffer.from(f.dataBase64, 'base64');
+      // Drive media body accepts stream; create a readable stream from buffer to be memory-friendly
+      const readable = new stream.PassThrough();
+      readable.end(buffer);
+
       const createRes = await drive.files.create({
         requestBody: {
           name: f.name,
@@ -62,12 +93,11 @@ export default async function handler(req: any, res: any) {
         },
         media: {
           mimeType: f.mimeType || 'application/octet-stream',
-          body: Buffer.from(buffer)
+          body: readable as any
         }
       });
       const fileId = createRes.data.id as string;
       // Make a webViewLink available (requires permission)
-      // We'll attempt to generate a permission so the service account can view (but Drive permissions are complex depending on org)
       let webViewLink: string | undefined;
       try {
         await drive.permissions.create({ fileId, requestBody: { role: 'reader', type: 'anyone' } });
