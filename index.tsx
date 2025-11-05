@@ -22,6 +22,20 @@ try {
 } catch (e) {
   // non-fatal
 }
+// Persist injected branding to localStorage so it survives reloads and is available
+// to code that reads localStorage first (and to make the config sticky).
+try {
+  const wb = (window as any).__BRANDING_CONFIG__;
+  if (wb && typeof window !== 'undefined') {
+    try {
+      window.localStorage.setItem('companyBranding', JSON.stringify(wb));
+    } catch (e) {
+      // ignore storage errors
+    }
+  }
+} catch (e) {
+  // ignore
+}
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

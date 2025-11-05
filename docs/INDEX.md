@@ -4,7 +4,7 @@
 
 Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispatch and staff management application with commission rules, scheduling, logging, and customer promotions.
 
-**Last Updated**: November 3, 2025  
+**Last Updated**: November 5, 2025
 **Status**: Production Ready
 
 ---
@@ -32,11 +32,15 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 2. [BRANDING_LOGO_IMPLEMENTATION.md](./BRANDING_LOGO_IMPLEMENTATION.md) - Company branding
 
 ### 👨‍💻 For Developers
-1. [QUICK_START.md](./QUICK_START.md) - Development setup (5 min)
-2. [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) - Architecture overview
+1. [CLAUDE.md](./CLAUDE.md) - **START HERE** - Project overview for AI assistants
+2. [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md) - Database implementation guide
 3. [BACKEND_SETUP.md](./BACKEND_SETUP.md) - Backend integration
-4. [ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md) - iCabbi TMS integration
-5. [PRODUCT_REQUIREMENTS.md](./PRODUCT_REQUIREMENTS.md) - Feature specifications
+4. [ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md) - iCabbi TMS integration overview
+5. [ICABBI_DATA_MODEL_ANALYSIS.md](./ICABBI_DATA_MODEL_ANALYSIS.md) - Data model analysis
+6. [REAL_ICABBI_FIELD_MAPPING.md](./REAL_ICABBI_FIELD_MAPPING.md) - Real API field mappings
+7. [ICABBI_ADAPTER_IMPLEMENTATION.md](./ICABBI_ADAPTER_IMPLEMENTATION.md) - Adapter implementation details
+8. [FIXES_APPLIED.md](./FIXES_APPLIED.md) - Bug fixes and solutions
+9. [PRODUCT_REQUIREMENTS.md](./PRODUCT_REQUIREMENTS.md) - Feature specifications
 
 ---
 
@@ -84,13 +88,20 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 ### 🔧 Deployment & Backend
 - **[BACKEND_SETUP.md](./BACKEND_SETUP.md)** - Backend server configuration
 - **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Production deployment guide
-- **[SIGN_OFF_DOCUMENT.md](./SIGN_OFF_DOCUMENT.md)** - Team sign-off for deployment (NEW)
-- **[ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md)** - iCabbi TMS integration (NEW)
+- **[VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)** - Vercel deployment guide
+
+### 🔌 iCabbi Integration (Complete)
+- **[ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md)** - Integration overview
+- **[ICABBI_DATA_MODEL_ANALYSIS.md](./ICABBI_DATA_MODEL_ANALYSIS.md)** - Initial data model analysis
+- **[REAL_ICABBI_FIELD_MAPPING.md](./REAL_ICABBI_FIELD_MAPPING.md)** - Real API field mappings from production data
+- **[ICABBI_ADAPTER_IMPLEMENTATION.md](./ICABBI_ADAPTER_IMPLEMENTATION.md)** - Complete adapter implementation guide
+- **[DRV-RECRUITMENT-README.md](./DRV-RECRUITMENT-README.md)** - Driver recruitment workflows
 
 ### ✅ Implementation Guides
+- **[CLAUDE.md](./CLAUDE.md)** - AI assistant guide (architecture, commands, patterns)
+- **[IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)** - IndexedDB implementation guide
+- **[FIXES_APPLIED.md](./FIXES_APPLIED.md)** - Session bug fixes and solutions
 - **[RELEASE_NOTES.md](./RELEASE_NOTES.md)** - Version 1.0 release notes and feature list
-- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
-- **[QA_TESTING_CHECKLIST.md](./QA_TESTING_CHECKLIST.md)** - Feature testing procedures
 
 ### 🛠️ Troubleshooting & Reference
 - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common issues and solutions
@@ -100,14 +111,29 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 
 ## 📈 Recent Updates
 
-### November 3, 2025 (Latest)
-- ✅ **iCabbi TMS Integration Framework** - Production-ready adapter layer
+### November 5, 2025 (Latest)
+- ✅ **Real iCabbi API Integration Complete** - Production data adapter
+  - Analyzed 4 real API response files (2.2MB production data)
+  - Updated all type definitions to match actual API structure
+  - Implemented bidirectional transformation functions
+  - Created hybrid model for iCabbi + local extensions
+  - Added comprehensive React hooks for extensions
+  - Full documentation: [ICABBI_ADAPTER_IMPLEMENTATION.md](./ICABBI_ADAPTER_IMPLEMENTATION.md)
+  - Field mappings: [REAL_ICABBI_FIELD_MAPPING.md](./REAL_ICABBI_FIELD_MAPPING.md)
+
+### November 4, 2025
+- ✅ **Bug Fixes** - Input clearing and data persistence issues resolved
+  - Fixed form inputs clearing while typing
+  - Implemented IndexedDB for persistent storage
+  - Fixed driver duplication on edit
+  - See: [FIXES_APPLIED.md](./FIXES_APPLIED.md)
+
+### November 3, 2025
+- ✅ **iCabbi TMS Integration Framework** - Initial adapter layer
   - `icabbiAdapter.ts`: RealIcabbiConnector + MockIcabbiConnector
   - `dataSourceContext.tsx`: React context + 5 custom hooks
   - Seamless mock/production switching
   - See: [ICABBI_INTEGRATION.md](./ICABBI_INTEGRATION.md)
-
-### November 3, 2025 (Earlier)
 - ✅ **Unified Rule Builder System** - Single component for all rule types
 - ✅ **Time-Based Promotion Scheduling** - Day-of-week + time periods + timezones
 
@@ -125,6 +151,9 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 - [x] Staff Management
 - [x] Permission System
 - [x] Document Viewer
+- [x] **iCabbi API Integration** (Complete adapter with real data)
+- [x] **IndexedDB Persistence Layer** (Mock data + extensions)
+- [x] **Hybrid Data Model** (iCabbi core + local extensions)
 
 ---
 
@@ -132,19 +161,24 @@ Welcome to the Project Rubber Ducky documentation. This is a comprehensive dispa
 
 | Need | Link |
 |------|------|
-| Setup Development Environment | [QUICK_START.md](./QUICK_START.md) |
-| Understand Project Structure | [PROJECT_OVERVIEW.md](./PROJECT_OVERVIEW.md) |
-| View System Architecture | [ARCHITECTURE_DIAGRAMS.md](./ARCHITECTURE_DIAGRAMS.md) |
+| **Start Here (AI Assistants)** | [CLAUDE.md](./CLAUDE.md) |
+| Understand Project Structure | [CLAUDE.md](./CLAUDE.md) |
+| Implement Database Features | [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md) |
+| **Integrate with iCabbi API** | [ICABBI_ADAPTER_IMPLEMENTATION.md](./ICABBI_ADAPTER_IMPLEMENTATION.md) |
+| **View Real API Field Mappings** | [REAL_ICABBI_FIELD_MAPPING.md](./REAL_ICABBI_FIELD_MAPPING.md) |
+| Understand Data Model | [ICABBI_DATA_MODEL_ANALYSIS.md](./ICABBI_DATA_MODEL_ANALYSIS.md) |
 | Learn Commission Rules | [COMMISSION_RULES_SYSTEM.md](./COMMISSION_RULES_SYSTEM.md) |
 | Use Dispatch Interface | [DISPATCH_PAGE_GUIDE.md](./DISPATCH_PAGE_GUIDE.md) |
 | Setup Promotions & Scheduling | [CUSTOMER_PROMOTIONS_GUIDE.md](./CUSTOMER_PROMOTIONS_GUIDE.md) |
 | Configure Logging | [LOGGING_AND_AUDIT_GUIDE.md](./LOGGING_AND_AUDIT_GUIDE.md) |
 | Deploy Driver Signup | [DRIVER_SIGNUP_DEPLOYMENT.md](./DRIVER_SIGNUP_DEPLOYMENT.md) |
 | Set Up Backend | [BACKEND_SETUP.md](./BACKEND_SETUP.md) |
-| Troubleshoot Issues | [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) |
+| Troubleshoot Issues | [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) |
+| Review Bug Fixes | [FIXES_APPLIED.md](./FIXES_APPLIED.md) |
 
 ---
 
-**Last Updated**: November 3, 2025  
-**Status**: Production Ready  
+**Last Updated**: November 5, 2025
+**Status**: Production Ready
+**iCabbi Integration**: Complete ✅
 **All Documentation**: Complete ✅

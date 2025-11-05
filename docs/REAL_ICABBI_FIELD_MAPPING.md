@@ -215,8 +215,8 @@ Fields we have that iCabbi doesn't provide:
 // Core iCabbi data (synced)
 interface IcabbiDriver {
   id: number;                    // Immutable system ID
-  ref: string;                   // Immutable call sign
-  ix: string;                    // UUID
+  ref: string;                   // Editable call sign
+  ix: string;                    // Immutable UUID
   active: "0" | "1";            // String status
   deleted: "0" | "1";
   first_name: string;
