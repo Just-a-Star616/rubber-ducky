@@ -176,7 +176,7 @@ const App: React.FC = () => {
     setAppState('signUp');
   };
   
-  const handleApplicationSubmit = (application: Omit<DriverApplication, 'id' | 'applicationDate' | 'notes' | 'status' | 'siteId'>) => {
+  const handleApplicationSubmit = async (application: Omit<DriverApplication, 'id' | 'applicationDate' | 'notes' | 'status' | 'siteId'>) => {
     const fullApplication: DriverApplication = {
       ...application,
       id: `APP-${Date.now()}`,
@@ -185,9 +185,47 @@ const App: React.FC = () => {
       status: 'Under Review',
       siteId: 'SITE01', // This would be determined dynamically in a real app, e.g., based on area
     };
+
+    // Persist locally first
     setApplicantData(fullApplication);
     setSubmittedApplications(prev => [...prev, fullApplication]);
-    setAppState('createPassword');
+
+    // Attempt to "capture" the applicant server-side before showing the password screen.
+    try {
+      const apiKey = (import.meta as any).env?.VITE_PUBLIC_API_KEY || '';
+      const resp = await fetch('/api/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(apiKey ? { 'x-api-key': apiKey } : {}),
+        },
+        body: JSON.stringify({ applicant: {
+          firstName: fullApplication.firstName,
+          lastName: fullApplication.lastName,
+          email: fullApplication.email,
+          phone: fullApplication.mobileNumber,
+          area: fullApplication.area,
+          isLicensed: fullApplication.isLicensed,
+        }, attachments: [] })
+      });
+
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(`Server error: ${resp.status} ${txt}`);
+      }
+
+      const json = await resp.json();
+      if (json && json.success) {
+        // proceed to password creation
+        setAppState('createPassword');
+      } else {
+        // server responded but indicated failure
+        alert('Failed to capture application server-side. Please try again.');
+      }
+    } catch (err: any) {
+      console.error('Failed to capture applicant:', err);
+      alert('Failed to capture application server-side: ' + (err?.message || String(err)));
+    }
   };
 
   const handlePasswordCreate = (password: string) => {

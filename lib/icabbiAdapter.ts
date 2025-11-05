@@ -17,10 +17,10 @@ import {
 // Based on real iCabbi API responses - see docs/REAL_ICABBI_FIELD_MAPPING.md
 
 export interface IcabbiDriver {
-  // Immutable System Fields
-  id: number;                          // System ID (1, 2, 3...)
-  ix: string;                          // UUID (e.g., "11EA062AC2A96677B30A0A5A23E1E9BE")
-  ref: string;                         // Call sign (e.g., "AV999") - immutable, what users see
+  // System Fields
+  id: number;                          // System ID (1, 2, 3...) - IMMUTABLE
+  ix: string;                          // UUID (e.g., "11EA062AC2A96677B30A0A5A23E1E9BE") - IMMUTABLE
+  ref: string;                         // Call sign (e.g., "AV999") - EDITABLE, what users see
 
   // Status Fields (STRING, not boolean!)
   active: "0" | "1";                   // "1" = Active, "0" = Inactive
@@ -91,10 +91,10 @@ export interface IcabbiBooking {
 }
 
 export interface IcabbiVehicle {
-  // Immutable System Fields
-  id: string;                          // Vehicle ID as string
-  ix: string;                          // UUID
-  ref: string;                         // Vehicle call sign (e.g., "9999")
+  // System Fields
+  id: string;                          // Vehicle ID as string - IMMUTABLE
+  ix: string;                          // UUID - IMMUTABLE
+  ref: string;                         // Vehicle call sign (e.g., "9999") - EDITABLE
 
   // Status
   active: boolean;                     // BOOLEAN for vehicles (unlike drivers!)
@@ -264,12 +264,13 @@ export function transformIcabbiDriver(icabbiDriver: IcabbiDriver): Driver {
     devicePhone: icabbiDriver.phone,
     address: icabbiDriver.address,
 
-    // License & Badge
-    drivingLicenseNumber: icabbiDriver.licence === "NOT KNOWN" ? '' : icabbiDriver.licence,
-    drivingLicenseExpiry: icabbiDriver.licence_expiry,
-    badgeNumber: icabbiDriver.psv,
-    badgeExpiry: icabbiDriver.psv_expiry,
-    badgeType: icabbiDriver.badge_type || 'Private Hire',
+  // License & Badge
+  drivingLicenseNumber: icabbiDriver.licence === "NOT KNOWN" ? '' : icabbiDriver.licence,
+  drivingLicenseExpiry: icabbiDriver.licence_expiry,
+  badgeNumber: icabbiDriver.psv,
+  badgeExpiry: icabbiDriver.psv_expiry,
+  // Normalize badge type to our union type
+  badgeType: (icabbiDriver.badge_type === 'Hackney Carriage' ? 'Hackney Carriage' : 'Private Hire'),
     badgeIssuingCouncil: '', // Not provided by iCabbi
 
     // School Badge (optional)
@@ -338,10 +339,14 @@ export function transformIcabbiDriver(icabbiDriver: IcabbiDriver): Driver {
 
 /**
  * Transform App Driver back to iCabbi format (for updates)
- * Note: Only updates editable fields - immutable fields (id, ix, ref) are excluded
+ * Note: Only includes editable fields - immutable fields (id, ix) are excluded
+ * ref IS editable and can be updated
  */
 export function transformDriverToIcabbi(driver: Driver): Partial<IcabbiDriver> {
   return {
+    // Driver Reference (editable - call sign)
+    ref: driver.id,                      // Our app uses ref as id
+
     // Personal Information (editable)
     first_name: driver.firstName,
     last_name: driver.lastName,
@@ -370,7 +375,7 @@ export function transformDriverToIcabbi(driver: Driver): Partial<IcabbiDriver> {
     // Photo (editable)
     photo: driver.avatarUrl,
 
-    // NOTE: Do not include immutable fields (id, ix, ref)
+    // NOTE: Do not include immutable fields (id, ix)
     // NOTE: Do not include local-only fields (schemeCode, gender, dateOfBirth, etc.)
   };
 }

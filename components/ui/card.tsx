@@ -37,7 +37,9 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      // Make card titles shrinkable and truncate by default so long
+      // headings can't force horizontal overflow in flexible layouts.
+      "text-2xl font-semibold leading-none tracking-tight min-w-0 truncate",
       className
     )}
     {...props}

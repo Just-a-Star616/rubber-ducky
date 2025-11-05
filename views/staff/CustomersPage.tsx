@@ -93,16 +93,16 @@ const CustomerDetail: React.FC<{ customer: Customer; onUpdateCustomer: (updatedC
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-start">
-              <div>
-                  <CardTitle className="flex items-center space-x-2">
-                      <span>{customer.name}</span>
-                      {customer.isBanned && <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-destructive text-destructive-foreground">Banned</span>}
+          <div className="flex justify-between items-start min-w-0">
+              <div className="min-w-0">
+                  <CardTitle className="flex items-center space-x-2 min-w-0">
+                      <span className="truncate max-w-full">{customer.name}</span>
+                      {customer.isBanned && <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-destructive text-destructive-foreground flex-shrink-0">Banned</span>}
                   </CardTitle>
-                  <CardDescription>{customer.email} &bull; {customer.phone}</CardDescription>
+                  <CardDescription className="truncate">{customer.email} &bull; {customer.phone}</CardDescription>
               </div>
-               <div className="flex items-center space-x-2">
-                  <div className={`flex items-center space-x-1 p-2 rounded-lg bg-muted ${priorityConfig[customer.priorityLevel].color}`}>
+               <div className="flex items-center space-x-2 flex-shrink-0">
+                  <div className={`flex items-center space-x-1 p-2 rounded-lg bg-muted ${priorityConfig[customer.priorityLevel].color} flex-shrink-0`}>
                       <PriorityIcon className="w-4 h-4"/>
                       <span className="text-xs font-semibold">{customer.priorityLevel}</span>
                   </div>

@@ -23,7 +23,8 @@ const timelineDescriptions: Record<ApplicationStatus, string> = {
     Rejected: "Unfortunately, we are not moving forward with your application at this time."
 };
 
-const TimelineStep = ({ title, description, isCompleted, isCurrent }: { title: string, description: string, isCompleted: boolean, isCurrent: boolean }) => {
+type TimelineStepProps = { title: string; description: string; isCompleted: boolean; isCurrent: boolean };
+const TimelineStep: React.FC<TimelineStepProps> = ({ title, description, isCompleted, isCurrent }) => {
     return (
         <li className="relative flex items-start pb-8">
             <div className="absolute top-1 left-3 -ml-px mt-0.5 h-full w-0.5 bg-border" />
@@ -72,6 +73,7 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<Partial<DriverApplication>>({});
     const [files, setFiles] = useState<Record<string, File | null>>({});
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => { setApplication(initialApplication); }, [initialApplication]);
 
@@ -120,6 +122,70 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
         alert("Your changes have been submitted for approval.");
     };
 
+    // Client-side submission to the serverless /api/google endpoint.
+    const handleSubmitToPortal = async () => {
+        try {
+            setSubmitting(true);
+            // Build applicant payload from current application state
+            const applicant = {
+                firstName: application.firstName,
+                lastName: application.lastName,
+                email: application.email,
+                phone: application.mobileNumber,
+                area: application.area,
+                isLicensed: application.isLicensed,
+            };
+
+            // Convert selected files to base64
+            const attachments: Array<{ name: string; mimeType?: string; dataBase64: string }> = [];
+            const fileKeys = Object.keys(files) as string[];
+            for (const k of fileKeys) {
+                const f = files[k];
+                if (!f) continue;
+                const dataBase64 = await new Promise<string>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const result = reader.result as string;
+                        const comma = result.indexOf(',');
+                        resolve(comma >= 0 ? result.slice(comma + 1) : result);
+                    };
+                    reader.onerror = () => reject(new Error('Failed to read file'));
+                    reader.readAsDataURL(f);
+                });
+                attachments.push({ name: f.name, mimeType: f.type || 'application/octet-stream', dataBase64 });
+            }
+
+            const apiKey = (import.meta as any).env?.VITE_PUBLIC_API_KEY || '';
+
+            const resp = await fetch('/api/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(apiKey ? { 'x-api-key': apiKey } : {})
+                },
+                body: JSON.stringify({ applicant, attachments })
+            });
+
+            if (!resp.ok) {
+                const txt = await resp.text();
+                throw new Error(`Server error: ${resp.status} ${txt}`);
+            }
+
+            const json = await resp.json();
+            alert('Application submitted successfully.');
+            // Optionally update UI or pending state
+            if (json && json.success) {
+                // mark submitted status locally
+                setApplication(prev => ({ ...prev, status: 'Submitted' } as any));
+            }
+        } catch (err: any) {
+            console.error('Submit failed', err);
+            alert('Failed to submit application: ' + (err?.message || String(err)));
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     const statuses: ApplicationStatus[] = ['Submitted', 'Under Review', 'Contacted', 'Meeting Scheduled', 'Approved'];
     const currentStatusIndex = statuses.indexOf(application.status);
 
@@ -143,6 +209,14 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
                                     {application.isLicensed && (<><dl className="grid grid-cols-2 gap-x-4 gap-y-6 border-t pt-6 mt-6"><ProfileField label="Badge Number" value={application.badgeNumber} pendingValue={application.pendingChanges?.badgeUpdate?.number} /><ProfileField label="Badge Expiry" value={formatDateForDisplay(application.badgeExpiry)} pendingValue={formatDateForDisplay(application.pendingChanges?.badgeUpdate?.expiry)} /><ProfileField label="Issuing Council" value={application.badgeIssuingCouncil} pendingValue={application.pendingChanges?.badgeUpdate?.issuingCouncil} /><ProfileField label="Driving License No." value={application.drivingLicenseNumber} pendingValue={application.pendingChanges?.licenseUpdate?.number} /><ProfileField label="License Expiry" value={formatDateForDisplay(application.drivingLicenseExpiry)} pendingValue={formatDateForDisplay(application.pendingChanges?.licenseUpdate?.expiry)} /></dl><dl className="grid grid-cols-2 gap-x-4 gap-y-6 border-t pt-6 mt-6"><ProfileField label="Vehicle Make" value={application.vehicleMake} pendingValue={application.pendingChanges?.vehicleMake} /><ProfileField label="Vehicle Model" value={application.vehicleModel} pendingValue={application.pendingChanges?.vehicleModel} /><ProfileField label="Vehicle Reg" value={application.vehicleRegistration} pendingValue={application.pendingChanges?.vehicleRegistration} /></dl></>)}
                                     {application.isLicensed && (<dl className="grid grid-cols-1 gap-x-4 gap-y-6 border-t pt-6 mt-6"><DocumentField docType="badge" docName="Badge Document" docUrl={application.badgeDocumentUrl} pendingUpdate={application.pendingChanges?.badgeUpdate} /><DocumentField docType="license" docName="License Document" docUrl={application.licenseDocumentUrl} pendingUpdate={application.pendingChanges?.licenseUpdate} /><DocumentField docType="v5c" docName="V5C Document" docUrl={application.v5cDocumentUrl} pendingUpdate={application.pendingChanges?.v5cUpdate} /><DocumentField docType="insurance" docName="Insurance Document" docUrl={application.insuranceDocumentUrl} pendingUpdate={application.pendingChanges?.insuranceUpdate} /></dl>)}
                                 </>
+                            )}
+                            {!isEditing && (
+                                <div className="mt-4 flex justify-end">
+                                    <Button onClick={handleSubmitToPortal} disabled={submitting || application.status === 'Submitted'}>
+                                        <UploadIcon className="w-4 h-4 mr-2" />
+                                        {application.status === 'Submitted' ? 'Submitted' : submitting ? 'Submitting...' : 'Submit Application'}
+                                    </Button>
+                                </div>
                             )}
                         </CardContent>
                     </Card>

@@ -376,12 +376,17 @@ app.post('/webhook/booking-complete', async (req, res) => {
 
 **Why**: Users identify drivers by call sign ("AV999"), not system ID (1, 2, 3)
 
+**Important**: `ref` is **editable** - users can change a driver's call sign
+
 ```typescript
-// ✅ Correct
+// ✅ Correct - use ref as display ID
 id: icabbiDriver.ref,  // "AV999"
 
-// ❌ Wrong
+// ❌ Wrong - numeric id is internal only
 id: icabbiDriver.id,   // 1
+
+// ✅ ref can be updated
+transformDriverToIcabbi(driver).ref = "NEW123"
 ```
 
 ### 2. **Status Fields are Strings in iCabbi**
@@ -420,27 +425,43 @@ Benefits:
 
 ### 4. **Extension Linking by driver.ref**
 
-**Why**: Driver ref (call sign) is immutable and user-visible
+**Why**: Driver ref (call sign) is user-visible and stable primary identifier
+
+**Note**: While `ref` is technically editable, it should be treated as the primary identifier for extensions. If a ref changes, extension records must be updated.
 
 ```typescript
 // Extension links to driver by ref, not numeric id
 {
-  driverId: "AV999",        // Matches driver.ref
-  icabbiNumericId: 1,       // Optional, for reference
+  driverId: "AV999",        // Matches driver.ref (editable but stable)
+  icabbiNumericId: 1,       // Optional, for reference (immutable)
   schemeCode: "PREMIUM",
   // ... local fields
 }
+
+// If driver ref changes, update extension link
+if (oldRef !== newRef) {
+  const extension = await db.query('driverExtensions', 'driverId', oldRef);
+  await db.update('driverExtensions', { ...extension, driverId: newRef });
+}
 ```
 
-### 5. **Immutable Fields Protection**
+### 5. **Immutable vs Editable Fields**
 
-**Why**: Prevent attempting to update fields that can't be changed
+**Why**: Understand which fields can be updated
 
-The `transformDriverToIcabbi()` function explicitly excludes:
-- `id` - System-assigned numeric ID
-- `ix` - UUID
-- `ref` - Driver call sign
-- Local-only fields (schemeCode, gender, etc.)
+**Immutable fields** (never sent in updates):
+- `id` - System-assigned numeric ID (1, 2, 3...)
+- `ix` - System-assigned UUID
+
+**Editable fields** (can be updated):
+- `ref` - Driver call sign (e.g., "AV999") - users can change this
+- All personal information (names, contacts, licenses, etc.)
+- Status fields (active, deleted)
+
+The `transformDriverToIcabbi()` function:
+- Includes `ref` since it's editable
+- Excludes `id` and `ix` (immutable)
+- Excludes local-only fields (schemeCode, gender, etc.)
 
 ## Files Modified/Created
 

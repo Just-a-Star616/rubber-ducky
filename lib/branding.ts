@@ -40,7 +40,20 @@ export const getBrandingConfig = (): BrandingConfig => {
   const branding = { ...defaultBranding };
 
   if (typeof window !== 'undefined') {
-    // Check localStorage first for user-uploaded logo
+    // Client-side config from window object (set at startup by index.tsx from VITE_ envs)
+    // Prefer runtime-injected branding (from environment) over any stored localStorage value.
+    const windowBranding = (window as any).__BRANDING_CONFIG__;
+    if (windowBranding) {
+      try {
+        // Persist the environment branding into localStorage so it survives reloads
+        window.localStorage.setItem('companyBranding', JSON.stringify(windowBranding));
+      } catch (e) {
+        // ignore storage errors
+      }
+      return { ...branding, ...windowBranding };
+    }
+
+    // Fallback to previously saved branding in localStorage (user-updated)
     const storedBranding = window.localStorage.getItem('companyBranding');
     if (storedBranding) {
       try {
@@ -55,12 +68,6 @@ export const getBrandingConfig = (): BrandingConfig => {
       } catch (e) {
         console.error('Failed to parse stored branding config:', e);
       }
-    }
-
-    // Client-side config from window object (set in index.html or via script)
-    const windowBranding = (window as any).__BRANDING_CONFIG__;
-    if (windowBranding) {
-      return { ...branding, ...windowBranding };
     }
   }
 

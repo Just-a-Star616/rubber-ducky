@@ -197,7 +197,7 @@ const StaffDashboard: React.FC<StaffDashboardProps> = ({ isDarkMode, toggleDarkM
   };
 
   return (
-    <div className="h-screen flex overflow-hidden">
+  <div className="h-screen flex overflow-hidden">
       <Sidebar
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}

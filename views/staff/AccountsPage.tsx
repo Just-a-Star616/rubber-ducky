@@ -168,18 +168,18 @@ const AccountDetail: React.FC<{ account: Account; onUpdateAccount: (updatedAccou
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader><CardTitle>Booking History</CardTitle></CardHeader>
-        <CardContent>
-            <BookingsTable 
-                bookings={bookingsForAccount} 
-                onEditBooking={onEditBooking} 
-                onOpenPaymentModal={onOpenPaymentModal}
-                sortConfig={{key: 'pickupDateTime', direction: 'desc'}} 
-                onSort={() => {}}
-            />
-        </CardContent>
-      </Card>
+            <Card>
+                <CardHeader><CardTitle>Booking History</CardTitle></CardHeader>
+                <CardContent className="p-0 overflow-x-auto">
+                        <BookingsTable 
+                                bookings={bookingsForAccount} 
+                                onEditBooking={onEditBooking} 
+                                onOpenPaymentModal={onOpenPaymentModal}
+                                sortConfig={{key: 'pickupDateTime', direction: 'desc'}} 
+                                onSort={() => {}}
+                        />
+                </CardContent>
+            </Card>
     </div>
   );
 };

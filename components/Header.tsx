@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MenuIcon, LogoutIcon, SunIcon, MoonIcon, SparklesIcon, BellIcon } from './icons/Icon';
 import ApiStatusIndicator, { ApiStatus } from './ApiStatusIndicator';
 import { StaffMember } from '../types';
@@ -18,11 +18,44 @@ interface HeaderProps {
   onToggleNotificationCenter: () => void;
   pageTitle?: string;
   pageDescription?: string;
+  /** Optional short title to show on very small viewports */
+  pageTitleShort?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isDarkMode, toggleDarkMode, handleLogout, apiStatus, staffMember, unreadNoticesCount, onProfileClick, onToggleCommandPalette, unreadAlertsCount, onToggleNotificationCenter, pageTitle, pageDescription }) => {
+function useIsSmall() {
+  const [isSmall, setIsSmall] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 640px)');
+    const handler = (e: MediaQueryListEvent) => setIsSmall(e.matches);
+    setIsSmall(mq.matches);
+    // modern API
+    if (mq.addEventListener) mq.addEventListener('change', handler);
+    else mq.addListener(handler);
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', handler);
+      else mq.removeListener(handler);
+    };
+  }, []);
+  return isSmall;
+}
+
+const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isDarkMode, toggleDarkMode, handleLogout, apiStatus, staffMember, unreadNoticesCount, onProfileClick, onToggleCommandPalette, unreadAlertsCount, onToggleNotificationCenter, pageTitle, pageDescription, pageTitleShort }) => {
+  const isSmall = useIsSmall();
+  const displayTitle = (() => {
+    if (!pageTitle) return undefined;
+    if (!isSmall) return pageTitle;
+    if (pageTitleShort) return pageTitleShort;
+    // fallback abbreviation: keep up to ~20 chars, prefer trimming to last full word if possible
+    const max = 20;
+    if (pageTitle.length <= max) return pageTitle;
+    const trimmed = pageTitle.slice(0, max - 1);
+    const lastSpace = trimmed.lastIndexOf(' ');
+    if (lastSpace > 8) return trimmed.slice(0, lastSpace) + '…';
+    return trimmed.slice(0, max - 1) + '…';
+  })();
   return (
-    <header className="sticky top-0 z-10 flex flex-shrink-0 border-b border-border bg-card py-2 overflow-hidden">
+  <header className="sticky top-0 z-10 flex flex-shrink-0 border-b border-border bg-card py-2 overflow-visible">
       <button
         type="button"
         className="border-r border-border px-4 text-gray-500 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 lg:hidden"
@@ -31,13 +64,13 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar, isDarkMode, toggleDark
         <span className="sr-only">Open sidebar</span>
         <MenuIcon className="h-6 w-6" />
       </button>
-      <div className="flex flex-1 items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div>
-          {pageTitle && <h1 className="text-xl font-bold text-foreground">{pageTitle}</h1>}
-          {pageDescription && <p className="mt-1 text-sm text-muted-foreground max-w-2xl">{pageDescription}</p>}
+  <div className="flex flex-1 items-center justify-between px-4 sm:px-6 lg:px-8 pr-6 sm:pr-8">
+        <div className="flex-1 min-w-0 pr-4">
+          {pageTitle && <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">{pageTitle}</h1>}
+          {pageDescription && <p className="mt-1 text-sm text-muted-foreground truncate hidden sm:block">{pageDescription}</p>}
         </div>
         
-        <div className="flex items-center gap-2 md:gap-4">
+  <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
           <button
             onClick={onToggleCommandPalette}
             className="flex items-center gap-2 p-2 rounded-lg text-foreground/70 hover:bg-black/5 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 focus:ring-primary-500"

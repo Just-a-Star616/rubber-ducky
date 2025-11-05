@@ -144,16 +144,16 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
       <BalanceCard driver={driver} onOpenWithdrawModal={onOpenWithdrawModal} />
       
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg">Recent Invoices</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between min-w-0">
+            <CardTitle className="text-lg truncate">Recent Invoices</CardTitle>
             <Button variant="link" onClick={() => onNavigate('invoices')} className="text-xs">View Full History</Button>
         </CardHeader>
         <CardContent>
             <ul className="divide-y divide-border">
                 {driverInvoices.slice(0, 3).map(invoice => (
-                    <li key={invoice.id} className="py-3 flex justify-between items-center">
-                        <div>
-                            <p className="text-sm font-semibold text-foreground">Week Ending: {invoice.weekEnding}</p>
+                    <li key={invoice.id} className="py-3 flex justify-between items-center min-w-0">
+                        <div className="min-w-0">
+                            <p className="text-sm font-semibold text-foreground truncate">Week Ending: {invoice.weekEnding}</p>
                             <p className="text-sm text-muted-foreground">Net: <span className="font-medium text-green-600">£{invoice.netEarnings.toFixed(2)}</span></p>
                         </div>
                         <Button variant="ghost" size="icon" title="View Statement" onClick={() => onViewInvoice(invoice)}>
@@ -167,9 +167,9 @@ const DriverDashboard: React.FC<DriverDashboardProps> = ({ driver, onNavigate, o
       
       <Card>
         <CardHeader>
-            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                <CardTitle className="text-lg">Earnings Breakdown</CardTitle>
-                <div className="flex items-center gap-2 p-1 bg-muted rounded-full">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 min-w-0">
+                <CardTitle className="text-lg truncate">Earnings Breakdown</CardTitle>
+                <div className="flex items-center gap-2 p-1 bg-muted rounded-full flex-shrink-0">
                     <FilterButton onClick={() => setViewType('daily')} isActive={viewType === 'daily'}>Daily View</FilterButton>
                     <FilterButton onClick={() => setViewType('hourly')} isActive={viewType === 'hourly'}>Hourly View</FilterButton>
                 </div>

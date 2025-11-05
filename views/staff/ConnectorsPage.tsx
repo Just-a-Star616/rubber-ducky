@@ -65,26 +65,26 @@ const ConnectorsPage: React.FC = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-8">
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-            <div className="flex items-center space-x-3">
+        <CardHeader className="flex flex-row items-center justify-between min-w-0">
+            <div className="flex items-center space-x-3 min-w-0">
                 <ServerStackIcon className="w-8 h-8 text-primary" />
-                <div>
-                    <CardTitle>Base API Endpoint URLs</CardTitle>
-                    <CardDescription>Define base URLs and credentials for external APIs.</CardDescription>
+                <div className="min-w-0">
+                    <CardTitle className="truncate">Base API Endpoint URLs</CardTitle>
+                    <CardDescription className="truncate">Define base URLs and credentials for external APIs.</CardDescription>
                 </div>
             </div>
-            <Button onClick={handleAddBaseApi}><PlusCircleIcon className="w-4 h-4 mr-2"/>Add Base API</Button>
+            <Button onClick={handleAddBaseApi} className="flex-shrink-0"><PlusCircleIcon className="w-4 h-4 mr-2"/>Add Base API</Button>
         </CardHeader>
         <CardContent>
             <ul role="list" className="divide-y divide-border border-t">
                 {baseApis.map(api => (
-                    <li key={api.id} className="flex items-center justify-between px-4 py-3 hover:bg-muted/50">
-                        <div>
-                            <p className="text-sm font-semibold text-foreground">{api.name}</p>
-                            <p className="text-sm font-mono text-muted-foreground">{api.baseUrl}</p>
+                    <li key={api.id} className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 min-w-0">
+                        <div className="min-w-0">
+                            <p className="text-sm font-semibold text-foreground truncate">{api.name}</p>
+                            <p className="text-sm font-mono text-muted-foreground truncate" title={api.baseUrl}>{api.baseUrl}</p>
                         </div>
-                        <div className="flex items-center space-x-4">
-                            <span className="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary">{api.authType}</span>
+                        <div className="flex items-center space-x-4 flex-shrink-0">
+                            <span className="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary flex-shrink-0">{api.authType}</span>
                             <Button variant="ghost" size="icon" onClick={() => handleEditBaseApi(api)}><PencilIcon className="w-4 h-4"/></Button>
                         </div>
                     </li>
@@ -94,32 +94,32 @@ const ConnectorsPage: React.FC = () => {
       </Card>
       
        <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-            <div className="flex items-center space-x-3">
+        <CardHeader className="flex flex-row items-center justify-between min-w-0">
+            <div className="flex items-center space-x-3 min-w-0">
                 <CommandLineIcon className="w-8 h-8 text-primary" />
-                <div>
-                    <CardTitle>Endpoints</CardTitle>
-                    <CardDescription>Define specific data endpoints on top of your Base APIs.</CardDescription>
+                <div className="min-w-0">
+                    <CardTitle className="truncate">Endpoints</CardTitle>
+                    <CardDescription className="truncate">Define specific data endpoints on top of your Base APIs.</CardDescription>
                 </div>
             </div>
-            <Button onClick={handleAddEndpoint}><PlusCircleIcon className="w-4 h-4 mr-2"/>Add Endpoint</Button>
+            <Button onClick={handleAddEndpoint} className="flex-shrink-0"><PlusCircleIcon className="w-4 h-4 mr-2"/>Add Endpoint</Button>
         </CardHeader>
         <CardContent>
             <ul role="list" className="divide-y divide-border border-t">
                 {endpoints.map(ep => {
                     const baseApi = baseApis.find(a => a.id === ep.baseApiId);
                     return (
-                    <li key={ep.id} className="px-4 py-3 hover:bg-muted/50">
-                         <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-semibold text-foreground">{ep.name}</p>
-                                <p className="text-sm font-mono text-muted-foreground">
+                    <li key={ep.id} className="px-4 py-3 hover:bg-muted/50 min-w-0">
+                         <div className="flex items-center justify-between min-w-0">
+                            <div className="min-w-0">
+                                <p className="text-sm font-semibold text-foreground truncate">{ep.name}</p>
+                                <p className="text-sm font-mono text-muted-foreground truncate" title={`${ep.method} ${baseApi?.name}${ep.path}`}>
                                     <span className="font-bold text-green-600 dark:text-green-400">{ep.method}</span> {baseApi?.name}{ep.path}
                                 </p>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => handleEditEndpoint(ep)}><PencilIcon className="w-4 h-4"/></Button>
+                            <Button variant="ghost" size="icon" onClick={() => handleEditEndpoint(ep)} className="flex-shrink-0"><PencilIcon className="w-4 h-4"/></Button>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">{ep.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1 truncate">{ep.description}</p>
                     </li>
                 )})}
             </ul>
@@ -127,28 +127,28 @@ const ConnectorsPage: React.FC = () => {
       </Card>
       
        <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-             <div className="flex items-center space-x-3">
+        <CardHeader className="flex flex-row items-center justify-between min-w-0">
+             <div className="flex items-center space-x-3 min-w-0">
                 <GlobeAltIcon className="w-8 h-8 text-primary" />
-                <div>
-                    <CardTitle>Webhooks</CardTitle>
-                    <CardDescription>Trigger external systems based on internal program events.</CardDescription>
+                <div className="min-w-0">
+                    <CardTitle className="truncate">Webhooks</CardTitle>
+                    <CardDescription className="truncate">Trigger external systems based on internal program events.</CardDescription>
                 </div>
             </div>
-            <Button onClick={handleAddWebhook}><PlusCircleIcon className="w-4 h-4 mr-2"/>Add Webhook</Button>
+            <Button onClick={handleAddWebhook} className="flex-shrink-0"><PlusCircleIcon className="w-4 h-4 mr-2"/>Add Webhook</Button>
         </CardHeader>
         <CardContent>
             <ul role="list" className="divide-y divide-border border-t">
                 {webhooks.map(wh => (
-                    <li key={wh.id} className="px-4 py-3 hover:bg-muted/50">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-semibold text-foreground">{wh.eventName}</p>
-                                <p className="text-sm font-mono text-muted-foreground">{wh.targetUrl}</p>
+                    <li key={wh.id} className="px-4 py-3 hover:bg-muted/50 min-w-0">
+                        <div className="flex items-center justify-between min-w-0">
+                            <div className="min-w-0">
+                                <p className="text-sm font-semibold text-foreground truncate">{wh.eventName}</p>
+                                <p className="text-sm font-mono text-muted-foreground truncate" title={wh.targetUrl}>{wh.targetUrl}</p>
                             </div>
-                            <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-4 flex-shrink-0">
                                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${wh.status === 'Active' ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'}`}>{wh.status}</span>
-                                <Button variant="ghost" size="icon" onClick={() => handleEditWebhook(wh)}><PencilIcon className="w-4 h-4" /></Button>
+                                <Button variant="ghost" size="icon" onClick={() => handleEditWebhook(wh)} className="flex-shrink-0"><PencilIcon className="w-4 h-4" /></Button>
                             </div>
                         </div>
                          {wh.conditions && (
