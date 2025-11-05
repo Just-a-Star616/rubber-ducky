@@ -73,6 +73,7 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<Partial<DriverApplication>>({});
     const [files, setFiles] = useState<Record<string, File | null>>({});
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => { setApplication(initialApplication); }, [initialApplication]);
 
@@ -124,6 +125,7 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
     // Client-side submission to the serverless /api/google endpoint.
     const handleSubmitToPortal = async () => {
         try {
+            setSubmitting(true);
             // Build applicant payload from current application state
             const applicant = {
                 firstName: application.firstName,
@@ -179,6 +181,8 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
         } catch (err: any) {
             console.error('Submit failed', err);
             alert('Failed to submit application: ' + (err?.message || String(err)));
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -205,6 +209,14 @@ const ApplicantPortal: React.FC<ApplicantPortalProps> = ({ application: initialA
                                     {application.isLicensed && (<><dl className="grid grid-cols-2 gap-x-4 gap-y-6 border-t pt-6 mt-6"><ProfileField label="Badge Number" value={application.badgeNumber} pendingValue={application.pendingChanges?.badgeUpdate?.number} /><ProfileField label="Badge Expiry" value={formatDateForDisplay(application.badgeExpiry)} pendingValue={formatDateForDisplay(application.pendingChanges?.badgeUpdate?.expiry)} /><ProfileField label="Issuing Council" value={application.badgeIssuingCouncil} pendingValue={application.pendingChanges?.badgeUpdate?.issuingCouncil} /><ProfileField label="Driving License No." value={application.drivingLicenseNumber} pendingValue={application.pendingChanges?.licenseUpdate?.number} /><ProfileField label="License Expiry" value={formatDateForDisplay(application.drivingLicenseExpiry)} pendingValue={formatDateForDisplay(application.pendingChanges?.licenseUpdate?.expiry)} /></dl><dl className="grid grid-cols-2 gap-x-4 gap-y-6 border-t pt-6 mt-6"><ProfileField label="Vehicle Make" value={application.vehicleMake} pendingValue={application.pendingChanges?.vehicleMake} /><ProfileField label="Vehicle Model" value={application.vehicleModel} pendingValue={application.pendingChanges?.vehicleModel} /><ProfileField label="Vehicle Reg" value={application.vehicleRegistration} pendingValue={application.pendingChanges?.vehicleRegistration} /></dl></>)}
                                     {application.isLicensed && (<dl className="grid grid-cols-1 gap-x-4 gap-y-6 border-t pt-6 mt-6"><DocumentField docType="badge" docName="Badge Document" docUrl={application.badgeDocumentUrl} pendingUpdate={application.pendingChanges?.badgeUpdate} /><DocumentField docType="license" docName="License Document" docUrl={application.licenseDocumentUrl} pendingUpdate={application.pendingChanges?.licenseUpdate} /><DocumentField docType="v5c" docName="V5C Document" docUrl={application.v5cDocumentUrl} pendingUpdate={application.pendingChanges?.v5cUpdate} /><DocumentField docType="insurance" docName="Insurance Document" docUrl={application.insuranceDocumentUrl} pendingUpdate={application.pendingChanges?.insuranceUpdate} /></dl>)}
                                 </>
+                            )}
+                            {!isEditing && (
+                                <div className="mt-4 flex justify-end">
+                                    <Button onClick={handleSubmitToPortal} disabled={submitting || application.status === 'Submitted'}>
+                                        <UploadIcon className="w-4 h-4 mr-2" />
+                                        {application.status === 'Submitted' ? 'Submitted' : submitting ? 'Submitting...' : 'Submit Application'}
+                                    </Button>
+                                </div>
                             )}
                         </CardContent>
                     </Card>
