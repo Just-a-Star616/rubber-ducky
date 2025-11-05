@@ -109,31 +109,39 @@ export default async function handler(req: any, res: any) {
       uploadedFiles.push({ id: fileId, name: f.name, webViewLink });
     }
 
-    // Append a row to Sheets
+    // Append a row to Sheets (if configured)
     const sheetId = process.env.GOOGLE_SHEETS_ID;
+    let sheetAppended = false;
+    let sheetError: string | undefined = undefined;
     if (sheetId) {
-      const values = [
-        new Date().toISOString(),
-        applicant.firstName || '',
-        applicant.lastName || '',
-        applicant.email || '',
-        applicant.phone || '',
-        applicant.area || '',
-        applicant.isLicensed ? 'Yes' : 'No',
-        uploadedFiles.map(f => f.webViewLink || f.id).join(', ')
-      ];
+      try {
+        const values = [
+          new Date().toISOString(),
+          applicant.firstName || '',
+          applicant.lastName || '',
+          applicant.email || '',
+          applicant.phone || '',
+          applicant.area || '',
+          applicant.isLicensed ? 'Yes' : 'No',
+          uploadedFiles.map(f => f.webViewLink || f.id).join(', ')
+        ];
 
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: sheetId,
-        range: 'A1',
-        valueInputOption: 'RAW',
-        requestBody: { values: [values] }
-      });
+        await sheets.spreadsheets.values.append({
+          spreadsheetId: sheetId,
+          range: 'A1',
+          valueInputOption: 'RAW',
+          requestBody: { values: [values] }
+        });
+        sheetAppended = true;
+      } catch (err: any) {
+        sheetError = String(err && err.message ? err.message : err);
+        console.error('Sheets append error', sheetError);
+      }
     }
 
     // NOTE: Sending emails is environment-specific. Recommend using SendGrid / Mailgun or Apps Script to notify the workspace group.
 
-    return res.status(200).json({ success: true, uploadedFiles });
+  return res.status(200).json({ success: true, uploadedFiles, sheetAppended, sheetError });
   } catch (err: any) {
     console.error('api/google error', err);
     return res.status(500).json({ error: String(err && err.message ? err.message : err) });
