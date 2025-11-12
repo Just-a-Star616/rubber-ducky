@@ -266,12 +266,14 @@ const App: React.FC = () => {
   };
 
   const renderContent = () => {
+    console.log('🎨 Rendering state:', appState);
     switch(appState) {
         case 'login':
             return <Login onLogin={handleLogin} onSignUpClick={handleNavigateToSignUp} onApplicantLogin={handleApplicantLogin} />;
         case 'signUp':
             return <DriverSignUp onApplicationSubmit={handleApplicationSubmit} onBackToLogin={() => setAppState('login')} />;
         case 'createPassword':
+            console.log('🔐 Rendering CreatePassword with applicant:', applicantData);
             return <CreatePassword applicant={applicantData!} onPasswordCreate={handlePasswordCreate} />;
         case 'applicantPortal':
             return <ApplicantPortal application={applicantData!} handleLogout={handleLogout} onUpdateApplication={handleUpdateApplication} />;
