@@ -177,6 +177,7 @@ const App: React.FC = () => {
   };
   
   const handleApplicationSubmit = async (application: Omit<DriverApplication, 'id' | 'applicationDate' | 'notes' | 'status' | 'siteId'>) => {
+    console.log('🚀 handleApplicationSubmit called');
     const fullApplication: DriverApplication = {
       ...application,
       id: `APP-${Date.now()}`,
@@ -189,11 +190,14 @@ const App: React.FC = () => {
     // Persist locally first
     setApplicantData(fullApplication);
     setSubmittedApplications(prev => [...prev, fullApplication]);
+    console.log('✅ Application data persisted locally');
 
     // Attempt to "capture" the applicant server-side before showing the password screen.
     // If this fails, we'll still let them proceed and can capture later from ApplicantPortal.
     try {
+      console.log('📡 Attempting server capture...');
       const apiKey = (import.meta as any).env?.VITE_PUBLIC_API_KEY || '';
+      console.log('🔑 API Key present:', !!apiKey);
       const resp = await fetch('/api/google', {
         method: 'POST',
         headers: {
@@ -212,18 +216,19 @@ const App: React.FC = () => {
 
       if (!resp.ok) {
         const txt = await resp.text();
-        console.warn('Server capture failed:', resp.status, txt);
+        console.warn('⚠️ Server capture failed:', resp.status, txt);
         // Don't block the user - they can submit from ApplicantPortal later
       } else {
         const json = await resp.json();
-        console.log('Server capture succeeded:', json);
+        console.log('✅ Server capture succeeded:', json);
       }
     } catch (err: any) {
-      console.error('Failed to capture applicant:', err);
+      console.error('❌ Failed to capture applicant:', err);
       // Don't block the user - they can submit from ApplicantPortal later
     }
     
     // Always proceed to password creation regardless of server capture result
+    console.log('➡️ Proceeding to createPassword page');
     setAppState('createPassword');
   };
 
