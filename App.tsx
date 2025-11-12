@@ -191,6 +191,7 @@ const App: React.FC = () => {
     setSubmittedApplications(prev => [...prev, fullApplication]);
 
     // Attempt to "capture" the applicant server-side before showing the password screen.
+    // If this fails, we'll still let them proceed and can capture later from ApplicantPortal.
     try {
       const apiKey = (import.meta as any).env?.VITE_PUBLIC_API_KEY || '';
       const resp = await fetch('/api/google', {
@@ -211,21 +212,19 @@ const App: React.FC = () => {
 
       if (!resp.ok) {
         const txt = await resp.text();
-        throw new Error(`Server error: ${resp.status} ${txt}`);
-      }
-
-      const json = await resp.json();
-      if (json && json.success) {
-        // proceed to password creation
-        setAppState('createPassword');
+        console.warn('Server capture failed:', resp.status, txt);
+        // Don't block the user - they can submit from ApplicantPortal later
       } else {
-        // server responded but indicated failure
-        alert('Failed to capture application server-side. Please try again.');
+        const json = await resp.json();
+        console.log('Server capture succeeded:', json);
       }
     } catch (err: any) {
       console.error('Failed to capture applicant:', err);
-      alert('Failed to capture application server-side: ' + (err?.message || String(err)));
+      // Don't block the user - they can submit from ApplicantPortal later
     }
+    
+    // Always proceed to password creation regardless of server capture result
+    setAppState('createPassword');
   };
 
   const handlePasswordCreate = (password: string) => {

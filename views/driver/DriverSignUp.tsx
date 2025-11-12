@@ -11,7 +11,7 @@ import { mockLicensingCouncils } from '../../lib/mockData';
 import { ArrowUturnLeftIcon, UploadIcon } from '../../components/icons/Icon';
 
 interface DriverSignUpProps {
-    onApplicationSubmit: (application: Omit<DriverApplication, 'id' | 'applicationDate' | 'notes' | 'status' | 'siteId'>) => void;
+    onApplicationSubmit: (application: Omit<DriverApplication, 'id' | 'applicationDate' | 'notes' | 'status' | 'siteId'>) => Promise<void>;
     onBackToLogin: () => void;
 }
 
@@ -44,6 +44,7 @@ const DocumentUploadField = ({ label, onFileChange }: { label: string, onFileCha
 const DriverSignUp: React.FC<DriverSignUpProps> = ({ onApplicationSubmit, onBackToLogin }) => {
     const [isLicensed, setIsLicensed] = useState(false);
     const [formData, setFormData] = useState<Partial<DriverApplication>>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -54,18 +55,23 @@ const DriverSignUp: React.FC<DriverSignUpProps> = ({ onApplicationSubmit, onBack
         setFormData(prev => ({ ...prev, [fieldName]: fileName }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const applicationData = {
-            firstName: formData.firstName || '',
-            lastName: formData.lastName || '',
-            email: formData.email || '',
-            mobileNumber: formData.mobileNumber || '',
-            area: formData.area || '',
-            isLicensed: isLicensed,
-            ...formData
-        };
-        onApplicationSubmit(applicationData);
+        setIsSubmitting(true);
+        try {
+            const applicationData = {
+                firstName: formData.firstName || '',
+                lastName: formData.lastName || '',
+                email: formData.email || '',
+                mobileNumber: formData.mobileNumber || '',
+                area: formData.area || '',
+                isLicensed: isLicensed,
+                ...formData
+            };
+            await onApplicationSubmit(applicationData);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -122,11 +128,13 @@ const DriverSignUp: React.FC<DriverSignUpProps> = ({ onApplicationSubmit, onBack
                         )}
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                         <Button type="button" variant="ghost" onClick={onBackToLogin}>
+                         <Button type="button" variant="ghost" onClick={onBackToLogin} disabled={isSubmitting}>
                             <ArrowUturnLeftIcon className="mr-2 h-4 w-4" />
                             Back to Login
                         </Button>
-                        <Button type="submit">Submit Application</Button>
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                        </Button>
                     </CardFooter>
                 </form>
             </Card>
